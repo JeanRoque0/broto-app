@@ -8,25 +8,20 @@ const MOSS = "#3E6B4A";
 const POT = "#C88B6A";
 
 const OUT = path.join(__dirname, "..", "assets", "images");
-const LEGAL = path.join(__dirname, "..", "legal");
+const SITE = process.env.BROTO_WEB_DIR ?? path.join(__dirname, "..", "..", "web");
 
 const LEAF =
-  "M0 0 C-56 -40.12 -40.32 -96.76 0 -118 C40.32 -96.76 56 -40.12 0 0 Z";
-const CROWN =
-  "M0 0 C-58 -49.64 -41.76 -119.72 0 -146 C41.76 -119.72 58 -49.64 0 0 Z";
+  "M38 39C38 22 30 15 20 9C34 12 41 23 42 34C44 20 53 12 64 8C52 17 45 26 44 39H38Z";
+const FIT =
+  "translate(256 306) scale(6.3529) translate(-38 -39)";
 const BODY = "M-94 2 L94 2 L72 96 Q72 112 54 112 L-54 112 Q-72 112 -72 96 Z";
 
-const BOX = { cx: 256, cy: 263, height: 402 };
+const BOX = { cx: 256, cy: 287, height: 355 };
 
 function mark(plant, pot, rim) {
   return `
-  <g transform="translate(256 320)" fill="${plant}">
-    <rect x="-10" y="-136" width="20" height="150" rx="10"/>
-    <g transform="translate(0 -112)">
-      <g transform="rotate(-54)"><path d="${LEAF}"/></g>
-      <g transform="rotate(54)"><path d="${LEAF}"/></g>
-      <path d="${CROWN}"/>
-    </g>
+  <g transform="${FIT}" fill="${plant}">
+    <path d="${LEAF}"/>
   </g>
   <g transform="translate(256 352)">
     <rect x="-108" y="-46" width="216" height="40" rx="14" fill="${rim}"/>
@@ -57,25 +52,12 @@ const targets = [
     flat: "#000000",
   },
   { file: "splash-icon.png", size: 512, scale: 0.86 },
-  { file: "favicon.png", size: 196, background: SAND, scale: 0.76 },
-  { file: "mark.png", size: 240, scale: 0.9, out: LEGAL },
-  {
-    file: "favicon.png",
-    size: 180,
-    background: MOSS,
-    flat: SAND,
-    scale: 0.88,
-    radius: 112,
-    out: LEGAL,
-  },
+  { file: "favicon.png", size: 196, background: SAND, scale: 0.76, radius: 112 },
+  { file: "mark.png", size: 240, scale: 0.9, out: SITE },
+  { file: "favicon.png", size: 180, background: SAND, scale: 0.74, radius: 112, out: SITE },
 ];
 
-const SITE_FAVICON = {
-  background: MOSS,
-  flat: SAND,
-  scale: 0.88,
-  radius: 112,
-};
+const SITE_FAVICON = { background: SAND, scale: 0.74, radius: 112 };
 
 async function run() {
   fs.mkdirSync(OUT, { recursive: true });
@@ -97,7 +79,7 @@ async function run() {
   );
 
   fs.writeFileSync(
-    path.join(LEGAL, "favicon.svg"),
+    path.join(SITE, "favicon.svg"),
     canvas(SITE_FAVICON).toString(),
   );
 }

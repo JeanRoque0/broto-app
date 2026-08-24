@@ -2,9 +2,8 @@ import Svg, { G, Path, Rect } from "react-native-svg";
 
 import { theme } from "@/style/theme";
 
-const LEAF = "M0 0 C-56 -40.12 -40.32 -96.76 0 -118 C40.32 -96.76 56 -40.12 0 0 Z";
-const CROWN =
-  "M0 0 C-58 -49.64 -41.76 -119.72 0 -146 C41.76 -119.72 58 -49.64 0 0 Z";
+const LEAF = "M38 39C38 22 30 15 20 9C34 12 41 23 42 34C44 20 53 12 64 8C52 17 45 26 44 39H38Z";
+const FIT = "translate(256 306) scale(6.3529) translate(-38 -39)";
 const BODY = "M-94 2 L94 2 L72 96 Q72 112 54 112 L-54 112 Q-72 112 -72 96 Z";
 
 type LogoProps = {
@@ -19,18 +18,9 @@ export function Logo({ size = 64, tone = "color" }: LogoProps) {
   const rim = light ? theme.text.onPrimary : theme.primary.clay;
 
   return (
-    <Svg width={size} height={size} viewBox="140 55 232 420">
-      <G transform="translate(256 320)" fill={plant}>
-        <Rect x={-10} y={-136} width={20} height={150} rx={10} />
-        <G transform="translate(0 -112)">
-          <G transform="rotate(-54)">
-            <Path d={LEAF} />
-          </G>
-          <G transform="rotate(54)">
-            <Path d={LEAF} />
-          </G>
-          <Path d={CROWN} />
-        </G>
+    <Svg width={size} height={size} viewBox="135 103 292 367">
+      <G transform={FIT} fill={plant}>
+        <Path d={LEAF} />
       </G>
 
       <G transform="translate(256 352)">
