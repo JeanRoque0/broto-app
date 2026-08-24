@@ -1,0 +1,17 @@
+{
+  "title": "Find a plant",
+  "placeholder": "Common or scientific name",
+  "hint": "Search for pothos, snake plant, Monstera...",
+  "empty": "Nothing found",
+  "emptyHint": "Try another name, or the scientific one.",
+  "failed": "Could not search right now.",
+  "add": "Add to my plants",
+  "added": "Plant added",
+  "careHint": "Care starts on defaults. Analyze a photo of it to adjust.",
+  "photoCredit": "Photos and text from Wikipedia",
+  "expandPhoto": "Expand photo",
+  "closePhoto": "Close photo",
+  "clear": "Clear search",
+  "recent": "Recent searches",
+  "removeRecent": "Remove from list"
+}

@@ -1,0 +1,11 @@
+{
+  "skip": "Pular",
+  "continue": "Continuar",
+  "start": "Começar",
+  "identifyTitle": "Descubra que planta\né essa",
+  "identifyDescription": "Tire uma foto e a gente identifica a espécie e já monta o plano de cuidado.",
+  "diagnoseTitle": "Entenda o que\nela tem",
+  "diagnoseDescription": "Folha amarela, mancha, praga. A gente mostra as causas prováveis e como tratar.",
+  "reminderTitle": "Nunca mais esqueça\nde regar",
+  "reminderDescription": "Cada planta tem seu ritmo. A gente avisa no dia certo, sem encher o saco."
+}

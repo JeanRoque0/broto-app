@@ -1,0 +1,43 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+
+import { supabase } from "@/services/supabase/client";
+import { useAuthStore } from "@/store";
+
+export function useAuthListener() {
+  const setSession = useAuthStore((state) => state.setSession);
+  const setHydrated = useAuthStore((state) => state.setHydrated);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const { data: subscription } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_OUT") {
+          clearAuth();
+          queryClient.clear();
+        } else {
+          setSession(session);
+        }
+
+        setHydrated(true);
+      },
+    );
+
+    return () => subscription.subscription.unsubscribe();
+  }, [setSession, setHydrated, clearAuth, queryClient]);
+}
+
+export function useAuth() {
+  const session = useAuthStore((state) => state.session);
+  const user = useAuthStore((state) => state.user);
+  const hydrated = useAuthStore((state) => state.hydrated);
+
+  return {
+    session,
+    user,
+    userId: user?.id ?? null,
+    isAuthenticated: !!session,
+    hydrated,
+  };
+}

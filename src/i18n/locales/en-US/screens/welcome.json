@@ -1,0 +1,9 @@
+{
+  "title": "Sign in to start\ntaking care",
+  "subtitle": "Your plants and reminders stay saved in your account.",
+  "apple": "Continue with Apple",
+  "google": "Continue with Google",
+  "email": "Continue with email",
+  "signInFailed": "Couldn't sign you in",
+  "signInFailedSubtitle": "Try again or use your email."
+}

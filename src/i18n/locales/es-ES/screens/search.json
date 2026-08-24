@@ -1,0 +1,17 @@
+{
+  "title": "Buscar planta",
+  "placeholder": "Nombre común o científico",
+  "hint": "Busca potus, lengua de suegra, Monstera...",
+  "empty": "No se encontró nada",
+  "emptyHint": "Prueba otro nombre, o el científico.",
+  "failed": "No se pudo buscar ahora.",
+  "add": "Añadir a mis plantas",
+  "added": "Planta añadida",
+  "careHint": "Los cuidados entran por defecto. Analiza una foto suya para ajustarlos.",
+  "photoCredit": "Fotos y texto de Wikipedia",
+  "expandPhoto": "Ampliar foto",
+  "closePhoto": "Cerrar foto",
+  "clear": "Limpiar búsqueda",
+  "recent": "Búsquedas recientes",
+  "removeRecent": "Quitar de la lista"
+}

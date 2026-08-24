@@ -1,0 +1,22 @@
+{
+  "title": "Brotinho",
+  "remaining": "{{count}} message this month",
+  "remaining_other": "{{count}} messages this month",
+  "threads": "Past conversations",
+  "newThread": "New conversation",
+  "removeThread": "Delete conversation",
+  "threadsTitle": "Your conversations",
+  "threadsSubtitle": "Conversations unused for 30 days leave the list.",
+  "threadsEmpty": "No conversations here yet.",
+  "threadUntitled": "Conversation",
+  "introTitle": "Ask anything about your plants",
+  "introText": "Water, light, pruning, pots, fertilizer. To find out what your plant has, use the Analyze tab.",
+  "placeholder": "Write your question",
+  "send": "Send",
+  "failed": "Could not answer right now. Try again.",
+  "lockedTitle": "Talk to Brotinho",
+  "lockedDescription": "He knows your plants routine and diagnosis, and answers any time. He comes with the complete plan, and you can also subscribe to him alone.",
+  "suggestionsEyebrow": "Ask Brotinho",
+  "lockedChatAction": "Subscribe to Brotinho only",
+  "lockedProAction": "See the complete plan"
+}

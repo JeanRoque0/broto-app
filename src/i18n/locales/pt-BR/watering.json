@@ -1,0 +1,8 @@
+{
+  "pending": "Análise pendente",
+  "today": "Regar hoje",
+  "tomorrow": "Regar amanhã",
+  "inDays": "Regar em {{count}} dias",
+  "late_one": "Atrasada há {{count}} dia",
+  "late_other": "Atrasada há {{count}} dias"
+}

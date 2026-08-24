@@ -1,0 +1,15 @@
+{
+  "quizTitle": "Brotinho quiz",
+  "quizAbout": "Eight questions about plant care",
+  "quizProgress": "Question {{step}} of {{total}}",
+  "quizNext": "Next",
+  "quizGreat": "You know your plants.",
+  "quizOk": "Room to improve. One more go?",
+  "quizStreak": "Best streak: {{count}}",
+  "bestScore": "Best: {{count}}",
+  "combo": "combo x{{count}}",
+  "play": "Start",
+  "again": "Play again",
+  "score": "Score",
+  "quizCardHint": "Eight quick questions about plant care"
+}

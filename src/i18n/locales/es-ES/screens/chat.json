@@ -1,0 +1,22 @@
+{
+  "title": "Brotinho",
+  "remaining": "{{count}} mensaje en el mes",
+  "remaining_other": "{{count}} mensajes en el mes",
+  "threads": "Conversaciones anteriores",
+  "newThread": "Nueva conversación",
+  "removeThread": "Borrar conversación",
+  "threadsTitle": "Tus conversaciones",
+  "threadsSubtitle": "Una conversación sin uso por 30 días sale de la lista.",
+  "threadsEmpty": "Todavía no hay conversaciones.",
+  "threadUntitled": "Conversación",
+  "introTitle": "Pregunta lo que quieras sobre tus plantas",
+  "introText": "Riego, luz, poda, maceta, abono. Para saber qué tiene la planta, usa la pestaña Analizar.",
+  "placeholder": "Escribe tu pregunta",
+  "send": "Enviar",
+  "failed": "No se pudo responder ahora. Inténtalo de nuevo.",
+  "lockedTitle": "Habla con Brotinho",
+  "lockedDescription": "Conoce la rutina y el diagnóstico de tus plantas, y responde a cualquier hora. Viene en el plan completo, y también puedes suscribirte solo a él.",
+  "suggestionsEyebrow": "Preguntar a Brotinho",
+  "lockedChatAction": "Suscribirse solo a Brotinho",
+  "lockedProAction": "Ver el plan completo"
+}

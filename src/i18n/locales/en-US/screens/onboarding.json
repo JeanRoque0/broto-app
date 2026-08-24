@@ -1,0 +1,11 @@
+{
+  "skip": "Skip",
+  "continue": "Continue",
+  "start": "Get started",
+  "identifyTitle": "Find out what\nplant this is",
+  "identifyDescription": "Take a photo and we'll identify the species and build the care plan.",
+  "diagnoseTitle": "Understand what's\nwrong with it",
+  "diagnoseDescription": "Yellow leaf, spots, pests. We show you the likely causes and how to treat them.",
+  "reminderTitle": "Never forget\nto water again",
+  "reminderDescription": "Every plant has its own rhythm. We tell you on the right day, without nagging."
+}

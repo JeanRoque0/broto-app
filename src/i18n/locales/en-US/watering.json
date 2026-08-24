@@ -1,0 +1,8 @@
+{
+  "pending": "Analysis pending",
+  "today": "Water today",
+  "tomorrow": "Water tomorrow",
+  "inDays": "Water in {{count}} days",
+  "late_one": "{{count}} day overdue",
+  "late_other": "{{count}} days overdue"
+}

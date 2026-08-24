@@ -1,0 +1,15 @@
+{
+  "quizTitle": "Quiz de Brotinho",
+  "quizAbout": "Ocho preguntas sobre cuidar plantas",
+  "quizProgress": "Pregunta {{step}} de {{total}}",
+  "quizNext": "Siguiente",
+  "quizGreat": "Sabes de plantas.",
+  "quizOk": "Se puede mejorar. ¿Otra vez?",
+  "quizStreak": "Mejor racha: {{count}}",
+  "bestScore": "Récord: {{count}}",
+  "combo": "combo x{{count}}",
+  "play": "Empezar",
+  "again": "Jugar de nuevo",
+  "score": "Puntos",
+  "quizCardHint": "Ocho preguntas rápidas sobre cuidar plantas"
+}

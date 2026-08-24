@@ -1,0 +1,11 @@
+{
+  "skip": "Saltar",
+  "continue": "Continuar",
+  "start": "Empezar",
+  "identifyTitle": "Descubre qué planta\nes esta",
+  "identifyDescription": "Haz una foto: identificamos la especie y armamos el plan de cuidado.",
+  "diagnoseTitle": "Entiende qué\nle pasa",
+  "diagnoseDescription": "Hoja amarilla, manchas, plagas. Te mostramos las causas probables y cómo tratarlas.",
+  "reminderTitle": "Nunca más olvides\nregarla",
+  "reminderDescription": "Cada planta tiene su ritmo. Te avisamos el día justo, sin darte la lata."
+}

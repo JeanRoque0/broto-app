@@ -1,0 +1,17 @@
+{
+  "title": "Buscar planta",
+  "placeholder": "Nome popular ou científico",
+  "hint": "Busque por jiboia, espada-de-são-jorge, Monstera...",
+  "empty": "Nada encontrado",
+  "emptyHint": "Tente outro nome, ou o nome científico.",
+  "failed": "Não deu para buscar agora.",
+  "add": "Adicionar ao meu catálogo",
+  "added": "Planta adicionada",
+  "careHint": "Os cuidados entram no padrão. Analise uma foto dela para ajustar.",
+  "photoCredit": "Fotos e texto da Wikipédia",
+  "expandPhoto": "Ampliar foto",
+  "closePhoto": "Fechar foto",
+  "clear": "Limpar busca",
+  "recent": "Buscas recentes",
+  "removeRecent": "Remover da lista"
+}

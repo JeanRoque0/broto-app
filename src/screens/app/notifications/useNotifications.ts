@@ -1,0 +1,140 @@
+import * as Notifications from "expo-notifications";
+import { useCallback, useEffect, useState } from "react";
+import { Linking } from "react-native";
+
+import { usePlantTasks } from "@/hooks/usePlantTasks";
+import { getCredits } from "@/utils/credits";
+import { remindableTasks } from "@/utils/tasks";
+import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
+import {
+  cancelCareReminders,
+  ensureNotificationPermission,
+  rescheduleCareReminders,
+} from "@/services/notifications";
+
+export function useNotificationSettings() {
+  const { data: profile } = useProfile();
+  const { tasks: allTasks } = usePlantTasks();
+  const tasks = remindableTasks(allTasks, getCredits(profile ?? null).isPro);
+  const { mutate: updateProfile, isPending: saving } = useUpdateProfile();
+
+  const [blocked, setBlocked] = useState(false);
+  const [scheduled, setScheduled] = useState(0);
+  const [upcoming, setUpcoming] = useState<
+    { id: string; at: Date; body: string }[]
+  >([]);
+  const [timeVisible, setTimeVisible] = useState(false);
+  const [applying, setApplying] = useState(false);
+
+  const stored = profile?.notifications_enabled ?? true;
+  const [enabled, setEnabled] = useState(stored);
+  const reminderTime = profile?.reminder_time ?? "09:00";
+
+  useEffect(() => {
+    setEnabled(stored);
+  }, [stored]);
+
+  const refreshCount = useCallback(async () => {
+    const list = await Notifications.getAllScheduledNotificationsAsync();
+    setScheduled(list.length);
+
+    const rows = list
+      .map((item) => {
+        const trigger = item.trigger as { value?: number; date?: number };
+        const stamp = trigger?.value ?? trigger?.date;
+
+        return {
+          id: item.identifier,
+          at: stamp ? new Date(stamp) : null,
+          body: item.content.body ?? "",
+        };
+      })
+      .filter(
+        (item): item is { id: string; at: Date; body: string } => !!item.at,
+      )
+      .sort((a, b) => a.at.getTime() - b.at.getTime());
+
+    setUpcoming(rows);
+  }, []);
+
+  useEffect(() => {
+    Notifications.getPermissionsAsync().then((status) => {
+      setBlocked(!status.granted && !status.canAskAgain);
+    });
+    refreshCount();
+  }, [refreshCount]);
+
+  const run = useCallback(
+    async (nextEnabled: boolean, nextTime: string) => {
+      if (!nextEnabled) {
+        await cancelCareReminders();
+        setScheduled(0);
+        setUpcoming([]);
+        return;
+      }
+
+      const granted = await ensureNotificationPermission();
+
+      if (!granted) {
+        const status = await Notifications.getPermissionsAsync();
+        setBlocked(!status.canAskAgain);
+        setScheduled(0);
+        setUpcoming([]);
+        return;
+      }
+
+      setBlocked(false);
+
+      await rescheduleCareReminders({
+        tasks,
+        reminderTime: nextTime,
+        enabled: true,
+      });
+
+      await refreshCount();
+    },
+    [tasks, refreshCount],
+  );
+
+  const apply = useCallback(
+    async (nextEnabled: boolean, nextTime: string) => {
+      setApplying(true);
+
+      try {
+        await run(nextEnabled, nextTime);
+      } finally {
+        setApplying(false);
+      }
+    },
+    [run],
+  );
+  function toggle() {
+    const next = !enabled;
+    setEnabled(next);
+    updateProfile({ notifications_enabled: next });
+    apply(next, reminderTime);
+  }
+
+  function saveTime(value: string) {
+    setTimeVisible(false);
+    updateProfile({ reminder_time: value });
+    apply(enabled, value);
+  }
+
+  return {
+    enabled,
+    reminderTime,
+    blocked,
+    scheduled,
+    upcoming,
+    applying,
+    saving,
+    hasTasks: tasks.length > 0,
+    toggle,
+    saveTime,
+    timeVisible,
+    openTime: () => setTimeVisible(true),
+    closeTime: () => setTimeVisible(false),
+    openSettings: () => Linking.openSettings(),
+  };
+}

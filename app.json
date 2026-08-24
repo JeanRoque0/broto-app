@@ -1,0 +1,68 @@
+{
+  "expo": {
+    "name": "Broto",
+    "slug": "broto",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "broto",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F7F4ED",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "app.broto.mobile",
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "app.broto.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#F7F4ED",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "resize"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-apple-authentication",
+      "expo-secure-store",
+      "expo-localization",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F7F4ED",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 150
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "O Broto usa a câmera para fotografar a folha e identificar a espécie e o problema da sua planta.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O Broto acessa suas fotos para você escolher uma imagem já tirada da planta."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#B4522F",
+          "icon": "./assets/images/android-icon-monochrome.png"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
