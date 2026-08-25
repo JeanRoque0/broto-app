@@ -4,20 +4,6 @@ function locale() {
   return i18n.language;
 }
 
-export function formatNumber(value: number, fractionDigits = 0) {
-  return new Intl.NumberFormat(locale(), {
-    minimumFractionDigits: fractionDigits,
-    maximumFractionDigits: fractionDigits,
-  }).format(value);
-}
-
-export function formatCurrency(value: number) {
-  return new Intl.NumberFormat(locale(), {
-    style: "currency",
-    currency: "BRL",
-  }).format(value);
-}
-
 export function formatShortDate(value: string | Date) {
   const date = typeof value === "string" ? new Date(value) : value;
   return new Intl.DateTimeFormat(locale(), {

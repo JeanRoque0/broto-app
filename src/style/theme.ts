@@ -91,5 +91,3 @@ export const theme = {
   },
   screenPadding: 24,
 } as const;
-
-export type ColorPalette = typeof theme;

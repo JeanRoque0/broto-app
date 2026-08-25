@@ -15,7 +15,6 @@ type LanguageSheetProps = {
 export function LanguageSheet({ visible, onClose }: LanguageSheetProps) {
   const { t } = useTranslation();
   const chosen = useLanguageStore((state) => state.chosen);
-  const current = useLanguageStore((state) => state.current);
   const setLanguage = useLanguageStore((state) => state.setLanguage);
   const useSystemLanguage = useLanguageStore(
     (state) => state.useSystemLanguage,

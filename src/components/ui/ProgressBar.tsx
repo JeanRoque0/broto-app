@@ -143,54 +143,6 @@ function Dot({ active }: { active: boolean }) {
   );
 }
 
-type ProbabilityBarProps = {
-  value: number;
-  color: string;
-  delay?: number;
-  style?: StyleProp<ViewStyle>;
-};
-
-export function ProbabilityBar({
-  value,
-  color,
-  delay = 0,
-  style,
-}: ProbabilityBarProps) {
-  const clamped = Math.max(0, Math.min(1, value));
-  const grow = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const animation = Animated.timing(grow, {
-      toValue: clamped,
-      duration: 720,
-      delay,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: false,
-      isInteraction: false,
-    });
-
-    animation.start();
-    return () => animation.stop();
-  }, [clamped, delay, grow]);
-
-  return (
-    <View style={[styles.track, style]}>
-      <Animated.View
-        style={[
-          styles.trackFill,
-          {
-            backgroundColor: color,
-            width: grow.interpolate({
-              inputRange: [0, 1],
-              outputRange: ["0%", "100%"],
-            }),
-          },
-        ]}
-      />
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",

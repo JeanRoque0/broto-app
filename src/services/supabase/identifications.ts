@@ -51,22 +51,6 @@ export async function resolveIdentification(
   if (error) throw error;
 }
 
-export async function submitCorrection(params: {
-  identificationId: string;
-  correctedSpecies?: string;
-  wasHelpful?: boolean;
-}) {
-  const { error } = await supabase
-    .from("identifications")
-    .update({
-      corrected_species: params.correctedSpecies ?? null,
-      was_helpful: params.wasHelpful ?? null,
-    })
-    .eq("id", params.identificationId);
-
-  if (error) throw error;
-}
-
 export async function resolvePlantIdentifications(plantId: string) {
   const { error } = await supabase
     .from("identifications")

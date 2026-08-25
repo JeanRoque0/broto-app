@@ -5,7 +5,6 @@ import { addDays } from "@/utils/tasks";
 export const DEFAULT_WATER_DAYS = 7;
 export const DEFAULT_FERTILIZE_DAYS = 30;
 export const ROTATE_DAYS = 14;
-export const REPOT_DAYS = 365;
 export const PRUNE_DAYS = 365;
 export const PRUNE_MONTH = 8;
 

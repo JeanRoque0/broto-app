@@ -8,7 +8,6 @@ import games from "./screens/games.json";
 import notifications from "./screens/notifications.json";
 import onboarding from "./screens/onboarding.json";
 import paywall from "./screens/paywall.json";
-import pending from "./screens/pending.json";
 import plants from "./screens/plants.json";
 import prompts from "./prompts.json";
 import profile from "./screens/profile.json";
@@ -27,7 +26,6 @@ export default {
   notifications,
   onboarding,
   paywall,
-  pending,
   plants,
   prompts,
   profile,

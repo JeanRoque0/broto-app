@@ -16,8 +16,6 @@ export type SignUpForm = {
 
 export const SIGN_UP_STEPS = ["name", "email", "password"] as const;
 
-export type SignUpStep = (typeof SIGN_UP_STEPS)[number];
-
 export function useSignUp() {
   const { t: tCommon } = useTranslation();
   const router = useRouter();

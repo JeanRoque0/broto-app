@@ -30,8 +30,6 @@ export const PLANT_FORM_STEPS = [
   "extras",
 ] as const;
 
-export type PlantFormStep = (typeof PLANT_FORM_STEPS)[number];
-
 export type PlantFormValues = {
   nickname: string;
   species: string;

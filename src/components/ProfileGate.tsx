@@ -4,6 +4,8 @@ import { StyleSheet, View } from "react-native";
 import { Button } from "@/components/ui/Button";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { Loader } from "@/components/ui/Loader";
+import { useTranslation } from "react-i18next";
+
 import { useProfile } from "@/hooks/useProfile";
 import { signOut } from "@/services/supabase/auth";
 import { theme } from "@/style/theme";
@@ -14,6 +16,7 @@ type ProfileGateProps = {
 };
 
 export function ProfileGate({ children }: ProfileGateProps) {
+  const { t } = useTranslation("profile");
   const { data: profile, isLoading, isError, refetch } = useProfile();
 
   if (isError) {
@@ -21,7 +24,7 @@ export function ProfileGate({ children }: ProfileGateProps) {
       <View style={styles.container}>
         <ErrorState onRetry={refetch} />
         <View style={styles.escape}>
-          <Button label="Sair da conta" onPress={signOut} variant="ghost" />
+          <Button label={t("signOut")} onPress={signOut} variant="ghost" />
         </View>
       </View>
     );

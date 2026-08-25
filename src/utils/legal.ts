@@ -42,7 +42,3 @@ export function openPrivacy() {
 export function openRefund() {
   return openLegal("refund");
 }
-
-export function openHelp() {
-  return openLegal("help");
-}

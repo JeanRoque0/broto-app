@@ -137,12 +137,6 @@ export function dayRange(from: Date, past: number, future: number) {
   );
 }
 
-export function daysBetween(from: Date, to: Date) {
-  return Math.round(
-    (startOfDay(to).getTime() - startOfDay(from).getTime()) / DAY_MS,
-  );
-}
-
 export function remindableTasks(tasks: PlantTask[], isPro: boolean) {
   const kinds = isPro ? TASK_KINDS : FREE_TASK_KINDS;
 
