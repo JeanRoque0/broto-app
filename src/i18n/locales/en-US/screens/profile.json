@@ -22,6 +22,7 @@
   "terms": "Terms of Use",
   "privacy": "Privacy Policy",
   "support": "Help and contact",
+  "version": "v{{version}}",
   "signOut": "Sign out",
   "signingOut": "Signing out…",
   "deleteAccount": "Delete my account",

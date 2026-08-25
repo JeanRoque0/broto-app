@@ -22,6 +22,7 @@
   "terms": "Termos de Uso",
   "privacy": "Política de Privacidade",
   "support": "Ajuda e contato",
+  "version": "v{{version}}",
   "signOut": "Sair da conta",
   "signingOut": "Saindo…",
   "deleteAccount": "Excluir minha conta",

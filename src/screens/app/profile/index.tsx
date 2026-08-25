@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import Constants from "expo-constants";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, View } from "react-native";
@@ -56,6 +57,7 @@ export default function ProfileScreen() {
   } = useProfileScreen();
 
   const { unit } = useTemperatureUnit();
+  const version = Constants.expoConfig?.version ?? "—";
   const [unitsVisible, setUnitsVisible] = useState(false);
 
   const languageLabel = LANGUAGES.find(
@@ -201,6 +203,10 @@ export default function ProfileScreen() {
               last
             />
           </Card>
+
+          <Text family="mono" style={styles.version}>
+            {t("version", { version })}
+          </Text>
         </View>
       </ScrollView>
 

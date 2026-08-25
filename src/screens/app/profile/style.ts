@@ -4,6 +4,13 @@ import { theme } from "@/style/theme";
 import { fontSize, type } from "@/style/typography";
 
 export const styles = StyleSheet.create({
+  version: {
+    fontSize: fontSize.s1,
+    letterSpacing: 0.8,
+    textAlign: "center",
+    color: theme.text.tertiary,
+    marginTop: theme.spacing.s5,
+  },
   content: {
     paddingBottom: theme.spacing.s6,
   },
