@@ -15,8 +15,33 @@ type MarkedPhotoProps = {
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   height?: number;
+  fit?: { width: number; height: number };
   accessibilityLabel?: string;
 };
+
+function coverSpot(
+  mark: SymptomMark | null | undefined,
+  frameWidth: number,
+  frameHeight: number,
+  ratio: number,
+) {
+  if (!mark || frameWidth <= 0 || frameHeight <= 0) {
+    return { cx: 0, cy: 0, r: 0 };
+  }
+
+  const frameRatio = frameWidth / frameHeight;
+
+  const drawWidth =
+    ratio > frameRatio ? frameHeight * ratio : frameWidth;
+  const drawHeight =
+    ratio > frameRatio ? frameHeight : frameWidth / ratio;
+
+  return {
+    cx: (frameWidth - drawWidth) / 2 + mark.x * drawWidth,
+    cy: (frameHeight - drawHeight) / 2 + mark.y * drawHeight,
+    r: mark.raio * drawWidth,
+  };
+}
 
 export function MarkedPhoto({
   uri,
@@ -25,19 +50,27 @@ export function MarkedPhoto({
   onPress,
   style,
   height: fixedHeight,
+  fit,
   accessibilityLabel,
 }: MarkedPhotoProps) {
   const { data: signed } = usePhotoUrl(uri ? null : path);
   const source = uri ?? signed;
   const [ratio, setRatio] = useState(4 / 3);
-  const [width, setWidth] = useState(0);
+  const [measured, setMeasured] = useState(0);
 
   function handleLayout(event: LayoutChangeEvent) {
-    setWidth(event.nativeEvent.layout.width);
+    setMeasured(event.nativeEvent.layout.width);
   }
 
-  const height = fixedHeight ?? width / ratio;
+  const fitted = fit
+    ? Math.min(fit.width, fit.height * ratio)
+    : null;
+
+  const width = fitted ?? measured;
+  const height = fitted ? fitted / ratio : (fixedHeight ?? measured / ratio);
   const Wrapper = onPress ? RipplePressable : View;
+
+  const spot = coverSpot(mark, width, height, ratio);
 
   return (
     <Wrapper
@@ -45,9 +78,11 @@ export function MarkedPhoto({
       onLayout={handleLayout}
       style={[
         styles.frame,
-        fixedHeight
-          ? { height: fixedHeight, width: fixedHeight * ratio, alignSelf: "center" }
-          : { aspectRatio: ratio },
+        fitted
+          ? { width: fitted, height: fitted / ratio, alignSelf: "center" }
+          : fixedHeight
+            ? { height: fixedHeight }
+            : { aspectRatio: ratio },
         style,
       ]}
       accessibilityRole={onPress ? "imagebutton" : undefined}
@@ -65,19 +100,19 @@ export function MarkedPhoto({
       />
       )}
 
-      {mark && width > 0 && (
+      {mark && width > 0 && height > 0 && (
         <Svg style={StyleSheet.absoluteFill} width={width} height={height}>
           <Circle
-            cx={mark.x * width}
-            cy={mark.y * height}
-            r={mark.raio * width}
+            cx={spot.cx}
+            cy={spot.cy}
+            r={spot.r}
             fill={theme.primary.clay}
             fillOpacity={0.14}
           />
           <Circle
-            cx={mark.x * width}
-            cy={mark.y * height}
-            r={mark.raio * width}
+            cx={spot.cx}
+            cy={spot.cy}
+            r={spot.r}
             stroke={theme.primary.clay}
             strokeWidth={3}
             fill="none"

@@ -209,11 +209,7 @@ export function PhotoGallery({
       navigationBarTranslucent
     >
       <GestureHandlerRootView style={styles.root}>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor="transparent"
-          translucent
-        />
+        <StatusBar hidden />
 
         <ScrollView
           ref={pager}
@@ -268,7 +264,7 @@ export function PhotoGallery({
         <View
           style={[
             styles.close,
-            { top: insets.top + theme.spacing.s3, right: theme.screenPadding },
+            { top: insets.top + theme.spacing.s3, left: theme.screenPadding },
           ]}
         >
           <CircleButton
@@ -296,7 +292,7 @@ const styles = StyleSheet.create({
   },
   photo: {
     width: "100%",
-    height: "72%",
+    height: "100%",
   },
   strip: {
     position: "absolute",

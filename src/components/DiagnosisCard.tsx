@@ -28,10 +28,6 @@ export function DiagnosisCard({
 
   return (
     <Card style={styles.card}>
-      <Text family="display" style={styles.cause}>
-        {item.causa}
-      </Text>
-
       {(photo || photoPath) && item.marcacao && (
         <View style={styles.photoBlock}>
           <MarkedPhoto
@@ -47,6 +43,10 @@ export function DiagnosisCard({
           </Text>
         </View>
       )}
+
+      <Text family="display" style={styles.cause}>
+        {item.causa}
+      </Text>
 
       <View style={styles.block}>
         <Text family="mono" style={styles.label}>
@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
   },
   cause: {
     ...type.displayXs,
-    flex: 1,
   },
   photoBlock: {
     gap: theme.spacing.s2,

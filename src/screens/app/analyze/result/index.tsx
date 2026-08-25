@@ -38,7 +38,7 @@ import { StepDots } from "@/components/ui/ProgressBar";
 import { Text } from "@/components/ui/Text";
 import { useStatusBarStyle } from "@/hooks/useStatusBarStyle";
 import { theme } from "@/style/theme";
-import { SymptomMark } from "@/types/identification";
+import { Diagnosis, SymptomMark } from "@/types/identification";
 
 import { previewCareTasks } from "@/utils/carePreview";
 
@@ -83,7 +83,11 @@ export default function ResultScreen() {
     submitGroup,
   } = useResult();
   const [card, setCard] = useState(1);
-  const [zoom, setZoom] = useState<{ mark: SymptomMark | null } | null>(null);
+  const [zoom, setZoom] = useState<{
+    mark: SymptomMark | null;
+    index: number | null;
+    causes?: Diagnosis[];
+  } | null>(null);
   const scrollY = useSharedValue(0);
   const [darkBar, setDarkBar] = useState(false);
 
@@ -148,6 +152,7 @@ export default function ResultScreen() {
   }
 
   const { especie, cuidados, diagnostico, saude } = result;
+  const marked = diagnostico.filter((item) => item.marcacao);
   const previewTasks = previewCareTasks(cuidados);
   const healthy = saude === "saudavel";
   const title = especie?.comum ?? t("unknownSpecies");
@@ -174,7 +179,7 @@ export default function ResultScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Pressable
-          onPress={() => setZoom({ mark: null })}
+          onPress={() => setZoom({ mark: null, index: null })}
           style={styles.heroTouch}
           accessibilityRole="imagebutton"
           accessibilityLabel={t("markHint")}
@@ -280,7 +285,13 @@ export default function ResultScreen() {
                     item={item}
                     photo={photo}
                     photoPath={photoPath}
-                    onOpenPhoto={() => setZoom({ mark: item.marcacao })}
+                    onOpenPhoto={() =>
+                      setZoom({
+                        mark: item.marcacao,
+                        index: marked.indexOf(item),
+                        causes: marked,
+                      })
+                    }
                   />
                 ))}
               </ScrollView>
@@ -463,6 +474,8 @@ export default function ResultScreen() {
         uri={photo}
         path={photoPath}
         mark={zoom?.mark}
+        diagnoses={zoom?.causes}
+        initialIndex={zoom?.index ?? 0}
         onClose={() => setZoom(null)}
         closeLabel={t("closePhoto")}
       />

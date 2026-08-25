@@ -38,7 +38,7 @@ import { MenuRow } from "@/components/ui/Row";
 import { Text } from "@/components/ui/Text";
 import { useStatusBarStyle } from "@/hooks/useStatusBarStyle";
 import { theme } from "@/style/theme";
-import { SymptomMark } from "@/types/identification";
+import { Diagnosis, SymptomMark } from "@/types/identification";
 import { formatShortDate } from "@/utils/format";
 
 import { HEADER_PHOTO, styles } from "./style";
@@ -58,6 +58,8 @@ export default function PlantDetailScreen() {
   const [zoom, setZoom] = useState<{
     mark: SymptomMark | null;
     path: string | null;
+    index: number | null;
+    causes?: Diagnosis[];
   } | null>(null);
 
   useStatusBarStyle(darkBar && !zoom ? "dark" : "light");
@@ -222,7 +224,7 @@ export default function PlantDetailScreen() {
         <Pressable
           onPress={() =>
             plant.photo_path
-              ? setZoom({ mark: null, path: plant.photo_path })
+              ? setZoom({ mark: null, path: plant.photo_path, index: null })
               : edit()
           }
           style={styles.heroTouch}
@@ -363,6 +365,7 @@ export default function PlantDetailScreen() {
 
               {diagnoses.map((analysis) => {
                 const causes = analysis.result?.diagnostico ?? [];
+                const marked = causes.filter((cause) => cause.marcacao);
                 const done = !!analysis.resolved_at;
 
                 if (done) {
@@ -410,6 +413,8 @@ export default function PlantDetailScreen() {
                             setZoom({
                               mark: cause.marcacao,
                               path: analysis.photo_path,
+                              index: marked.indexOf(cause),
+                              causes: marked,
                             })
                           }
                         />
@@ -529,6 +534,8 @@ export default function PlantDetailScreen() {
         visible={zoom !== null}
         path={zoom?.path}
         mark={zoom?.mark}
+        diagnoses={zoom?.causes}
+        initialIndex={zoom?.index ?? 0}
         onClose={() => setZoom(null)}
         closeLabel={tCommon("back")}
       />
