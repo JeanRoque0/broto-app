@@ -1,6 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { CameraView } from "expo-camera";
-import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import {
@@ -17,6 +16,7 @@ import { Text } from "@/components/ui/Text";
 import { useStatusBarStyle } from "@/hooks/useStatusBarStyle";
 import { theme } from "@/style/theme";
 
+import { PhotoReview } from "./components/PhotoReview";
 import { styles } from "./style";
 import { useCamera } from "./useCamera";
 
@@ -35,7 +35,6 @@ export default function CameraScreen() {
     toggleFlash,
     capturing,
     photos,
-    canAddMore,
     credits,
     canAskAgain,
     openSettings,
@@ -43,7 +42,6 @@ export default function CameraScreen() {
     handlePickFromGallery,
     handleRemovePhoto,
     handleAnalyze,
-    blocked,
     blockedVisible,
     closeBlocked,
     freeQuota,
@@ -110,6 +108,16 @@ export default function CameraScreen() {
     );
   }
 
+  if (photos.length > 0) {
+    return (
+      <PhotoReview
+        uri={photos[0]}
+        onRetake={() => handleRemovePhoto(0)}
+        onAnalyze={handleAnalyze}
+      />
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.viewfinder}>
@@ -158,7 +166,7 @@ export default function CameraScreen() {
 
         <PhotoTipsSheet visible={tipsVisible} onClose={closeTips} />
 
-        {photos.length === 0 && !credits.isPro && (
+        {!credits.isPro && (
           <View style={[styles.credits, { top: insets.top + CREDITS_TOP }]}>
             <Text family="mono" style={styles.creditsLabel}>
               {t("credits", { count: credits.total })}
@@ -168,52 +176,21 @@ export default function CameraScreen() {
 
         <View style={styles.hint} pointerEvents="none">
           <Text family="display" style={styles.hintTitle}>
-            {photos.length === 0
-              ? t("plantTitle")
-              : canAddMore
-                ? t("moreTitle")
-                : t("fullTitle")}
+            {t("plantTitle")}
           </Text>
           <Text style={styles.hintText}>
-            {photos.length === 0
-              ? t("plantText")
-              : canAddMore
-                ? t("moreText")
-                : t("fullText")}
+            {t("plantText")}
           </Text>
         </View>
       </View>
 
       <View style={styles.bottom}>
-        {photos.length > 0 && (
-          <View style={styles.strip}>
-            {photos.map((uri, index) => (
-              <Pressable
-                key={uri}
-                onPress={() => handleRemovePhoto(index)}
-                style={styles.thumb}
-                accessibilityRole="button"
-                accessibilityLabel={t("removePhoto")}
-              >
-                <Image
-                  source={{ uri }}
-                  style={styles.thumbImage}
-                  contentFit="cover"
-                />
-                <View style={styles.thumbRemove}>
-                  <Feather name="x" size={11} color={theme.text.onDark} />
-                </View>
-              </Pressable>
-            ))}
-          </View>
-        )}
 
         <View style={styles.shutterbar}>
           <View style={styles.action}>
             <Pressable
               onPress={handlePickFromGallery}
-              disabled={!canAddMore}
-              style={[styles.sideButton, !canAddMore && styles.disabled]}
+              style={styles.sideButton}
               accessibilityRole="button"
               accessibilityLabel={t("gallery")}
             >
@@ -225,12 +202,12 @@ export default function CameraScreen() {
           <View style={styles.action}>
             <Pressable
               onPress={handleCapture}
-              disabled={capturing || !canAddMore}
+              disabled={capturing}
               accessibilityRole="button"
               accessibilityLabel={t("shutter")}
               style={[
                 styles.shutter,
-                (capturing || !canAddMore) && styles.shutterBusy,
+                capturing && styles.shutterBusy,
               ]}
             >
               <View style={styles.shutterCore} />
@@ -239,25 +216,7 @@ export default function CameraScreen() {
           </View>
 
           <View style={styles.action}>
-            {photos.length > 0 ? (
-              <>
-                <Pressable
-                  onPress={handleAnalyze}
-                  style={[styles.analyze, blocked && styles.analyzeBlocked]}
-                  accessibilityRole="button"
-                  accessibilityLabel={t("analyze")}
-                >
-                  <Feather
-                    name="arrow-right"
-                    size={20}
-                    color={theme.text.onPrimary}
-                  />
-                </Pressable>
-                <Text style={styles.actionLabelStrong}>{t("analyze")}</Text>
-              </>
-            ) : (
-              <View style={styles.actionPlaceholder} />
-            )}
+            <View style={styles.actionPlaceholder} />
           </View>
         </View>
       </View>

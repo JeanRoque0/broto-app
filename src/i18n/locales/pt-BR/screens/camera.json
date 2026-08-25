@@ -19,12 +19,8 @@
   "galleryLabel": "Galeria",
   "plantTitle": "Enquadre a planta inteira",
   "plantText": "Vaso e folhas no quadro.\nÉ o que mostra a espécie.",
-  "moreTitle": "Quer mostrar mais?",
-  "moreText": "Outro ângulo ou uma folha de perto ajudam a acertar.\nSe já está bom, toque em Analisar.",
-  "fullTitle": "Prontinho",
-  "fullText": "Três fotos é o máximo.\nToque em Analisar.",
+  "retake": "Tirar de novo",
   "analyze": "Analisar",
-  "removePhoto": "Remover foto",
   "blockedTitle": "Suas análises deste mês acabaram",
   "blockedText": "Você usou as {{quota}} análises grátis. A cota volta em {{date}}.",
   "blockedPro": "Ver planos",
@@ -37,7 +33,7 @@
   "tipsLightText": "Foto escura ou tremida é o que mais falha na leitura.",
   "tipsSingleTitle": "Uma planta por foto",
   "tipsSingleText": "Com duas no quadro, a resposta pode ser sobre a que você não queria.",
-  "tipsExtra": "Se tiver folha manchada ou bicho, tire uma segunda foto de perto dessa parte.",
+  "tipsExtra": "Se tiver folha manchada ou bicho, deixe essa parte bem visível no quadro.",
   "tipsAction": "Entendi",
   "tipsOpen": "Dicas de foto"
 }

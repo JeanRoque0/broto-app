@@ -14,6 +14,7 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { MenuRow } from "@/components/ui/Row";
 import { Text } from "@/components/ui/Text";
 import { LANGUAGES } from "@/constants/languages";
+import { useUnitsStore } from "@/store";
 import { useLanguageStore } from "@/store";
 import { theme } from "@/style/theme";
 
@@ -51,6 +52,11 @@ export default function ProfileScreen() {
     openSupport,
     handleRestorePurchase,
   } = useProfileScreen();
+
+  const unit = useUnitsStore((state) => state.temperature);
+  const setUnit = useUnitsStore((state) => state.setTemperature);
+  const toggleUnit = () =>
+    setUnit(unit === "celsius" ? "fahrenheit" : "celsius");
 
   const languageLabel = LANGUAGES.find(
     (item) => item.code === currentLanguage,
@@ -148,6 +154,12 @@ export default function ProfileScreen() {
               icon="globe"
               hint={languageLabel}
               onPress={openLanguage}
+            />
+            <MenuRow
+              label={t("temperatureUnit")}
+              icon="thermometer"
+              hint={unit === "celsius" ? "°C" : "°F"}
+              onPress={toggleUnit}
             />
             <MenuRow
               label={t("restorePurchase")}

@@ -28,27 +28,38 @@ export interface Diagnosis {
   marcacao: SymptomMark | null;
 }
 
+export interface Care {
+  rega_dias: number;
+  luz: LightLevel;
+  luz_nota: string;
+  adubo: FertilizerPace;
+  adubo_nota: string;
+  vaporizar_dias: number | null;
+  girar_dias: number;
+  replantar_meses: number;
+  podar_mes: number | null;
+}
+
+export interface Temperature {
+  min_c: number;
+  max_c: number;
+  nota: string;
+}
+
 export interface AnalysisResult {
   especie: {
     comum: string;
     cientifico: string;
     confianca: number;
-  };
-  cuidados: {
-    rega_dias: number;
-    luz: LightLevel;
-    luz_nota: string;
-    adubo: FertilizerPace;
-    adubo_nota: string;
-    vaporizar_dias: number | null;
-    girar_dias: number;
-    replantar_meses: number;
-    podar_mes: number | null;
-  };
-  toxica_para_pets: boolean;
+  } | null;
+  cuidados: Care | null;
+  toxica_para_pets: boolean | null;
+  temperatura: Temperature | null;
+  cultivo: string | null;
+  simbolismo: string | null;
   saude: "saudavel" | "atencao" | "problema";
   diagnostico: Diagnosis[];
-  como_confirmar: string;
+  como_confirmar: string | null;
 }
 
 export interface AnalysisError {

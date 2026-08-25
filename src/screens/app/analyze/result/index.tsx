@@ -337,7 +337,10 @@ export default function ResultScreen() {
           {cuidados && (
             <View style={[styles.section, styles.padded]}>
               <Eyebrow>{t("careTitle")}</Eyebrow>
-              <CareTiles cuidados={cuidados} />
+              <CareTiles
+                cuidados={cuidados}
+                temperatura={result.temperatura}
+              />
             </View>
           )}
 
@@ -356,6 +359,31 @@ export default function ResultScreen() {
               </Card>
             </View>
           )}
+
+          {result.cultivo ? (
+            <View style={[styles.section, styles.padded]}>
+              <Eyebrow>{t("growEyebrow")}</Eyebrow>
+              <Text family="display" style={styles.sectionTitle}>
+                {t("growTitle")}
+              </Text>
+              <Card style={styles.infoCard}>
+                <Text style={styles.confirmText}>{result.cultivo}</Text>
+              </Card>
+            </View>
+          ) : null}
+
+          {result.simbolismo ? (
+            <View style={[styles.section, styles.padded]}>
+              <Eyebrow>{t("loreEyebrow")}</Eyebrow>
+              <Text family="display" style={styles.sectionTitle}>
+                {t("loreTitle")}
+              </Text>
+              <Card style={styles.infoCard}>
+                <Text style={styles.confirmText}>{result.simbolismo}</Text>
+              </Card>
+            </View>
+          ) : null}
+
           <View style={styles.padded}>
             <Pressable onPress={report} hitSlop={8} style={styles.report}>
               <Text style={styles.reportLead}>{t("reportLead")}</Text>

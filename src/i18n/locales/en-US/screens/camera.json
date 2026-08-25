@@ -19,12 +19,8 @@
   "galleryLabel": "Gallery",
   "plantTitle": "Frame the whole plant",
   "plantText": "Pot and leaves in the shot.\nThat is what shows the species.",
-  "moreTitle": "Want to show more?",
-  "moreText": "Another angle or a close-up leaf helps get it right.\nIf it is enough, tap Analyze.",
-  "fullTitle": "All set",
-  "fullText": "Three photos is the limit.\nTap Analyze.",
+  "retake": "Retake",
   "analyze": "Analyze",
-  "removePhoto": "Remove photo",
   "blockedTitle": "You are out of analyses this month",
   "blockedText": "You used your {{quota}} free analyses. The quota resets on {{date}}.",
   "blockedPro": "See plans",
@@ -37,7 +33,7 @@
   "tipsLightText": "Dark or blurry photos are what fails to read most often.",
   "tipsSingleTitle": "One plant per photo",
   "tipsSingleText": "With two in frame, the answer may be about the one you did not mean.",
-  "tipsExtra": "If a leaf is spotted or has bugs, take a second close-up of that part.",
+  "tipsExtra": "If a leaf is spotted or has bugs, make sure that part is clearly in frame.",
   "tipsAction": "Got it",
   "tipsOpen": "Photo tips"
 }

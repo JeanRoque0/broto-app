@@ -129,6 +129,9 @@ export const styles = StyleSheet.create({
     marginTop: theme.spacing.s3,
     alignSelf: "center",
   },
+  infoCard: {
+    marginTop: theme.spacing.s4,
+  },
   confirm: {
     marginTop: theme.spacing.s3,
     gap: theme.spacing.s2,

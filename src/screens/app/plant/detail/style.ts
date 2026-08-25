@@ -121,6 +121,9 @@ export const styles = StyleSheet.create({
     ...type.displayXs,
     marginTop: theme.spacing.s2,
   },
+  infoCard: {
+    marginTop: theme.spacing.s4,
+  },
   sectionHint: {
     ...type.bodySm,
     marginTop: 2,

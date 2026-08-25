@@ -36,7 +36,10 @@ import { Loader } from "@/components/ui/Loader";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { MenuRow } from "@/components/ui/Row";
 import { Text } from "@/components/ui/Text";
+import { useSpeciesFacts } from "@/hooks/useSpeciesFacts";
 import { useStatusBarStyle } from "@/hooks/useStatusBarStyle";
+import { useUnitsStore } from "@/store";
+import { convertRange } from "@/utils/temperature";
 import { theme } from "@/style/theme";
 import { Diagnosis, SymptomMark } from "@/types/identification";
 import { formatShortDate } from "@/utils/format";
@@ -63,6 +66,7 @@ export default function PlantDetailScreen() {
   } | null>(null);
 
   useStatusBarStyle(darkBar && !zoom ? "dark" : "light");
+  const unit = useUnitsStore((state) => state.temperature);
   const {
     plant,
     events,
@@ -95,6 +99,8 @@ export default function PlantDetailScreen() {
     edit,
     goBack,
   } = usePlantDetail();
+
+  const { facts } = useSpeciesFacts(plant?.species_scientific);
 
   const onScroll = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
@@ -185,6 +191,15 @@ export default function PlantDetailScreen() {
       label: t("fertilizerLabel"),
       value: tAnalysis(`adubo_${plant.fertilizer}`, plant.fertilizer),
       note: plant.fertilizer_note ?? "",
+    },
+    facts?.temperatura && {
+      icon: "thermometer" as const,
+      label: tAnalysis("temperatureLabel"),
+      value: tAnalysis(
+        "temperatureRange",
+        convertRange(facts.temperatura, unit),
+      ),
+      note: facts.temperatura.nota,
     },
     plant.care_notes && {
       icon: "note-text-outline" as const,
@@ -356,6 +371,30 @@ export default function PlantDetailScreen() {
               </Card>
             </View>
           )}
+
+          {facts?.cultivo ? (
+            <View style={[styles.section, styles.padded]}>
+              <Eyebrow>{tAnalysis("growEyebrow")}</Eyebrow>
+              <Text family="display" style={styles.sectionTitle}>
+                {tAnalysis("growTitle")}
+              </Text>
+              <Card style={styles.infoCard}>
+                <Text style={styles.sectionHint}>{facts.cultivo}</Text>
+              </Card>
+            </View>
+          ) : null}
+
+          {facts?.simbolismo ? (
+            <View style={[styles.section, styles.padded]}>
+              <Eyebrow>{tAnalysis("loreEyebrow")}</Eyebrow>
+              <Text family="display" style={styles.sectionTitle}>
+                {tAnalysis("loreTitle")}
+              </Text>
+              <Card style={styles.infoCard}>
+                <Text style={styles.sectionHint}>{facts.simbolismo}</Text>
+              </Card>
+            </View>
+          ) : null}
 
           {diagnoses.length > 0 && (
             <View style={styles.section}>

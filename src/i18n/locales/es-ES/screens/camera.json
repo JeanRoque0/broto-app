@@ -19,12 +19,8 @@
   "galleryLabel": "Galería",
   "plantTitle": "Encuadra la planta entera",
   "plantText": "Maceta y hojas en la foto.\nEs lo que muestra la especie.",
-  "moreTitle": "¿Quieres mostrar más?",
-  "moreText": "Otro ángulo o una hoja de cerca ayudan a acertar.\nSi ya está bien, toca Analizar.",
-  "fullTitle": "Listo",
-  "fullText": "Tres fotos es el máximo.\nToca Analizar.",
+  "retake": "Repetir foto",
   "analyze": "Analizar",
-  "removePhoto": "Quitar foto",
   "blockedTitle": "Se acabaron tus análisis del mes",
   "blockedText": "Usaste los {{quota}} análisis gratis. La cuota vuelve el {{date}}.",
   "blockedPro": "Ver planes",
@@ -37,7 +33,7 @@
   "tipsLightText": "Las fotos oscuras o movidas son las que más fallan.",
   "tipsSingleTitle": "Una planta por foto",
   "tipsSingleText": "Con dos en el encuadre, la respuesta puede ser sobre la que no querías.",
-  "tipsExtra": "Si hay una hoja manchada o con bichos, haz una segunda foto de cerca de esa parte.",
+  "tipsExtra": "Si hay una hoja manchada o con bichos, deja esa parte bien visible en el encuadre.",
   "tipsAction": "Entendido",
   "tipsOpen": "Consejos de foto"
 }

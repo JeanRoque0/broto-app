@@ -6,7 +6,9 @@ import { Card } from "@/components/ui/Card";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
 import { fontSize, type } from "@/style/typography";
-import { AnalysisResult } from "@/types/identification";
+import { useUnitsStore } from "@/store";
+import { Care, Temperature } from "@/types/identification";
+import { convertRange } from "@/utils/temperature";
 
 type Line = {
   icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
@@ -17,10 +19,13 @@ type Line = {
 
 export function CareTiles({
   cuidados,
+  temperatura,
 }: {
-  cuidados: AnalysisResult["cuidados"];
+  cuidados: Care;
+  temperatura?: Temperature | null;
 }) {
   const { t } = useTranslation("analysis");
+  const unit = useUnitsStore((state) => state.temperature);
 
   const lines: Line[] = [
     {
@@ -42,6 +47,17 @@ export function CareTiles({
       note: cuidados.adubo_nota,
     },
   ];
+
+  if (temperatura) {
+    const range = convertRange(temperatura, unit);
+
+    lines.push({
+      icon: "thermometer",
+      label: t("temperatureLabel"),
+      value: t("temperatureRange", range),
+      note: temperatura.nota,
+    });
+  }
 
   return (
     <Card style={styles.card}>
