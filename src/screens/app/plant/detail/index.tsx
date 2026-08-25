@@ -41,7 +41,7 @@ import { Text } from "@/components/ui/Text";
 import { useShareCard } from "@/hooks/useShareCard";
 import { useSpeciesFacts } from "@/hooks/useSpeciesFacts";
 import { useStatusBarStyle } from "@/hooks/useStatusBarStyle";
-import { useUnitsStore } from "@/store";
+import { useTemperatureUnit } from "@/hooks/useTemperatureUnit";
 import { convertRange } from "@/utils/temperature";
 import { theme } from "@/style/theme";
 import { Diagnosis, SymptomMark } from "@/types/identification";
@@ -69,7 +69,7 @@ export default function PlantDetailScreen() {
   } | null>(null);
 
   useStatusBarStyle(darkBar && !zoom ? "dark" : "light");
-  const unit = useUnitsStore((state) => state.temperature);
+  const { unit } = useTemperatureUnit();
   const {
     plant,
     events,

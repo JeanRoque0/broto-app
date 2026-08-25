@@ -34,11 +34,21 @@ export function ChatSuggestions({
   beforeNavigate,
 }: ChatSuggestionsProps) {
   const { t } = useTranslation("chat");
+  const { t: tPrompts } = useTranslation("prompts");
   const router = useRouter();
 
   const prompts = useMemo(
-    () => pickPrompts({ scopes, count, seed, plantName, speciesName, met }),
-    [scopes, count, seed, plantName, speciesName, met],
+    () =>
+      pickPrompts({
+        scopes,
+        count,
+        seed,
+        translate: (id) => tPrompts(id),
+        plantName,
+        speciesName,
+        met,
+      }),
+    [scopes, count, seed, tPrompts, plantName, speciesName, met],
   );
 
   if (prompts.length === 0) return null;

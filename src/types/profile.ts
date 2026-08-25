@@ -31,6 +31,7 @@ export interface Profile {
   accepted_tips_at: string | null;
 
   timezone: string | null;
+  temperature_unit: "celsius" | "fahrenheit" | null;
   reminder_time: string | null;
   notifications_enabled: boolean;
 

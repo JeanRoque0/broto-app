@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
 import { fontSize, type } from "@/style/typography";
-import { useUnitsStore } from "@/store";
+import { useTemperatureUnit } from "@/hooks/useTemperatureUnit";
 import { Care, Temperature } from "@/types/identification";
 import { convertRange } from "@/utils/temperature";
 
@@ -25,7 +25,7 @@ export function CareTiles({
   temperatura?: Temperature | null;
 }) {
   const { t } = useTranslation("analysis");
-  const unit = useUnitsStore((state) => state.temperature);
+  const { unit } = useTemperatureUnit();
 
   const lines: Line[] = [
     {

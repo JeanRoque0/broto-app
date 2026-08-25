@@ -1,6 +1,7 @@
 import {
   CHAT_PROMPTS,
   ChatPrompt,
+  ChatPromptId,
   PromptRequirement,
   PromptScope,
 } from "@/constants/chatPrompts";
@@ -9,6 +10,7 @@ interface PickParams {
   scopes: PromptScope[];
   count: number;
   seed: string;
+  translate: (id: ChatPromptId) => string;
   plantName?: string | null;
   speciesName?: string | null;
   met?: PromptRequirement[];
@@ -22,16 +24,17 @@ function hash(value: string) {
   return total;
 }
 
-function fill(prompt: ChatPrompt, plant: string, species: string) {
-  return prompt.text
-    .replace(/\{\{planta\}\}/g, plant)
-    .replace(/\{\{especie\}\}/g, species);
+function fill(text: string, plant: string, species: string) {
+  return text
+    .replace(/{{planta}}/g, plant)
+    .replace(/{{especie}}/g, species);
 }
 
 export function pickPrompts({
   scopes,
   count,
   seed,
+  translate,
   plantName,
   speciesName,
   met = [],
@@ -41,7 +44,7 @@ export function pickPrompts({
   const eligible = CHAT_PROMPTS.filter((prompt) => {
     if (!scopes.includes(prompt.scope)) return false;
     if (prompt.requires && !met.includes(prompt.requires)) return false;
-    if (prompt.text.includes("{{especie}}") && !speciesName) return false;
+    if (prompt.needsSpecies && !speciesName) return false;
     return true;
   });
 
@@ -67,6 +70,6 @@ export function pickPrompts({
 
   return chosen.map((prompt) => ({
     id: prompt.id,
-    text: fill(prompt, plantName ?? subject, speciesName ?? subject),
+    text: fill(translate(prompt.id), plantName ?? subject, speciesName ?? subject),
   }));
 }

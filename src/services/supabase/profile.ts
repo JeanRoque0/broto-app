@@ -19,6 +19,7 @@ export type ProfileUpdate = Partial<
     | "display_name"
     | "avatar_path"
     | "timezone"
+    | "temperature_unit"
     | "reminder_time"
     | "notifications_enabled"
   >

@@ -7,7 +7,7 @@ import ViewShot from "react-native-view-shot";
 import { PlantPhoto } from "@/components/PlantPhoto";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
-import { useUnitsStore } from "@/store";
+import { useTemperatureUnit } from "@/hooks/useTemperatureUnit";
 import { Care, Temperature } from "@/types/identification";
 import { convertRange } from "@/utils/temperature";
 
@@ -29,7 +29,7 @@ type Line = { icon: "water-outline" | "white-balance-sunny" | "sprout-outline" |
 export const PlantShareCard = forwardRef<ViewShot, { data: ShareCardData }>(
   function PlantShareCard({ data }, ref) {
     const { t } = useTranslation("analysis");
-    const unit = useUnitsStore((state) => state.temperature);
+    const { unit } = useTemperatureUnit();
 
     const lines: Line[] = [];
 

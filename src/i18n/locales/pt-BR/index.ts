@@ -10,6 +10,7 @@ import onboarding from "./screens/onboarding.json";
 import paywall from "./screens/paywall.json";
 import pending from "./screens/pending.json";
 import plants from "./screens/plants.json";
+import prompts from "./prompts.json";
 import profile from "./screens/profile.json";
 import search from "./screens/search.json";
 import welcome from "./screens/welcome.json";
@@ -28,6 +29,7 @@ export default {
   paywall,
   pending,
   plants,
+  prompts,
   profile,
   search,
   watering,

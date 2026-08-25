@@ -1,4 +1,4 @@
-import { TemperatureUnit } from "@/store/unitsStore";
+import { TemperatureUnit } from "@/hooks/useTemperatureUnit";
 import { Temperature } from "@/types/identification";
 
 export function toFahrenheit(celsius: number) {

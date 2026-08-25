@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, View } from "react-native";
 
@@ -14,7 +15,8 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { MenuRow } from "@/components/ui/Row";
 import { Text } from "@/components/ui/Text";
 import { LANGUAGES } from "@/constants/languages";
-import { useUnitsStore } from "@/store";
+import { UnitsSheet } from "@/components/UnitsSheet";
+import { useTemperatureUnit } from "@/hooks/useTemperatureUnit";
 import { useLanguageStore } from "@/store";
 import { theme } from "@/style/theme";
 
@@ -53,10 +55,8 @@ export default function ProfileScreen() {
     handleRestorePurchase,
   } = useProfileScreen();
 
-  const unit = useUnitsStore((state) => state.temperature);
-  const setUnit = useUnitsStore((state) => state.setTemperature);
-  const toggleUnit = () =>
-    setUnit(unit === "celsius" ? "fahrenheit" : "celsius");
+  const { unit } = useTemperatureUnit();
+  const [unitsVisible, setUnitsVisible] = useState(false);
 
   const languageLabel = LANGUAGES.find(
     (item) => item.code === currentLanguage,
@@ -158,8 +158,10 @@ export default function ProfileScreen() {
             <MenuRow
               label={t("temperatureUnit")}
               icon="thermometer"
-              hint={unit === "celsius" ? "°C" : "°F"}
-              onPress={toggleUnit}
+              hint={
+                unit === "celsius" ? t("celsiusLabel") : t("fahrenheitLabel")
+              }
+              onPress={() => setUnitsVisible(true)}
             />
             <MenuRow
               label={t("restorePurchase")}
@@ -205,6 +207,11 @@ export default function ProfileScreen() {
       <AvatarSheet visible={photoVisible} onClose={closePhotoSheet} />
 
       <LanguageSheet visible={languageVisible} onClose={closeLanguage} />
+
+      <UnitsSheet
+        visible={unitsVisible}
+        onClose={() => setUnitsVisible(false)}
+      />
     </Container>
   );
 }
