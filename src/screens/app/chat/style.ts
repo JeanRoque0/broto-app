@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
   fromUser: {
     alignSelf: "flex-end",
     backgroundColor: theme.secondary.mossSoft,
-    borderBottomRightRadius: theme.radius.sm,
+    borderBottomRightRadius: 4,
   },
   fromBot: {
     alignSelf: "flex-start",
