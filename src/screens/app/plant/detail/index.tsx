@@ -1,7 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, ScrollView, View } from "react-native";
+import { Platform, Pressable, ScrollView, View } from "react-native";
 import Animated, {
   Extrapolation,
   interpolate,
@@ -18,6 +18,8 @@ import {
   DiagnosisCard,
 } from "@/components/DiagnosisCard";
 import { CareRoutine } from "@/components/CareRoutine";
+import { CopyableName } from "@/components/CopyableName";
+import { PlantShareCard } from "@/components/PlantShareCard";
 
 import { TodayCard } from "./components/TodayCard";
 import { PhotoZoom } from "@/components/PhotoZoom";
@@ -36,6 +38,7 @@ import { Loader } from "@/components/ui/Loader";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { MenuRow } from "@/components/ui/Row";
 import { Text } from "@/components/ui/Text";
+import { useShareCard } from "@/hooks/useShareCard";
 import { useSpeciesFacts } from "@/hooks/useSpeciesFacts";
 import { useStatusBarStyle } from "@/hooks/useStatusBarStyle";
 import { useUnitsStore } from "@/store";
@@ -101,6 +104,7 @@ export default function PlantDetailScreen() {
   } = usePlantDetail();
 
   const { facts } = useSpeciesFacts(plant?.species_scientific);
+  const { shot, share, sharing } = useShareCard();
 
   const onScroll = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
@@ -252,9 +256,12 @@ export default function PlantDetailScreen() {
         <View style={styles.sheet}>
           <View style={styles.padded}>
             <Eyebrow>{plant.species_common ?? t("title")}</Eyebrow>
-            <Text family="display" style={styles.nickname}>
-              {plant.nickname}
-            </Text>
+            <CopyableName
+              label={plant.nickname}
+              common={plant.species_common}
+              scientific={plant.species_scientific}
+              textStyle={styles.nickname}
+            />
             {plant.species_scientific && (
               <Text style={styles.species}>{plant.species_scientific}</Text>
             )}
@@ -559,6 +566,49 @@ export default function PlantDetailScreen() {
           </CircleButton>
         </Animated.View>
       </View>
+      <View style={[styles.share, { top: insets.top + theme.spacing.s2 }]}>
+        <Animated.View style={barStyle}>
+          <CircleButton
+            onPress={share}
+            accessibilityLabel={tAnalysis("shareTitle")}
+          >
+            <Feather
+              name={Platform.OS === "ios" ? "share" : "share-2"}
+              size={17}
+              color={sharing ? theme.text.tertiary : theme.text.primary}
+            />
+          </CircleButton>
+        </Animated.View>
+
+        <Animated.View
+          style={[styles.backOverlay, overPhotoStyle]}
+          pointerEvents="none"
+        >
+          <CircleButton
+            onPress={share}
+            style={styles.backOnPhoto}
+            accessibilityLabel={tAnalysis("shareTitle")}
+          >
+            <Feather
+              name={Platform.OS === "ios" ? "share" : "share-2"}
+              size={17}
+              color={theme.text.onDark}
+            />
+          </CircleButton>
+        </Animated.View>
+      </View>
+
+      <PlantShareCard
+        ref={shot}
+        data={{
+          title: plant.nickname,
+          scientific: plant.species_scientific,
+          photoPath: plant.photo_path,
+          cuidados: facts?.cuidados,
+          temperatura: facts?.temperatura,
+          toxic: plant.toxic_to_pets,
+        }}
+      />
 
       <TaskEditSheet
         task={editingTask}

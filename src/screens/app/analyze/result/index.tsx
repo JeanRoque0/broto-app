@@ -2,7 +2,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, ScrollView, View } from "react-native";
+import { Platform, Pressable, ScrollView, View } from "react-native";
 import Animated, {
   Extrapolation,
   interpolate,
@@ -19,6 +19,8 @@ import {
   DiagnosisCard,
 } from "@/components/DiagnosisCard";
 import { CareRoutine } from "@/components/CareRoutine";
+import { CopyableName } from "@/components/CopyableName";
+import { PlantShareCard } from "@/components/PlantShareCard";
 import { GroupSheet } from "@/components/GroupSheet";
 import { ChatSuggestions } from "@/components/ChatSuggestions";
 import { QuizCard } from "@/components/QuizCard";
@@ -36,6 +38,7 @@ import { ErrorState } from "@/components/ui/ErrorState";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { StepDots } from "@/components/ui/ProgressBar";
 import { Text } from "@/components/ui/Text";
+import { useShareCard } from "@/hooks/useShareCard";
 import { useStatusBarStyle } from "@/hooks/useStatusBarStyle";
 import { theme } from "@/style/theme";
 import { Diagnosis, SymptomMark } from "@/types/identification";
@@ -83,6 +86,7 @@ export default function ResultScreen() {
     submitGroup,
   } = useResult();
   const [card, setCard] = useState(1);
+  const { shot, share, sharing } = useShareCard();
   const [zoom, setZoom] = useState<{
     mark: SymptomMark | null;
     index: number | null;
@@ -191,9 +195,12 @@ export default function ResultScreen() {
 
             {especie ? (
               <>
-                <Text family="display" style={styles.species}>
-                  {especie.comum}
-                </Text>
+                <CopyableName
+                  label={especie.comum}
+                  common={especie.comum}
+                  scientific={especie.cientifico}
+                  textStyle={styles.species}
+                />
                 <Text style={styles.scientific}>{especie.cientifico}</Text>
               </>
             ) : (
@@ -424,6 +431,47 @@ export default function ResultScreen() {
           </CircleButton>
         </Animated.View>
       </View>
+      <View style={[styles.share, { top: insets.top + theme.spacing.s2 }]}>
+        <Animated.View style={barStyle}>
+          <CircleButton onPress={share} accessibilityLabel={t("shareTitle")}>
+            <Feather
+              name={Platform.OS === "ios" ? "share" : "share-2"}
+              size={17}
+              color={sharing ? theme.text.tertiary : theme.text.primary}
+            />
+          </CircleButton>
+        </Animated.View>
+
+        <Animated.View
+          style={[styles.backOverlay, overPhotoStyle]}
+          pointerEvents="none"
+        >
+          <CircleButton
+            onPress={share}
+            style={styles.backOnPhoto}
+            accessibilityLabel={t("shareTitle")}
+          >
+            <Feather
+              name={Platform.OS === "ios" ? "share" : "share-2"}
+              size={17}
+              color={theme.text.onDark}
+            />
+          </CircleButton>
+        </Animated.View>
+      </View>
+
+      <PlantShareCard
+        ref={shot}
+        data={{
+          title: especie?.comum ?? title,
+          scientific: especie?.cientifico,
+          photoPath,
+          photoUri: photo,
+          cuidados,
+          temperatura: result.temperatura,
+          toxic: result.toxica_para_pets,
+        }}
+      />
 
       {showFooter && (
         <View

@@ -7,12 +7,14 @@ import { theme } from "@/style/theme";
 
 type PlantPhotoProps = {
   path: string | null;
+  uri?: string | null;
   fallback?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 };
 
-export function PlantPhoto({ path, fallback, style }: PlantPhotoProps) {
-  const { data: url } = usePhotoUrl(path);
+export function PlantPhoto({ path, uri, fallback, style }: PlantPhotoProps) {
+  const { data: signed } = usePhotoUrl(uri ? null : path);
+  const url = uri ?? signed;
 
   return (
     <View style={[styles.container, style]}>

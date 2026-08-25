@@ -53,6 +53,10 @@ export const styles = StyleSheet.create({
     position: "absolute",
     left: theme.spacing.s5,
   },
+  share: {
+    position: "absolute",
+    right: theme.spacing.s5,
+  },
   backOverlay: {
     ...StyleSheet.absoluteFillObject,
   },
