@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { FlashList, type FlashListProps } from "@shopify/flash-list";
 import React, {
   createContext,
   useCallback,
@@ -299,47 +298,6 @@ export function ModalScrollView({
           if (y < 0) onOverscrollY(-y);
         }
         onScroll?.(event);
-      }}
-    />
-  );
-}
-
-export function ModalFlashList<T>(props: FlashListProps<T>) {
-  const { setHasScrollable, onOverscrollY, onOverscrollEnd } =
-    useContainerModalScroll();
-  const isUserDragging = useRef(false);
-
-  useEffect(() => {
-    setHasScrollable(true);
-    return () => setHasScrollable(false);
-  }, [setHasScrollable]);
-
-  return (
-    <FlashList
-      {...props}
-      style={StyleSheet.flatten([styles.modalScroll, props.style])}
-      keyboardDismissMode={props.keyboardDismissMode ?? "on-drag"}
-      scrollEventThrottle={props.scrollEventThrottle ?? 16}
-      onScrollBeginDrag={(event) => {
-        isUserDragging.current = true;
-        props.onScrollBeginDrag?.(event);
-      }}
-      onScrollEndDrag={(event) => {
-        isUserDragging.current = false;
-        if (Platform.OS === "ios") {
-          const y = event.nativeEvent.contentOffset.y;
-          if (y < 0) {
-            onOverscrollEnd(-y, Math.abs(event.nativeEvent.velocity?.y ?? 0));
-          }
-        }
-        props.onScrollEndDrag?.(event);
-      }}
-      onScroll={(event) => {
-        if (Platform.OS === "ios" && isUserDragging.current) {
-          const y = event.nativeEvent.contentOffset.y;
-          if (y < 0) onOverscrollY(-y);
-        }
-        props.onScroll?.(event);
       }}
     />
   );

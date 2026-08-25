@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import {
   ContainerModal,
-  ModalFlashList,
+  ModalScrollView,
 } from "@/components/ui/ContainerModal";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
@@ -62,17 +62,16 @@ export function GroupPlantsSheet({
       {plants.length === 0 ? (
         <Text style={styles.empty}>{t("groupPickEmpty")}</Text>
       ) : (
-        <ModalFlashList
-          data={plants}
-          extraData={selected}
-          keyExtractor={(plant) => plant.id}
+        <ModalScrollView
           style={styles.list}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => {
+        >
+          {plants.map((item) => {
             const checked = selected.includes(item.id);
 
             return (
               <RipplePressable
+                key={item.id}
                 onPress={() => toggle(item.id)}
                 style={styles.row}
                 accessibilityRole="checkbox"
@@ -110,8 +109,8 @@ export function GroupPlantsSheet({
                 </View>
               </RipplePressable>
             );
-          }}
-        />
+          })}
+        </ModalScrollView>
       )}
 
       <RipplePressable

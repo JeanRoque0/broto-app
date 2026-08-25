@@ -50,7 +50,9 @@ export function PlantsPanel({
 
   const rows = useMemo<Row[]>(
     () => [
-      { key: "groupsHead", kind: "groupsHead" },
+      ...(groups.length > 0
+        ? [{ key: "groupsHead", kind: "groupsHead" } as Row]
+        : []),
       ...groups.map<Row>((group) => ({
         key: `group:${group.id}`,
         kind: "group",
@@ -100,10 +102,21 @@ export function PlantsPanel({
 
         if (item.kind === "plantsHead") {
           return (
-            <View style={[styles.padded, styles.sectionHeadSpaced]}>
+            <View style={[styles.padded, styles.sectionHead]}>
               <Text family="display" style={styles.sectionTitle}>
                 {t("allPlants")}
               </Text>
+
+              {groups.length === 0 && (
+                <RipplePressable
+                  onPress={onNewGroup}
+                  style={styles.newGroup}
+                  accessibilityRole="button"
+                >
+                  <Feather name="plus" size={13} color={theme.primary.clay} />
+                  <Text style={styles.newGroupLabel}>{t("newGroup")}</Text>
+                </RipplePressable>
+              )}
             </View>
           );
         }
@@ -145,10 +158,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: theme.spacing.s6,
-    marginBottom: theme.spacing.s3,
-  },
-  sectionHeadSpaced: {
     marginTop: theme.spacing.s6,
     marginBottom: theme.spacing.s3,
   },

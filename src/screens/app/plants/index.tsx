@@ -9,7 +9,6 @@ import { GroupPlantsSheet } from "@/components/GroupPlantsSheet";
 import { NotificationBell } from "@/components/NotificationBell";
 import { GroupSheet } from "@/components/GroupSheet";
 import { EmptyPlantArt } from "@/components/illustrations/OnboardingArt";
-import { CircleButton } from "@/components/ui/CircleButton";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
@@ -19,6 +18,7 @@ import { theme } from "@/style/theme";
 
 import { useTabBarSpace } from "@/hooks/useTabBarSpace";
 
+import { FAB_SIZE, Fab } from "@/components/ui/Fab";
 import { SegmentedTabs } from "@/components/ui/SegmentedTabs";
 import { AnalysesPanel } from "./components/AnalysesPanel";
 import { PlantsPanel } from "./components/PlantsPanel";
@@ -31,6 +31,7 @@ type Tab = "plants" | "tasks" | "analyses";
 export default function PlantsScreen() {
   const { t } = useTranslation("plants");
   const tabBarSpace = useTabBarSpace();
+  const listBottom = tabBarSpace + FAB_SIZE + theme.spacing.s4;
   const params = useLocalSearchParams<{ tab?: string }>();
   const [tab, setTab] = useState<Tab>("plants");
 
@@ -156,13 +157,7 @@ export default function PlantsScreen() {
           </Text>
         </View>
 
-        <View style={styles.headerActions}>
-          <NotificationBell />
-
-          <CircleButton onPress={openAdd} accessibilityLabel={t("addPlant")}>
-            <Feather name="plus" size={18} color={theme.text.primary} />
-          </CircleButton>
-        </View>
+        <NotificationBell />
       </View>
 
       <SegmentedTabs
@@ -180,13 +175,13 @@ export default function PlantsScreen() {
   return (
     <Container>
       {tab === "tasks" ? (
-        <TasksPanel header={header} bottomSpace={tabBarSpace} />
+        <TasksPanel header={header} bottomSpace={listBottom} />
       ) : tab === "analyses" ? (
-        <AnalysesPanel header={header} bottomSpace={tabBarSpace} />
+        <AnalysesPanel header={header} bottomSpace={listBottom} />
       ) : (
         <PlantsPanel
           header={header}
-          bottomSpace={tabBarSpace}
+          bottomSpace={listBottom}
           plants={plants}
           groups={groups}
           plantsByGroup={plantsByGroup}
@@ -198,6 +193,14 @@ export default function PlantsScreen() {
           onNewGroup={openGroupSheet}
         />
       )}
+
+      <Fab
+        onPress={openAdd}
+        bottom={tabBarSpace}
+        accessibilityLabel={t("addPlant")}
+      >
+        <Feather name="plus" size={22} color={theme.text.onPrimary} />
+      </Fab>
 
       {sheets}
     </Container>
