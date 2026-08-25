@@ -59,7 +59,12 @@ export interface AnalysisResult {
   simbolismo: string | null;
   saude: "saudavel" | "atencao" | "problema";
   diagnostico: Diagnosis[];
-  como_confirmar: string | null;
+  como_confirmar: string | ConfirmStep[] | null;
+}
+
+export interface ConfirmStep {
+  causa: string;
+  teste: string;
 }
 
 export interface AnalysisError {

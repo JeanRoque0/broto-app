@@ -88,7 +88,11 @@ export function useTasks() {
     }
   }
 
-  async function saveTask(payload: { interval_days: number; next_at: Date }) {
+  async function saveTask(payload: {
+    interval_days: number;
+    next_at: Date;
+    enabled?: boolean;
+  }) {
     if (!editing) return;
 
     try {
@@ -97,6 +101,7 @@ export function useTasks() {
         payload: {
           interval_days: payload.interval_days,
           next_at: toDateString(payload.next_at),
+          ...(payload.enabled === undefined ? {} : { enabled: payload.enabled }),
         },
       });
       setEditing(null);

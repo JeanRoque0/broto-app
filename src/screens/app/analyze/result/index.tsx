@@ -19,6 +19,7 @@ import {
   DiagnosisCard,
 } from "@/components/DiagnosisCard";
 import { CareRoutine } from "@/components/CareRoutine";
+import { ConfirmCard } from "@/components/ConfirmCard";
 import { CopyableName } from "@/components/CopyableName";
 import { PlantShareCard } from "@/components/PlantShareCard";
 import { GroupSheet } from "@/components/GroupSheet";
@@ -319,9 +320,10 @@ export default function ResultScreen() {
               <Text family="display" style={styles.sectionTitle}>
                 {t(healthy ? "confirmTitleHealthy" : "confirmTitle")}
               </Text>
-              <Card style={styles.confirm}>
-                <Text style={styles.confirmText}>{result.como_confirmar}</Text>
-              </Card>
+              <ConfirmCard
+                value={result.como_confirmar}
+                style={styles.confirm}
+              />
             </View>
           ) : null}
 

@@ -128,9 +128,17 @@ export const styles = StyleSheet.create({
   infoCard: {
     marginTop: theme.spacing.s4,
   },
+  confirmBlock: {
+    marginTop: theme.spacing.s5,
+  },
   sectionHint: {
     ...type.bodySm,
     marginTop: 2,
+  },
+  cardText: {
+    fontSize: fontSize.s6,
+    lineHeight: 22,
+    color: theme.text.primary,
   },
   routine: {
     marginTop: theme.spacing.s3,

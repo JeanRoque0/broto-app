@@ -17,6 +17,7 @@ import {
   DIAGNOSIS_CARD_WIDTH,
   DiagnosisCard,
 } from "@/components/DiagnosisCard";
+import { ConfirmCard } from "@/components/ConfirmCard";
 import { CareRoutine } from "@/components/CareRoutine";
 import { CopyableName } from "@/components/CopyableName";
 import { PlantShareCard } from "@/components/PlantShareCard";
@@ -386,7 +387,7 @@ export default function PlantDetailScreen() {
                 {tAnalysis("growTitle")}
               </Text>
               <Card style={styles.infoCard}>
-                <Text style={styles.sectionHint}>{facts.cultivo}</Text>
+                <Text style={styles.cardText}>{facts.cultivo}</Text>
               </Card>
             </View>
           ) : null}
@@ -398,7 +399,7 @@ export default function PlantDetailScreen() {
                 {tAnalysis("loreTitle")}
               </Text>
               <Card style={styles.infoCard}>
-                <Text style={styles.sectionHint}>{facts.simbolismo}</Text>
+                <Text style={styles.cardText}>{facts.simbolismo}</Text>
               </Card>
             </View>
           ) : null}
@@ -466,6 +467,19 @@ export default function PlantDetailScreen() {
                         />
                       ))}
                     </ScrollView>
+
+                    {analysis.result?.como_confirmar ? (
+                      <View style={[styles.padded, styles.confirmBlock]}>
+                        <Eyebrow>{tAnalysis("confirmEyebrow")}</Eyebrow>
+                        <Text family="display" style={styles.sectionTitle}>
+                          {tAnalysis("confirmTitle")}
+                        </Text>
+                        <ConfirmCard
+                          value={analysis.result.como_confirmar}
+                          style={styles.infoCard}
+                        />
+                      </View>
+                    ) : null}
 
                     <View style={styles.padded}>
                       <Button

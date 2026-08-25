@@ -21,6 +21,8 @@ import { isTaskKind, parseDay, startOfDay } from "@/utils/tasks";
 
 type Unit = "day" | "week" | "month";
 
+type Step = "main" | "date" | "every";
+
 const UNITS: Unit[] = ["day", "week", "month"];
 
 const UNIT_DAYS: Record<Unit, number> = { day: 1, week: 7, month: 30 };
@@ -33,10 +35,51 @@ const UNIT_LABELS = {
   month: "unitMonths",
 } as const satisfies Record<Unit, string>;
 
+const EVERY_LABELS = {
+  day: "taskEveryDays",
+  week: "taskEveryWeeks",
+  month: "taskEveryMonths",
+} as const satisfies Record<Unit, string>;
+
 function splitInterval(days: number): { amount: number; unit: Unit } {
   if (days % 30 === 0) return { amount: days / 30, unit: "month" };
   if (days % 7 === 0) return { amount: days / 7, unit: "week" };
   return { amount: days, unit: "day" };
+}
+
+type FieldRowProps = {
+  icon: React.ComponentProps<typeof Feather>["name"];
+  label: string;
+  value: string;
+  onPress: () => void;
+};
+
+function FieldRow({ icon, label, value, onPress }: FieldRowProps) {
+  return (
+    <RipplePressable
+      onPress={onPress}
+      style={styles.field}
+      accessibilityRole="button"
+      accessibilityLabel={`${label}: ${value}`}
+    >
+      <View style={styles.fieldIcon}>
+        <Feather name={icon} size={17} color={theme.primary.clay} />
+      </View>
+
+      <View style={styles.fieldTexts}>
+        <Text family="mono" style={styles.fieldLabel}>
+          {label}
+        </Text>
+        <Text style={styles.fieldValue}>{value}</Text>
+      </View>
+
+      <Feather
+        name="chevron-right"
+        size={18}
+        color={theme.text.secondary}
+      />
+    </RipplePressable>
+  );
 }
 
 type TaskEditSheetProps = {
@@ -44,7 +87,11 @@ type TaskEditSheetProps = {
   plantName: string;
   saving: boolean;
   onClose: () => void;
-  onSave: (payload: { interval_days: number; next_at: Date }) => void;
+  onSave: (payload: {
+    interval_days: number;
+    next_at: Date;
+    enabled?: boolean;
+  }) => void;
   onToggle: (enabled: boolean) => void;
 };
 
@@ -57,10 +104,11 @@ export function TaskEditSheet({
   onToggle,
 }: TaskEditSheetProps) {
   const { t } = useTranslation("plants");
+  const { t: tCommon } = useTranslation();
   const [amount, setAmount] = useState(7);
   const [unit, setUnit] = useState<Unit>("day");
   const [nextAt, setNextAt] = useState(() => startOfDay(new Date()));
-  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [step, setStep] = useState<Step>("main");
 
   useEffect(() => {
     if (!task) return;
@@ -69,7 +117,7 @@ export function TaskEditSheet({
     setAmount(split.amount);
     setUnit(split.unit);
     setNextAt(parseDay(task.next_at));
-    setCalendarOpen(false);
+    setStep("main");
   }, [task]);
 
   const amounts = useMemo(
@@ -95,101 +143,204 @@ export function TaskEditSheet({
     setAmount((current) => Math.min(current, UNIT_MAX[next]));
   }
 
+  const taskLabel =
+    task && isTaskKind(task.kind) ? t(TASK_LABELS[task.kind]) : "";
+
+  const everyLabel = t(EVERY_LABELS[unit], { count: amount });
+
+  const titles: Record<Step, string> = {
+    main: taskLabel,
+    date: t("taskEditFirst"),
+    every: t("taskEditEvery"),
+  };
+
   return (
     <ContainerModal
       visible={task !== null}
-      onClose={onClose}
-      title={task && isTaskKind(task.kind) ? t(TASK_LABELS[task.kind]) : ""}
-      description={plantName}
+      onClose={step === "main" ? onClose : () => setStep("main")}
+      eyebrow={step === "main" ? undefined : taskLabel}
+      title={titles[step]}
+      description={step === "main" ? plantName : undefined}
     >
-      <ModalScrollView showsVerticalScrollIndicator={false}>
-        <Text style={styles.label}>{t("taskEditFirst")}</Text>
+      {step === "main" && (
+        <>
+          {task?.enabled === false && (
+            <View style={styles.off}>
+              <Feather name="bell-off" size={18} color={theme.text.secondary} />
+              <Text style={styles.offText}>{t("taskEditDisabled")}</Text>
+            </View>
+          )}
 
-        <RipplePressable
-          onPress={() => setCalendarOpen((open) => !open)}
-          style={styles.field}
-          accessibilityRole="button"
-          accessibilityState={{ expanded: calendarOpen }}
-        >
-          <Text family="mono" style={styles.fieldValue}>
-            {formatLongDate(nextAt)}
-          </Text>
-          <Feather
-            name={calendarOpen ? "chevron-up" : "calendar"}
-            size={18}
-            color={theme.text.secondary}
-          />
-        </RipplePressable>
+          <View
+            style={[
+              styles.fields,
+              task?.enabled === false && styles.fieldsTight,
+            ]}
+          >
+            <FieldRow
+              icon="calendar"
+              label={t("taskEditFirst")}
+              value={formatLongDate(nextAt)}
+              onPress={() => setStep("date")}
+            />
 
-        {calendarOpen && (
-          <View style={styles.calendar}>
-            <Calendar
-              value={nextAt}
-              onChange={(day) => {
-                setNextAt(day);
-                setCalendarOpen(false);
-              }}
+            <FieldRow
+              icon="repeat"
+              label={t("taskEditEvery")}
+              value={everyLabel}
+              onPress={() => setStep("every")}
             />
           </View>
-        )}
 
-        <Text style={[styles.label, styles.labelSpaced]}>
-          {t("taskEditEvery")}
-        </Text>
+          {task?.enabled === false ? (
+            <>
+              <Button
+                label={t("taskEditRestore")}
+                onPress={() =>
+                  onSave({
+                    interval_days: amount * UNIT_DAYS[unit],
+                    next_at: nextAt,
+                    enabled: true,
+                  })
+                }
+                loading={saving}
+                style={styles.save}
+              />
 
-        <View style={styles.wheels}>
-          <WheelBand />
-          <WheelPicker items={amounts} value={amount} onChange={setAmount} />
-          <WheelPicker items={units} value={unit} onChange={changeUnit} />
-        </View>
-      </ModalScrollView>
+              <Button
+                label={t("taskEditClose")}
+                onPress={onClose}
+                variant="ghost"
+                style={styles.toggle}
+              />
+            </>
+          ) : (
+            <>
+              <Button
+                label={t("taskEditSave")}
+                onPress={() =>
+                  onSave({
+                    interval_days: amount * UNIT_DAYS[unit],
+                    next_at: nextAt,
+                  })
+                }
+                loading={saving}
+                style={styles.save}
+              />
 
-      <Button
-        label={t("taskEditSave")}
-        onPress={() =>
-          onSave({ interval_days: amount * UNIT_DAYS[unit], next_at: nextAt })
-        }
-        loading={saving}
-        style={styles.save}
-      />
+              <Button
+                label={t("taskEditRemove")}
+                onPress={() => onToggle(false)}
+                variant="ghost"
+                style={styles.toggle}
+              />
+            </>
+          )}
+        </>
+      )}
 
-      <Button
-        label={t(task?.enabled ? "taskEditRemove" : "taskEditRestore")}
-        onPress={() => onToggle(!task?.enabled)}
-        variant="ghost"
-      />
+      {step === "date" && (
+        <>
+          <ModalScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.picker}>
+              <Calendar
+                value={nextAt}
+                onChange={(day) => {
+                  setNextAt(day);
+                  setStep("main");
+                }}
+              />
+            </View>
+          </ModalScrollView>
+
+          <Button
+            label={tCommon("back")}
+            onPress={() => setStep("main")}
+            variant="ghost"
+            style={styles.stepBack}
+          />
+        </>
+      )}
+
+      {step === "every" && (
+        <>
+          <View style={[styles.picker, styles.wheels]}>
+            <WheelBand />
+            <WheelPicker items={amounts} value={amount} onChange={setAmount} />
+            <WheelPicker items={units} value={unit} onChange={changeUnit} />
+          </View>
+
+          <Button
+            label={t("taskEditDone")}
+            onPress={() => setStep("main")}
+            style={styles.save}
+          />
+        </>
+      )}
     </ContainerModal>
   );
 }
 
 const styles = StyleSheet.create({
-  label: {
-    ...type.label,
-    fontSize: fontSize.s3,
-    color: theme.text.secondary,
+  off: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.s3,
     marginTop: theme.spacing.s5,
-    marginBottom: theme.spacing.s2,
+    paddingVertical: theme.spacing.s3,
+    paddingHorizontal: theme.spacing.s4,
+    backgroundColor: theme.surface.container,
+    borderRadius: theme.radius.md,
   },
-  labelSpaced: {
-    marginTop: theme.spacing.s6,
+  offText: {
+    ...type.bodySm,
+    flex: 1,
+    color: theme.text.primary,
+  },
+  fields: {
+    marginTop: theme.spacing.s5,
+    gap: theme.spacing.s2,
+  },
+  fieldsTight: {
+    marginTop: theme.spacing.s3,
   },
   field: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 14,
+    gap: theme.spacing.s4,
+    paddingVertical: theme.spacing.s3,
     paddingHorizontal: theme.spacing.s4,
     backgroundColor: theme.surface.card,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: theme.functional.line,
-    borderRadius: theme.radius.field,
+    borderRadius: theme.radius.md,
+  },
+  fieldIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: theme.primary.clayTint,
+    borderWidth: 1,
+    borderColor: theme.primary.clayBorder,
+  },
+  fieldTexts: {
+    flex: 1,
+    gap: 2,
+  },
+  fieldLabel: {
+    fontSize: fontSize.s1,
+    letterSpacing: 1.1,
+    textTransform: "uppercase",
+    color: theme.text.tertiary,
   },
   fieldValue: {
+    ...type.sectionTitle,
     fontSize: fontSize.s7,
-    color: theme.text.primary,
   },
-  calendar: {
-    marginTop: theme.spacing.s2,
+  picker: {
+    marginTop: theme.spacing.s5,
   },
   wheels: {
     flexDirection: "row",
@@ -197,5 +348,11 @@ const styles = StyleSheet.create({
   },
   save: {
     marginTop: theme.spacing.s5,
+  },
+  toggle: {
+    marginTop: theme.spacing.s2,
+  },
+  stepBack: {
+    marginTop: theme.spacing.s3,
   },
 });
