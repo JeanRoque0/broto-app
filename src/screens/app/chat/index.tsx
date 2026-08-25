@@ -21,6 +21,7 @@ import { Text } from "@/components/ui/Text";
 import type { ChatMessage } from "@/services/supabase/chat";
 import { theme } from "@/style/theme";
 
+import { RichText } from "./components/RichText";
 import { ThreadsSheet } from "./components/ThreadsSheet";
 import { TypingDots } from "./components/TypingDots";
 import { styles } from "./style";
@@ -169,7 +170,7 @@ export default function ChatScreen() {
                 <View style={[styles.bubbleRow, styles.botRow]}>
                   <BrotinhoFace size={28} />
                   <View style={[styles.bubble, styles.fromBot]}>
-                    <Text style={styles.bubbleText}>{item.content}</Text>
+                    <RichText content={item.content} style={styles.bubbleText} />
                   </View>
                 </View>
               )
