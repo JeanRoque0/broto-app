@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.surface.card,
     borderWidth: 1,
     borderColor: theme.functional.line,
-    borderBottomLeftRadius: theme.radius.sm,
+    borderBottomLeftRadius: 4,
   },
   bubbleText: {
     fontSize: fontSize.s6,

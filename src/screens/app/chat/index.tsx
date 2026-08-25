@@ -143,7 +143,6 @@ export default function ChatScreen() {
                 <Text family="display" style={styles.introTitle}>
                   {t("introTitle")}
                 </Text>
-                <Text style={styles.introText}>{t("introText")}</Text>
               </View>
             }
             ListFooterComponent={
