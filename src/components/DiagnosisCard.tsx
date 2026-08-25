@@ -25,18 +25,22 @@ export function DiagnosisCard({
   onOpenPhoto,
 }: DiagnosisCardProps) {
   const { t } = useTranslation("analysis");
+  const hasPhoto = !!(photo || photoPath) && !!item.marcacao;
 
   return (
-    <Card style={styles.card}>
-      {(photo || photoPath) && item.marcacao && (
+    <Card
+      style={styles.card}
+      onPress={hasPhoto ? onOpenPhoto : undefined}
+      accessibilityRole={hasPhoto ? "button" : undefined}
+      accessibilityLabel={hasPhoto ? t("markHint") : undefined}
+    >
+      {hasPhoto && (
         <View style={styles.photoBlock}>
           <MarkedPhoto
             uri={photo}
             path={photoPath}
             mark={item.marcacao}
-            onPress={onOpenPhoto}
             height={THUMB_HEIGHT}
-            accessibilityLabel={t("markHint")}
           />
           <Text family="mono" style={styles.photoHint}>
             {t("markHint")}

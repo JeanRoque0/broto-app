@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -36,26 +37,14 @@ const MAX_SCALE = 6;
 const TAP_SCALE = 2.5;
 const MOTION = 220;
 
-const FADE_BANDS = 8;
-const FADE_HEIGHT = 72;
-const FADE_MAX = 0.55;
+const VEIL = [
+  "rgba(6, 10, 7, 0)",
+  "rgba(6, 10, 7, 0.45)",
+  "rgba(6, 10, 7, 0.82)",
+  "rgba(6, 10, 7, 0.94)",
+] as const;
 
-function PanelFade() {
-  return (
-    <View style={styles.fade} pointerEvents="none">
-      {Array.from({ length: FADE_BANDS }, (unused, band) => (
-        <View
-          key={band}
-          style={{
-            height: FADE_HEIGHT / FADE_BANDS,
-            backgroundColor: theme.surface.dark,
-            opacity: (FADE_MAX * (band + 1)) / FADE_BANDS,
-          }}
-        />
-      ))}
-    </View>
-  );
-}
+const VEIL_STOPS = [0, 0.35, 0.72, 1] as const;
 
 type ZoomStageProps = {
   uri?: string;
@@ -63,7 +52,7 @@ type ZoomStageProps = {
   mark?: SymptomMark | null;
   width: number;
   height: number;
-  locked: boolean;
+  active: boolean;
   zoomed: boolean;
   onZoomChange: (zoomed: boolean) => void;
 };
@@ -74,7 +63,7 @@ function ZoomStage({
   mark,
   width,
   height,
-  locked,
+  active,
   zoomed,
   onZoomChange,
 }: ZoomStageProps) {
@@ -96,8 +85,8 @@ function ZoomStage({
   }
 
   useEffect(() => {
-    if (locked && saved.value > MIN_SCALE) reset();
-  }, [locked]);
+    if (!active && saved.value > MIN_SCALE) reset();
+  }, [active]);
 
   const gesture = useMemo(() => {
     const pinch = Gesture.Pinch()
@@ -214,12 +203,11 @@ export function PhotoZoom({
   const dim = useSharedValue(0);
 
   useEffect(() => {
-    if (visible) {
-      setIndex(initialIndex);
-      setExpanded(false);
-      setZoomed(false);
-      dim.value = 0;
-    }
+    if (!visible) return;
+    setIndex(initialIndex);
+    setExpanded(false);
+    setZoomed(false);
+    dim.value = 0;
   }, [visible, initialIndex, dim]);
 
   useEffect(() => {
@@ -240,14 +228,11 @@ export function PhotoZoom({
     return () => subscription.remove();
   }, [visible, onClose]);
 
-  function goTo(position: number) {
-    pager.current?.scrollTo({ x: position * width, animated: true });
-    setIndex(position);
-  }
-
   function onPage(event: NativeSyntheticEvent<NativeScrollEvent>) {
     const next = Math.round(event.nativeEvent.contentOffset.x / width);
-    if (next !== index) setIndex(next);
+    if (next === index) return;
+    setIndex(next);
+    setExpanded(false);
   }
 
   const dimStyle = useAnimatedStyle(() => ({ opacity: dim.value }));
@@ -257,7 +242,7 @@ export function PhotoZoom({
 
   if (!visible) return null;
 
-  const active = pages[index];
+  const active = pages[index] ?? null;
 
   return (
     <Animated.View
@@ -285,7 +270,7 @@ export function PhotoZoom({
               mark={item.marcacao}
               width={width}
               height={height}
-              locked={position !== index}
+              active={position === index}
               zoomed={zoomed}
               onZoomChange={setZoomed}
             />
@@ -298,7 +283,7 @@ export function PhotoZoom({
           mark={active?.marcacao ?? mark}
           width={width}
           height={height}
-          locked={false}
+          active
           zoomed={zoomed}
           onZoomChange={setZoomed}
         />
@@ -329,41 +314,29 @@ export function PhotoZoom({
           ]}
           layout={LinearTransition.duration(MOTION)}
         >
-          <PanelFade />
+          <LinearGradient
+            colors={VEIL}
+            locations={VEIL_STOPS}
+            style={styles.veil}
+            pointerEvents="none"
+          />
 
           {carousel && (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.stripContent}
-              style={styles.strip}
-            >
+            <View style={styles.dots}>
               {pages.map((item, position) => (
-                <RipplePressable
+                <View
                   key={item.causa}
-                  onPress={() => goTo(position)}
-                  style={[
-                    styles.thumb,
-                    position === index && styles.thumbActive,
-                  ]}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: position === index }}
-                >
-                  <MarkedPhoto
-                    uri={uri}
-                    path={path}
-                    mark={item.marcacao}
-                    height={50}
-                    style={styles.thumbPhoto}
-                  />
-                </RipplePressable>
+                  style={[styles.dot, position === index && styles.dotActive]}
+                />
               ))}
-            </ScrollView>
+            </View>
           )}
 
           <RipplePressable
             onPress={() => setExpanded((previous) => !previous)}
             style={styles.panelTouch}
+            accessibilityRole="button"
+            accessibilityState={{ expanded }}
           >
             <View style={styles.panelHead}>
               <Text family="display" style={styles.cause}>
@@ -446,38 +419,29 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(9, 14, 10, 0.55)",
   },
-  fade: {
+  veil: {
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: "100%",
+    top: -140,
+    bottom: 0,
   },
-  strip: {
-    flexGrow: 0,
-    marginBottom: theme.spacing.s3,
-  },
-  stripContent: {
+  dots: {
+    flexDirection: "row",
+    justifyContent: "center",
     gap: theme.spacing.s2,
-    paddingHorizontal: theme.screenPadding,
+    paddingBottom: theme.spacing.s3,
   },
-  thumb: {
-    width: 54,
-    height: 54,
-    borderRadius: theme.radius.field,
-    overflow: "hidden",
-    opacity: 0.45,
-    borderWidth: 2,
-    borderColor: "transparent",
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: theme.text.onDark,
+    opacity: 0.32,
   },
-  thumbActive: {
+  dotActive: {
     opacity: 1,
-    borderColor: theme.text.onDark,
-  },
-  thumbPhoto: {
-    borderRadius: 0,
-    backgroundColor: "transparent",
   },
   panelTouch: {
     paddingHorizontal: theme.screenPadding,
