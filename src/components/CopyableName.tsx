@@ -37,15 +37,17 @@ export function CopyableName({
     ...type
   } = StyleSheet.flatten(textStyle) ?? {};
 
-  const outer = {
-    margin,
-    marginTop,
-    marginBottom,
-    marginLeft,
-    marginRight,
-    marginHorizontal,
-    marginVertical,
-  };
+  const outer = Object.fromEntries(
+    Object.entries({
+      margin,
+      marginTop,
+      marginBottom,
+      marginLeft,
+      marginRight,
+      marginHorizontal,
+      marginVertical,
+    }).filter(([, value]) => value !== undefined),
+  );
 
   const size = Math.round((type.fontSize ?? 20) * 0.62);
   const color = (type.color as string) ?? theme.text.primary;

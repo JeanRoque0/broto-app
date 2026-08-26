@@ -4,12 +4,11 @@ import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { BrotinhoFace } from "@/components/illustrations/BrotinhoArt";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import type { PromptRequirement, PromptScope } from "@/constants/chatPrompts";
 import { theme } from "@/style/theme";
-import { fontSize } from "@/style/typography";
+import { fontSize, type } from "@/style/typography";
 import { pickPrompts } from "@/utils/chatPrompts";
 
 type ChatSuggestionsProps = {
@@ -64,8 +63,10 @@ export function ChatSuggestions({
   return (
     <View style={styles.block}>
       <View style={styles.head}>
-        <BrotinhoFace size={22} />
-        <Eyebrow>{t("suggestionsEyebrow")}</Eyebrow>
+        <BrotinhoFace size={24} />
+        <Text family="display" style={styles.title}>
+          {t("suggestionsEyebrow")}
+        </Text>
       </View>
 
       <ScrollView
@@ -96,6 +97,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: theme.spacing.s2,
+  },
+  title: {
+    ...type.displayXs,
   },
   row: {
     gap: theme.spacing.s2,

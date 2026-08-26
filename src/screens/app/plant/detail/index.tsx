@@ -1,9 +1,16 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Platform, Pressable, ScrollView, View } from "react-native";
+import {
+  LayoutChangeEvent,
+  Platform,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
 import Animated, {
   Extrapolation,
+  useAnimatedRef,
   interpolate,
   runOnJS,
   useAnimatedReaction,
@@ -21,6 +28,7 @@ import { ConfirmCard } from "@/components/ConfirmCard";
 import { CareRoutine } from "@/components/CareRoutine";
 import { CopyableName } from "@/components/CopyableName";
 import { PlantShareCard } from "@/components/PlantShareCard";
+import { Section, SectionTabs } from "@/components/SectionTabs";
 
 import { TodayCard } from "./components/TodayCard";
 import { PhotoZoom } from "@/components/PhotoZoom";
@@ -32,6 +40,7 @@ import { BackIcon } from "@/components/ui/BackIcon";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CircleButton } from "@/components/ui/CircleButton";
+import { ContainerModal } from "@/components/ui/ContainerModal";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -52,6 +61,10 @@ import { HEADER_PHOTO, styles } from "./style";
 import { usePlantDetail } from "./usePlantDetail";
 
 const SNAP = DIAGNOSIS_CARD_WIDTH + theme.spacing.s3;
+type SectionLayout = { y: number; parent?: string; chip: boolean };
+
+const NAV_GAP = 6;
+const NAV_SETTLE = 700;
 const BAR_IN = 110;
 const BAR_OUT = 210;
 
@@ -59,9 +72,16 @@ export default function PlantDetailScreen() {
   const { t } = useTranslation("plants");
   const { t: tAnalysis } = useTranslation("analysis");
   const { t: tCommon } = useTranslation();
+  const { t: tChat } = useTranslation("chat");
   const insets = useSafeAreaInsets();
   const scrollY = useSharedValue(0);
   const [darkBar, setDarkBar] = useState(false);
+  const [active, setActive] = useState("");
+  const listRef = useAnimatedRef<Animated.ScrollView>();
+  const layouts = useRef<Record<string, SectionLayout>>({});
+  const sheetTop = useRef(0);
+  const barHeight = useRef(0);
+  const jumping = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [zoom, setZoom] = useState<{
     mark: SymptomMark | null;
     path: string | null;
@@ -99,16 +119,97 @@ export default function PlantDetailScreen() {
     removeVisible,
     openRemove,
     closeRemove,
+    menuVisible,
+    openMenu,
+    closeMenu,
     remove,
     edit,
     goBack,
   } = usePlantDetail();
 
   const { facts } = useSpeciesFacts(plant?.species_scientific);
-  const { shot, share, sharing } = useShareCard();
+  const { shot, share } = useShareCard();
+
+  function absoluteOf(id: string) {
+    let total = sheetTop.current;
+    let cursor: string | undefined = id;
+    const seen = new Set<string>();
+
+    while (cursor) {
+      if (seen.has(cursor)) return undefined;
+      seen.add(cursor);
+
+      const entry: SectionLayout | undefined = layouts.current[cursor];
+      if (!entry) return undefined;
+
+      total += entry.y;
+      cursor = entry.parent;
+    }
+
+    return total;
+  }
+
+  function syncActive(y: number) {
+    if (jumping.current) return;
+
+    const line = y + barHeight.current + theme.spacing.s2;
+    let currentId = "";
+    let currentY = -1;
+
+    for (const [id, entry] of Object.entries(layouts.current)) {
+      if (!entry.chip) continue;
+
+      const absolute = absoluteOf(id);
+      if (absolute === undefined) continue;
+
+      if (absolute <= line && absolute > currentY) {
+        currentY = absolute;
+        currentId = id;
+      }
+    }
+
+    if (currentId) {
+      setActive((previous) => (previous === currentId ? previous : currentId));
+    }
+  }
+
+  function register(id: string, parent?: string, chip = true) {
+    return (event: LayoutChangeEvent) => {
+      layouts.current[id] = { y: event.nativeEvent.layout.y, parent, chip };
+    };
+  }
+
+  function registerSection(id: string, parent?: string) {
+    return register(id, parent);
+  }
+
+  function registerAnchor(id: string, parent?: string) {
+    return register(id, parent, false);
+  }
+
+  function releaseJump() {
+    if (!jumping.current) return;
+    clearTimeout(jumping.current);
+    jumping.current = null;
+  }
+
+  function goToSection(id: string) {
+    const absolute = absoluteOf(id);
+    if (absolute === undefined) return;
+
+    if (jumping.current) clearTimeout(jumping.current);
+    jumping.current = setTimeout(releaseJump, NAV_SETTLE);
+
+    setActive(id);
+    listRef.current?.scrollTo({
+      y: Math.max(0, absolute - barHeight.current - NAV_GAP),
+      animated: true,
+    });
+  }
 
   const onScroll = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
+    runOnJS(syncActive)(event.contentOffset.y);
   });
 
   useAnimatedReaction(
@@ -176,6 +277,27 @@ export default function PlantDetailScreen() {
     );
   }
 
+  const speciesLabel =
+    plant.species_common && plant.species_common !== plant.nickname
+      ? plant.species_common
+      : null;
+
+  const openDiagnosis = diagnoses.find((item) => !item.resolved_at);
+
+  const sections: Section[] = [
+    { id: "brotinho", label: tChat("suggestionsEyebrow") },
+    { id: "care", label: t("careEyebrow") },
+    careTasks.length > 0 && { id: "routine", label: t("careEyebrowTasks") },
+    facts?.cultivo && { id: "grow", label: tAnalysis("growTitle") },
+    facts?.simbolismo && { id: "lore", label: tAnalysis("loreTitle") },
+    diagnoses.length > 0 && { id: "diagnoses", label: t("diagEyebrow") },
+    openDiagnosis?.result?.como_confirmar && {
+      id: "confirm",
+      label: tAnalysis("confirmEyebrow"),
+    },
+    events.length > 0 && { id: "history", label: t("historyEyebrow") },
+  ].filter(Boolean) as Section[];
+
   const care = [
     {
       icon: "water-outline" as const,
@@ -236,8 +358,11 @@ export default function PlantDetailScreen() {
       </Animated.View>
 
       <Animated.ScrollView
+        ref={listRef}
         style={styles.flex}
         onScroll={onScroll}
+        onMomentumScrollEnd={releaseJump}
+        onScrollBeginDrag={releaseJump}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
       >
@@ -254,14 +379,19 @@ export default function PlantDetailScreen() {
           }
         />
 
-        <View style={styles.sheet}>
+        <View
+          style={styles.sheet}
+          onLayout={(event) => {
+            sheetTop.current = event.nativeEvent.layout.y;
+          }}
+        >
           <View style={styles.padded}>
-            <Eyebrow>{plant.species_common ?? t("title")}</Eyebrow>
+            {speciesLabel && <Eyebrow>{speciesLabel}</Eyebrow>}
             <CopyableName
               label={plant.nickname}
               common={plant.species_common}
               scientific={plant.species_scientific}
-              textStyle={styles.nickname}
+              textStyle={speciesLabel ? styles.nickname : styles.nicknameAlone}
             />
             {plant.species_scientific && (
               <Text style={styles.species}>{plant.species_scientific}</Text>
@@ -274,7 +404,10 @@ export default function PlantDetailScreen() {
               onComplete={complete}
             />
           </View>
-          <View style={[styles.section, styles.padded]}>
+          <View
+            style={[styles.section, styles.padded]}
+            onLayout={registerSection("brotinho")}
+          >
             <ChatSuggestions
               seed={plant.id}
               scopes={["plant", "diagnosis"]}
@@ -291,8 +424,17 @@ export default function PlantDetailScreen() {
             />
           </View>
 
-          <View style={[styles.section, styles.padded]}>
-            <Eyebrow>{t("careEyebrow")}</Eyebrow>
+          <View style={[styles.quizBlock, styles.padded]}>
+            <QuizCard />
+          </View>
+
+          <View
+            style={[styles.section, styles.padded]}
+            onLayout={registerSection("care")}
+          >
+            <Text family="display" style={styles.sectionTitle}>
+              {t("careEyebrow")}
+            </Text>
             <Card style={styles.careCard}>
               {care.map((item, index) => (
                 <View
@@ -324,10 +466,12 @@ export default function PlantDetailScreen() {
           </View>
 
           {careTasks.length > 0 && (
-            <View style={[styles.section, styles.padded]}>
-              <Eyebrow>{t("careEyebrowTasks")}</Eyebrow>
+            <View
+              style={[styles.section, styles.padded]}
+              onLayout={registerSection("routine")}
+            >
               <Text family="display" style={styles.sectionTitle}>
-                {t("careTasksTitle")}
+                {t("careEyebrowTasks")}
               </Text>
               <Text style={styles.sectionHint}>{t("careTasksHint")}</Text>
 
@@ -381,8 +525,10 @@ export default function PlantDetailScreen() {
           )}
 
           {facts?.cultivo ? (
-            <View style={[styles.section, styles.padded]}>
-              <Eyebrow>{tAnalysis("growEyebrow")}</Eyebrow>
+            <View
+              style={[styles.section, styles.padded]}
+              onLayout={registerSection("grow")}
+            >
               <Text family="display" style={styles.sectionTitle}>
                 {tAnalysis("growTitle")}
               </Text>
@@ -393,8 +539,10 @@ export default function PlantDetailScreen() {
           ) : null}
 
           {facts?.simbolismo ? (
-            <View style={[styles.section, styles.padded]}>
-              <Eyebrow>{tAnalysis("loreEyebrow")}</Eyebrow>
+            <View
+              style={[styles.section, styles.padded]}
+              onLayout={registerSection("lore")}
+            >
               <Text family="display" style={styles.sectionTitle}>
                 {tAnalysis("loreTitle")}
               </Text>
@@ -405,12 +553,14 @@ export default function PlantDetailScreen() {
           ) : null}
 
           {diagnoses.length > 0 && (
-            <View style={styles.section}>
+            <View style={styles.section} onLayout={registerSection("diagnoses")}>
               <View style={styles.padded}>
-                <Eyebrow>{t("diagEyebrow")}</Eyebrow>
+                <Text family="display" style={styles.sectionTitle}>
+                  {t("diagEyebrow")}
+                </Text>
               </View>
 
-              {diagnoses.map((analysis) => {
+              {diagnoses.map((analysis, index) => {
                 const causes = analysis.result?.diagnostico ?? [];
                 const marked = causes.filter((cause) => cause.marcacao);
                 const done = !!analysis.resolved_at;
@@ -437,9 +587,17 @@ export default function PlantDetailScreen() {
                 }
 
                 return (
-                  <View key={analysis.id} style={styles.analysis}>
+                  <View
+                    key={analysis.id}
+                    style={index > 0 ? styles.analysis : undefined}
+                    onLayout={
+                      analysis.id === openDiagnosis?.id
+                        ? registerAnchor("openDiagnosis", "diagnoses")
+                        : undefined
+                    }
+                  >
                     <View style={styles.padded}>
-                      <Text family="mono" style={styles.analysisDate}>
+                      <Text style={styles.sectionHint}>
                         {formatShortDate(analysis.created_at)}
                       </Text>
                     </View>
@@ -469,10 +627,19 @@ export default function PlantDetailScreen() {
                     </ScrollView>
 
                     {analysis.result?.como_confirmar ? (
-                      <View style={[styles.padded, styles.confirmBlock]}>
-                        <Eyebrow>{tAnalysis("confirmEyebrow")}</Eyebrow>
+                      <View
+                        style={[styles.padded, styles.confirmBlock]}
+                        onLayout={
+                          analysis.id === openDiagnosis?.id
+                            ? registerSection("confirm", "openDiagnosis")
+                            : undefined
+                        }
+                      >
                         <Text family="display" style={styles.sectionTitle}>
                           {tAnalysis("confirmTitle")}
+                        </Text>
+                        <Text style={styles.sectionHint}>
+                          {tAnalysis("confirmEyebrow")}
                         </Text>
                         <ConfirmCard
                           value={analysis.result.como_confirmar}
@@ -508,8 +675,13 @@ export default function PlantDetailScreen() {
           )}
 
           {events.length > 0 && (
-            <View style={[styles.section, styles.padded]}>
-              <Eyebrow>{t("historyEyebrow")}</Eyebrow>
+            <View
+              style={[styles.section, styles.padded]}
+              onLayout={registerSection("history")}
+            >
+              <Text family="display" style={styles.sectionTitle}>
+                {t("historyEyebrow")}
+              </Text>
               <Card style={styles.historyCard}>
                 {events.map((event) => (
                   <View key={event.id} style={styles.event}>
@@ -529,35 +701,29 @@ export default function PlantDetailScreen() {
               </Card>
             </View>
           )}
-
-          <View style={[styles.section, styles.padded]}>
-            <QuizCard />
-          </View>
-
-          <View style={[styles.section, styles.padded]}>
-            <Card style={styles.menuCard}>
-              <MenuRow label={t("editPlant")} icon="edit-2" onPress={edit} />
-              <MenuRow
-                label={t("removePlant")}
-                icon="trash-2"
-                danger
-                onPress={openRemove}
-                last
-              />
-            </Card>
-          </View>
         </View>
       </Animated.ScrollView>
 
       <Animated.View
         style={[styles.bar, barStyle, { paddingTop: insets.top }]}
-        pointerEvents="none"
+        pointerEvents={darkBar ? "auto" : "none"}
+        onLayout={(event) => {
+          barHeight.current = event.nativeEvent.layout.height;
+        }}
       >
-        <View style={styles.barInner}>
+        <View style={styles.barInner} pointerEvents="none">
           <Text style={styles.barTitle} numberOfLines={1}>
             {plant.nickname}
           </Text>
         </View>
+
+        {sections.length > 1 && (
+          <SectionTabs
+            sections={sections}
+            active={active}
+            onSelect={goToSection}
+          />
+        )}
       </Animated.View>
 
       <View style={[styles.back, { top: insets.top + theme.spacing.s2 }]}>
@@ -582,14 +748,11 @@ export default function PlantDetailScreen() {
       </View>
       <View style={[styles.share, { top: insets.top + theme.spacing.s2 }]}>
         <Animated.View style={barStyle}>
-          <CircleButton
-            onPress={share}
-            accessibilityLabel={tAnalysis("shareTitle")}
-          >
+          <CircleButton onPress={openMenu} accessibilityLabel={t("plantMenu")}>
             <Feather
-              name={Platform.OS === "ios" ? "share" : "share-2"}
-              size={17}
-              color={sharing ? theme.text.tertiary : theme.text.primary}
+              name="more-horizontal"
+              size={18}
+              color={theme.text.primary}
             />
           </CircleButton>
         </Animated.View>
@@ -599,13 +762,13 @@ export default function PlantDetailScreen() {
           pointerEvents="none"
         >
           <CircleButton
-            onPress={share}
+            onPress={openMenu}
             style={styles.backOnPhoto}
-            accessibilityLabel={tAnalysis("shareTitle")}
+            accessibilityLabel={t("plantMenu")}
           >
             <Feather
-              name={Platform.OS === "ios" ? "share" : "share-2"}
-              size={17}
+              name="more-horizontal"
+              size={18}
               color={theme.text.onDark}
             />
           </CircleButton>
@@ -642,6 +805,41 @@ export default function PlantDetailScreen() {
         onClose={() => setZoom(null)}
         closeLabel={tCommon("back")}
       />
+
+      <ContainerModal
+        visible={menuVisible}
+        onClose={closeMenu}
+        title={plant.nickname}
+      >
+        <Card style={styles.menuCard}>
+          <MenuRow
+            label={t("menuShare")}
+            icon={Platform.OS === "ios" ? "share" : "share-2"}
+            onPress={() => {
+              closeMenu();
+              share();
+            }}
+          />
+          <MenuRow
+            label={t("editPlant")}
+            icon="edit-2"
+            onPress={() => {
+              closeMenu();
+              edit();
+            }}
+          />
+          <MenuRow
+            label={t("removePlant")}
+            icon="trash-2"
+            danger
+            onPress={() => {
+              closeMenu();
+              openRemove();
+            }}
+            last
+          />
+        </Card>
+      </ContainerModal>
 
       <ContainerModalCenter
         visible={removeVisible}

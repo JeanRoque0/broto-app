@@ -90,8 +90,11 @@ export const styles = StyleSheet.create({
     paddingHorizontal: theme.screenPadding,
   },
   nickname: {
-    ...type.display,
+    ...type.displaySm,
     marginTop: theme.spacing.s2,
+  },
+  nicknameAlone: {
+    ...type.displaySm,
   },
   species: {
     ...type.bodySm,
@@ -121,9 +124,11 @@ export const styles = StyleSheet.create({
   section: {
     marginTop: theme.spacing.s6,
   },
+  quizBlock: {
+    marginTop: theme.spacing.s3,
+  },
   sectionTitle: {
     ...type.displayXs,
-    marginTop: theme.spacing.s2,
   },
   infoCard: {
     marginTop: theme.spacing.s4,
@@ -213,10 +218,6 @@ export const styles = StyleSheet.create({
   analysis: {
     marginTop: theme.spacing.s4,
   },
-  analysisDate: {
-    fontSize: fontSize.s3,
-    color: theme.text.tertiary,
-  },
   resolvedRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -245,7 +246,7 @@ export const styles = StyleSheet.create({
     paddingTop: theme.spacing.s3,
   },
   toxic: {
-    marginTop: theme.spacing.s6,
+    marginTop: theme.spacing.s4,
     flexDirection: "row",
     gap: theme.spacing.s3,
     alignItems: "center",
@@ -265,7 +266,7 @@ export const styles = StyleSheet.create({
     color: theme.text.primary,
   },
   menuCard: {
-    marginTop: theme.spacing.s3,
+    marginTop: theme.spacing.s4,
     padding: 0,
     overflow: "hidden",
   },

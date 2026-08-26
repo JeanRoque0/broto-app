@@ -43,6 +43,7 @@ export function usePlantDetail() {
   const archivePlant = useArchivePlant();
 
   const [removeVisible, setRemoveVisible] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
   const [editingTask, setEditingTask] = useState<PlantTask | null>(null);
 
   const { tasks: allTasks } = usePlantTasks();
@@ -169,6 +170,9 @@ export function usePlantDetail() {
     refetch,
     removing: archivePlant.isPending,
     removeVisible,
+    menuVisible,
+    openMenu: () => setMenuVisible(true),
+    closeMenu: () => setMenuVisible(false),
     openRemove: () => setRemoveVisible(true),
     closeRemove: () => setRemoveVisible(false),
     remove,

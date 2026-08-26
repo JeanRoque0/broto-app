@@ -1,10 +1,17 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Platform, Pressable, ScrollView, View } from "react-native";
+import {
+  LayoutChangeEvent,
+  Platform,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
 import Animated, {
   Extrapolation,
+  useAnimatedRef,
   interpolate,
   runOnJS,
   useAnimatedReaction,
@@ -22,6 +29,7 @@ import { CareRoutine } from "@/components/CareRoutine";
 import { ConfirmCard } from "@/components/ConfirmCard";
 import { CopyableName } from "@/components/CopyableName";
 import { PlantShareCard } from "@/components/PlantShareCard";
+import { Section, SectionTabs } from "@/components/SectionTabs";
 import { GroupSheet } from "@/components/GroupSheet";
 import { ChatSuggestions } from "@/components/ChatSuggestions";
 import { QuizCard } from "@/components/QuizCard";
@@ -53,11 +61,14 @@ import { useResult } from "./useResult";
 const SNAP = DIAGNOSIS_CARD_WIDTH + theme.spacing.s3;
 const BAR_IN = 120;
 const BAR_OUT = 230;
+const NAV_GAP = 6;
+const NAV_SETTLE = 700;
 
 export default function ResultScreen() {
   const { t } = useTranslation("analysis");
   const { t: tCommon } = useTranslation();
   const { t: tPlants } = useTranslation("plants");
+  const { t: tChat } = useTranslation("chat");
   const insets = useSafeAreaInsets();
   const {
     result,
@@ -95,11 +106,64 @@ export default function ResultScreen() {
   } | null>(null);
   const scrollY = useSharedValue(0);
   const [darkBar, setDarkBar] = useState(false);
+  const [active, setActive] = useState("");
+  const listRef = useAnimatedRef<Animated.ScrollView>();
+  const offsets = useRef<Record<string, number>>({});
+  const sheetTop = useRef(0);
+  const barHeight = useRef(0);
+  const jumping = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useStatusBarStyle(darkBar && !zoom ? "dark" : "light");
 
+  function syncActive(y: number) {
+    if (jumping.current) return;
+
+    const line = y + barHeight.current + theme.spacing.s2;
+    let currentId = "";
+    let currentY = -1;
+
+    for (const [id, offset] of Object.entries(offsets.current)) {
+      const absolute = sheetTop.current + offset;
+      if (absolute <= line && absolute > currentY) {
+        currentY = absolute;
+        currentId = id;
+      }
+    }
+
+    if (currentId) {
+      setActive((previous) => (previous === currentId ? previous : currentId));
+    }
+  }
+
+  function registerSection(id: string) {
+    return (event: LayoutChangeEvent) => {
+      offsets.current[id] = event.nativeEvent.layout.y;
+    };
+  }
+
+  function releaseJump() {
+    if (!jumping.current) return;
+    clearTimeout(jumping.current);
+    jumping.current = null;
+  }
+
+  function goToSection(id: string) {
+    const offset = offsets.current[id];
+    if (offset === undefined) return;
+
+    if (jumping.current) clearTimeout(jumping.current);
+    jumping.current = setTimeout(releaseJump, NAV_SETTLE);
+
+    setActive(id);
+    listRef.current?.scrollTo({
+      y: Math.max(0, sheetTop.current + offset - barHeight.current - NAV_GAP),
+      animated: true,
+    });
+  }
+
   const onScroll = useAnimatedScrollHandler((event) => {
     scrollY.value = event.contentOffset.y;
+    runOnJS(syncActive)(event.contentOffset.y);
   });
 
   useAnimatedReaction(
@@ -163,6 +227,19 @@ export default function ResultScreen() {
   const title = especie?.comum ?? t("unknownSpecies");
   const showFooter = fromHistory ? canSave && !plantId : true;
 
+  const sections: Section[] = [
+    !healthy &&
+      diagnostico.length > 0 && {
+        id: "diagnosis",
+        label: t("diagnosisEyebrow"),
+      },
+    result.como_confirmar && { id: "confirm", label: t("confirmEyebrow") },
+    { id: "brotinho", label: tChat("suggestionsEyebrow") },
+    cuidados && { id: "care", label: t("careTitle") },
+    result.cultivo && { id: "grow", label: t("growTitle") },
+    result.simbolismo && { id: "lore", label: t("loreTitle") },
+  ].filter(Boolean) as Section[];
+
   return (
     <View style={styles.flex}>
       <Animated.View style={[styles.hero, heroStyle]}>
@@ -178,8 +255,11 @@ export default function ResultScreen() {
       </Animated.View>
 
       <Animated.ScrollView
+        ref={listRef}
         style={styles.flex}
         onScroll={onScroll}
+        onMomentumScrollEnd={releaseJump}
+        onScrollBeginDrag={releaseJump}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
       >
@@ -190,7 +270,12 @@ export default function ResultScreen() {
           accessibilityLabel={t("markHint")}
         />
 
-        <View style={styles.sheet}>
+        <View
+          style={styles.sheet}
+          onLayout={(event) => {
+            sheetTop.current = event.nativeEvent.layout.y;
+          }}
+        >
           <View style={styles.padded}>
             <Eyebrow>{t("speciesEyebrow")}</Eyebrow>
 
@@ -264,9 +349,8 @@ export default function ResultScreen() {
           </View>
 
           {!healthy && diagnostico.length > 0 && (
-            <View style={styles.section}>
+            <View style={styles.section} onLayout={registerSection("diagnosis")}>
               <View style={styles.padded}>
-                <Eyebrow>{t("diagnosisEyebrow")}</Eyebrow>
                 <Text family="display" style={styles.sectionTitle}>
                   {t("diagnosisTitle")}
                 </Text>
@@ -315,11 +399,14 @@ export default function ResultScreen() {
           )}
 
           {result.como_confirmar ? (
-            <View style={[styles.section, styles.padded]}>
-              <Eyebrow>{t("confirmEyebrow")}</Eyebrow>
+            <View
+              style={[styles.section, styles.padded]}
+              onLayout={registerSection("confirm")}
+            >
               <Text family="display" style={styles.sectionTitle}>
                 {t(healthy ? "confirmTitleHealthy" : "confirmTitle")}
               </Text>
+              <Text style={styles.sectionHint}>{t("confirmEyebrow")}</Text>
               <ConfirmCard
                 value={result.como_confirmar}
                 style={styles.confirm}
@@ -327,7 +414,10 @@ export default function ResultScreen() {
             </View>
           ) : null}
 
-          <View style={[styles.suggestionsBlock, styles.padded]}>
+          <View
+            style={[styles.suggestionsBlock, styles.padded]}
+            onLayout={registerSection("brotinho")}
+          >
             <ChatSuggestions
               seed={result.especie?.cientifico ?? "analise"}
               scopes={["species", "diagnosis", "general"]}
@@ -339,13 +429,18 @@ export default function ResultScreen() {
             />
           </View>
 
-          <View style={[styles.suggestionsBlock, styles.padded]}>
+          <View style={[styles.quizBlock, styles.padded]}>
             <QuizCard />
           </View>
 
           {cuidados && (
-            <View style={[styles.section, styles.padded]}>
-              <Eyebrow>{t("careTitle")}</Eyebrow>
+            <View
+              style={[styles.section, styles.padded]}
+              onLayout={registerSection("care")}
+            >
+              <Text family="display" style={styles.sectionTitle}>
+                {t("careTitle")}
+              </Text>
               <CareTiles
                 cuidados={cuidados}
                 temperatura={result.temperatura}
@@ -370,8 +465,10 @@ export default function ResultScreen() {
           )}
 
           {result.cultivo ? (
-            <View style={[styles.section, styles.padded]}>
-              <Eyebrow>{t("growEyebrow")}</Eyebrow>
+            <View
+              style={[styles.section, styles.padded]}
+              onLayout={registerSection("grow")}
+            >
               <Text family="display" style={styles.sectionTitle}>
                 {t("growTitle")}
               </Text>
@@ -382,8 +479,10 @@ export default function ResultScreen() {
           ) : null}
 
           {result.simbolismo ? (
-            <View style={[styles.section, styles.padded]}>
-              <Eyebrow>{t("loreEyebrow")}</Eyebrow>
+            <View
+              style={[styles.section, styles.padded]}
+              onLayout={registerSection("lore")}
+            >
               <Text family="display" style={styles.sectionTitle}>
                 {t("loreTitle")}
               </Text>
@@ -404,13 +503,24 @@ export default function ResultScreen() {
 
       <Animated.View
         style={[styles.bar, barStyle, { paddingTop: insets.top }]}
-        pointerEvents="none"
+        pointerEvents={darkBar ? "auto" : "none"}
+        onLayout={(event) => {
+          barHeight.current = event.nativeEvent.layout.height;
+        }}
       >
-        <View style={styles.barInner}>
+        <View style={styles.barInner} pointerEvents="none">
           <Text style={styles.barTitle} numberOfLines={1}>
             {title}
           </Text>
         </View>
+
+        {sections.length > 1 && (
+          <SectionTabs
+            sections={sections}
+            active={active}
+            onSelect={goToSection}
+          />
+        )}
       </Animated.View>
 
       <View style={[styles.back, { top: insets.top + theme.spacing.s2 }]}>

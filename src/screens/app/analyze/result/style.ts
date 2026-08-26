@@ -10,6 +10,9 @@ export const styles = StyleSheet.create({
   suggestionsBlock: {
     marginTop: theme.spacing.s5,
   },
+  quizBlock: {
+    marginTop: theme.spacing.s3,
+  },
   flex: {
     flex: 1,
   },
@@ -117,12 +120,14 @@ export const styles = StyleSheet.create({
   },
   sectionTitle: {
     ...type.displayXs,
-    marginTop: theme.spacing.s2,
+  },
+  sectionHint: {
+    ...type.bodySm,
+    marginTop: 2,
   },
   swipeHint: {
-    fontSize: fontSize.s2,
-    color: theme.text.tertiary,
-    marginTop: theme.spacing.s1,
+    ...type.bodySm,
+    marginTop: 2,
   },
   carousel: {
     paddingHorizontal: theme.screenPadding,
