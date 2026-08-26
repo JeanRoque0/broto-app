@@ -1,12 +1,14 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { Controller, useWatch } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, View } from "react-native";
 
+import { CareRoutine } from "@/components/CareRoutine";
+import { GroupSheet } from "@/components/GroupSheet";
 import { PlantPhoto } from "@/components/PlantPhoto";
 import { PlantPhotoSheet } from "@/components/PlantPhotoSheet";
-import { CareRoutine } from "@/components/CareRoutine";
+import { TaskEditSheet } from "@/components/TaskEditSheet";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
@@ -16,15 +18,12 @@ import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { Header } from "@/components/ui/Header";
 import { Input } from "@/components/ui/Input";
 import { KeyboardAwareView } from "@/components/ui/KeyboardAwareView";
-import { OptionRow } from "@/components/ui/OptionRow";
 import { StepProgress } from "@/components/ui/ProgressBar";
 import { Stepper } from "@/components/ui/Stepper";
 import { StepTransition } from "@/components/ui/StepTransition";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
 import { FertilizerPace, LightLevel } from "@/types/identification";
-
-import { previewCareTasks } from "@/utils/carePreview";
 
 import { SwitchRow } from "./components/SwitchRow";
 import { styles } from "./style";
@@ -55,33 +54,43 @@ export default function PlantFormScreen() {
     errors,
     groups,
     isPro,
-    openPaywall,
+    isEditing,
+    saving,
     step,
     stepIndex,
     direction,
     stepCount,
     isLastStep,
-    isEditing,
-    saving,
+    canAdvance,
+    openPaywall,
+    handleAdvance,
+    handleBack,
     photoUri,
     photoPath,
     photoSheet,
     photoWarning,
-    canAdvance,
     openPhotoSheet,
     closePhotoSheet,
     pickPhoto,
     clearPhoto,
     confirmPhotoChange,
     cancelPhotoChange,
-    handleAdvance,
-    handleBack,
+    groupSheet,
+    openGroupSheet,
+    closeGroupSheet,
+    savingGroup,
+    submitGroup,
+    routineTasks,
+    untouch,
+    lockedKinds,
+    editingTask,
+    plantName,
+    editTask,
+    closeTaskEdit,
+    savingTask,
+    saveTask,
+    toggleTask,
   } = usePlantForm();
-
-  const interval = useWatch({ control, name: "interval" });
-  const extraTasks = previewCareTasks({ rega_dias: interval }).filter(
-    (task) => task.kind !== "water",
-  );
 
   const hasPhoto = !!photoUri || !!photoPath;
   const filledPhotoStep = step === "photo" && hasPhoto;
@@ -143,11 +152,7 @@ export default function PlantFormScreen() {
                 ) : (
                   <>
                     <View style={styles.photoPlus}>
-                      <Feather
-                        name="plus"
-                        size={26}
-                        color={theme.text.onDark}
-                      />
+                      <Feather name="plus" size={26} color={theme.text.onDark} />
                     </View>
                     <Text style={styles.photoHint}>{t("photoAdd")}</Text>
                   </>
@@ -202,6 +207,7 @@ export default function PlantFormScreen() {
 
                       <View style={styles.groupChips}>
                         <Chip
+                          size="lg"
                           label={t("groupNone")}
                           selected={value === null}
                           onPress={() => onChange(null)}
@@ -209,11 +215,25 @@ export default function PlantFormScreen() {
                         {groups.map((item) => (
                           <Chip
                             key={item.id}
+                            size="lg"
                             label={item.name}
                             selected={value === item.id}
                             onPress={() => onChange(item.id)}
                           />
                         ))}
+                        <Chip
+                          size="lg"
+                          label={t("newGroup")}
+                          tone="warn"
+                          onPress={openGroupSheet}
+                          left={
+                            <Feather
+                              name="plus"
+                              size={12}
+                              color={theme.primary.clay}
+                            />
+                          }
+                        />
                       </View>
                     </View>
                   )}
@@ -239,21 +259,27 @@ export default function PlantFormScreen() {
               </>
             )}
 
-            {step === "water" && (
+            {step === "care" && (
               <>
-                <Controller
-                  control={control}
-                  name="interval"
-                  render={({ field: { onChange, value } }) => (
-                    <Stepper
-                      value={value}
-                      onChange={onChange}
-                      min={1}
-                      max={90}
-                      format={(days) => t("interval", { count: days })}
-                    />
-                  )}
-                />
+                <View style={styles.field}>
+                  <Text style={styles.fieldLabel}>{t("intervalLabel")}</Text>
+                  <Controller
+                    control={control}
+                    name="interval"
+                    render={({ field: { onChange, value } }) => (
+                      <Stepper
+                        value={value}
+                        onChange={(days) => {
+                          onChange(days);
+                          untouch("water");
+                        }}
+                        min={1}
+                        max={90}
+                        format={(days) => t("interval", { count: days })}
+                      />
+                    )}
+                  />
+                </View>
 
                 {!isEditing && (
                   <Controller
@@ -270,17 +296,92 @@ export default function PlantFormScreen() {
                   />
                 )}
 
-                {!isEditing && isPro && (
-                  <View style={styles.routine}>
-                    <Text style={styles.routineLabel}>
-                      {t("careTasksTitle")}
-                    </Text>
-                    <CareRoutine tasks={extraTasks} />
-                    <Text style={styles.routineHint}>{t("careAdjustHint")}</Text>
-                  </View>
-                )}
+                <View style={styles.field}>
+                  <Text style={styles.fieldLabel}>{t("lightLabel")}</Text>
+                  <Controller
+                    control={control}
+                    name="light"
+                    render={({ field: { onChange, value } }) => (
+                      <View style={styles.groupChips}>
+                        {LIGHT_OPTIONS.map((option) => (
+                          <Chip
+                            key={option}
+                            size="lg"
+                            label={tAnalysis(`luz_${option}` as const)}
+                            selected={value === option}
+                            onPress={() => onChange(option)}
+                          />
+                        ))}
+                        <Chip
+                          size="lg"
+                          label={t("unknownOption")}
+                          selected={value === null}
+                          onPress={() => onChange(null)}
+                        />
+                      </View>
+                    )}
+                  />
+                </View>
 
-                {!isEditing && !isPro && (
+                <View style={styles.field}>
+                  <Text style={styles.fieldLabel}>{t("fertilizerLabel")}</Text>
+                  <Controller
+                    control={control}
+                    name="fertilizer"
+                    render={({ field: { onChange, value } }) => (
+                      <View style={styles.groupChips}>
+                        {FERTILIZER_OPTIONS.map((option) => (
+                          <Chip
+                            key={option}
+                            size="lg"
+                            label={tAnalysis(`adubo_${option}` as const)}
+                            selected={value === option}
+                            onPress={() => {
+                              onChange(option);
+                              untouch("fertilize");
+                            }}
+                          />
+                        ))}
+                        <Chip
+                          size="lg"
+                          label={t("unknownOption")}
+                          selected={value === null}
+                          onPress={() => {
+                            onChange(null);
+                            untouch("fertilize");
+                          }}
+                        />
+                      </View>
+                    )}
+                  />
+                </View>
+
+                <Controller
+                  control={control}
+                  name="toxic"
+                  render={({ field: { onChange, value } }) => (
+                    <SwitchRow
+                      label={t("toxicLabel")}
+                      hint={t("toxicHint")}
+                      value={value}
+                      onChange={onChange}
+                    />
+                  )}
+                />
+              </>
+            )}
+
+            {step === "routine" && (
+              <>
+                <CareRoutine
+                  tasks={routineTasks}
+                  creating={!isEditing}
+                  onEdit={editTask}
+                  lockedKinds={lockedKinds}
+                  onLocked={openPaywall}
+                />
+
+                {!isPro && (
                   <Card style={styles.upsell}>
                     <MaterialCommunityIcons
                       name="bag-personal-outline"
@@ -301,71 +402,6 @@ export default function PlantFormScreen() {
                     </View>
                   </Card>
                 )}
-              </>
-            )}
-
-            {step === "light" && (
-              <Controller
-                control={control}
-                name="light"
-                render={({ field: { onChange, value } }) => (
-                  <View style={styles.options}>
-                    {LIGHT_OPTIONS.map((option) => (
-                      <OptionRow
-                        key={option}
-                        label={tAnalysis(`luz_${option}` as const)}
-                        selected={value === option}
-                        onPress={() => onChange(option)}
-                      />
-                    ))}
-                    <OptionRow
-                      label={t("unknownOption")}
-                      selected={value === null}
-                      onPress={() => onChange(null)}
-                    />
-                  </View>
-                )}
-              />
-            )}
-
-            {step === "extras" && (
-              <>
-                <Text style={styles.sectionLabel}>{t("fertilizerLabel")}</Text>
-
-                <Controller
-                  control={control}
-                  name="fertilizer"
-                  render={({ field: { onChange, value } }) => (
-                    <View style={styles.options}>
-                      {FERTILIZER_OPTIONS.map((option) => (
-                        <OptionRow
-                          key={option}
-                          label={tAnalysis(`adubo_${option}` as const)}
-                          selected={value === option}
-                          onPress={() => onChange(option)}
-                        />
-                      ))}
-                      <OptionRow
-                        label={t("unknownOption")}
-                        selected={value === null}
-                        onPress={() => onChange(null)}
-                      />
-                    </View>
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name="toxic"
-                  render={({ field: { onChange, value } }) => (
-                    <SwitchRow
-                      label={t("toxicLabel")}
-                      hint={t("toxicHint")}
-                      value={value}
-                      onChange={onChange}
-                    />
-                  )}
-                />
               </>
             )}
           </StepTransition>
@@ -392,6 +428,23 @@ export default function PlantFormScreen() {
         onClose={closePhotoSheet}
         onPick={pickPhoto}
         onRemove={hasPhoto ? clearPhoto : undefined}
+      />
+
+      <GroupSheet
+        visible={groupSheet}
+        saving={savingGroup}
+        onClose={closeGroupSheet}
+        onSubmit={submitGroup}
+      />
+
+      <TaskEditSheet
+        task={editingTask}
+        creating={!isEditing}
+        plantName={plantName}
+        saving={savingTask}
+        onClose={closeTaskEdit}
+        onSave={saveTask}
+        onToggle={toggleTask}
       />
 
       <ContainerModalCenter

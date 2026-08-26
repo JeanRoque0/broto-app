@@ -465,6 +465,22 @@ export default function PlantDetailScreen() {
             </Card>
           </View>
 
+          {plant.toxic_to_pets && (
+            <View style={styles.padded}>
+              <Card style={styles.toxic}>
+                <MaterialCommunityIcons
+                  name="paw"
+                  size={20}
+                  color={theme.functional.danger}
+                />
+                <View style={styles.toxicTexts}>
+                  <Text style={styles.toxicTitle}>{t("toxicTitle")}</Text>
+                  <Text style={styles.toxicText}>{t("toxicText")}</Text>
+                </View>
+              </Card>
+            </View>
+          )}
+
           {careTasks.length > 0 && (
             <View
               style={[styles.section, styles.padded]}
@@ -508,21 +524,6 @@ export default function PlantDetailScreen() {
             </View>
           )}
 
-          {plant.toxic_to_pets && (
-            <View style={styles.padded}>
-              <Card style={styles.toxic}>
-                <MaterialCommunityIcons
-                  name="paw"
-                  size={20}
-                  color={theme.functional.danger}
-                />
-                <View style={styles.toxicTexts}>
-                  <Text style={styles.toxicTitle}>{t("toxicTitle")}</Text>
-                  <Text style={styles.toxicText}>{t("toxicText")}</Text>
-                </View>
-              </Card>
-            </View>
-          )}
 
           {facts?.cultivo ? (
             <View

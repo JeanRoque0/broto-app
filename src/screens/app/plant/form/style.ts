@@ -11,6 +11,10 @@ export const styles = StyleSheet.create({
     paddingHorizontal: theme.screenPadding,
     paddingBottom: theme.spacing.s6,
   },
+  form: {
+    marginTop: theme.spacing.s6,
+    gap: theme.spacing.s4,
+  },
   progress: {
     width: "60%",
   },
@@ -21,9 +25,13 @@ export const styles = StyleSheet.create({
     ...type.body,
     marginTop: theme.spacing.s2,
   },
-  form: {
-    marginTop: theme.spacing.s6,
-    gap: theme.spacing.s4,
+  field: {
+    gap: theme.spacing.s2,
+  },
+  fieldLabel: {
+    ...type.sectionTitle,
+    fontSize: fontSize.s5,
+    color: theme.text.primary,
   },
   photoTile: {
     alignSelf: "center",
@@ -64,27 +72,26 @@ export const styles = StyleSheet.create({
     gap: theme.spacing.s2,
   },
   groupsLabel: {
-    ...type.label,
-    color: theme.text.secondary,
+    ...type.sectionTitle,
+    fontSize: fontSize.s5,
+    color: theme.text.primary,
   },
   groupChips: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: theme.spacing.s2,
   },
+  chipRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: theme.spacing.s2,
+    marginTop: theme.spacing.s1,
+  },
   routine: {
     gap: theme.spacing.s2,
-    marginTop: theme.spacing.s2,
-  },
-  routineLabel: {
-    ...type.label,
-    color: theme.text.secondary,
-  },
-  routineHint: {
-    ...type.bodySm,
   },
   upsell: {
-    marginTop: theme.spacing.s2,
+    marginTop: theme.spacing.s5,
     flexDirection: "row",
     gap: theme.spacing.s3,
     alignItems: "flex-start",
@@ -104,14 +111,7 @@ export const styles = StyleSheet.create({
   upsellAction: {
     marginTop: theme.spacing.s3,
   },
-  optionalTag: {
-    ...type.eyebrow,
-    color: theme.text.tertiary,
-    marginBottom: theme.spacing.s1,
-  },
-  options: {
-    gap: theme.spacing.s2,
-  },
+
   switchRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -133,10 +133,6 @@ export const styles = StyleSheet.create({
   },
   switchHint: {
     ...type.bodySm,
-  },
-  sectionLabel: {
-    ...type.eyebrow,
-    marginTop: theme.spacing.s3,
   },
   footer: {
     paddingHorizontal: theme.screenPadding,

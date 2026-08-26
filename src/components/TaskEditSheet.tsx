@@ -84,6 +84,7 @@ function FieldRow({ icon, label, value, onPress }: FieldRowProps) {
 
 type TaskEditSheetProps = {
   task: PlantTask | null;
+  creating?: boolean;
   plantName: string;
   saving: boolean;
   onClose: () => void;
@@ -97,6 +98,7 @@ type TaskEditSheetProps = {
 
 export function TaskEditSheet({
   task,
+  creating = false,
   plantName,
   saving,
   onClose,
@@ -167,7 +169,9 @@ export function TaskEditSheet({
           {task?.enabled === false && (
             <View style={styles.off}>
               <Feather name="bell-off" size={18} color={theme.text.secondary} />
-              <Text style={styles.offText}>{t("taskEditDisabled")}</Text>
+              <Text style={styles.offText}>
+                {t(creating ? "taskNewDisabled" : "taskEditDisabled")}
+              </Text>
             </View>
           )}
 
@@ -195,7 +199,7 @@ export function TaskEditSheet({
           {task?.enabled === false ? (
             <>
               <Button
-                label={t("taskEditRestore")}
+                label={t(creating ? "taskNewAdd" : "taskEditRestore")}
                 onPress={() =>
                   onSave({
                     interval_days: amount * UNIT_DAYS[unit],
@@ -217,7 +221,7 @@ export function TaskEditSheet({
           ) : (
             <>
               <Button
-                label={t("taskEditSave")}
+                label={t(creating ? "taskNewSave" : "taskEditSave")}
                 onPress={() =>
                   onSave({
                     interval_days: amount * UNIT_DAYS[unit],
@@ -229,7 +233,7 @@ export function TaskEditSheet({
               />
 
               <Button
-                label={t("taskEditRemove")}
+                label={t(creating ? "taskNewRemove" : "taskEditRemove")}
                 onPress={() => onToggle(false)}
                 variant="ghost"
                 style={styles.toggle}

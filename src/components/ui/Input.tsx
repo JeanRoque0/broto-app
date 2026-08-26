@@ -130,9 +130,10 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   label: {
-    fontSize: fontSize.s3,
-    fontWeight: "500",
-    color: theme.text.secondary,
+    fontSize: fontSize.s5,
+    fontWeight: "700",
+    letterSpacing: -0.14,
+    color: theme.text.primary,
   },
   wrapper: {
     flexDirection: "row",

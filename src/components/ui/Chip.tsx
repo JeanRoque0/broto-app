@@ -8,7 +8,7 @@ import { fontSize } from "@/style/typography";
 import { Text } from "./Text";
 
 type ChipTone = "neutral" | "warn" | "ok" | "filled";
-type ChipSize = "sm" | "md";
+type ChipSize = "sm" | "md" | "lg";
 
 type ChipProps = {
   label: string;
@@ -49,6 +49,10 @@ const sizeStyles: Record<ChipSize, { container: ViewStyle; label: TextStyle }> =
     md: {
       container: { paddingHorizontal: 10, paddingVertical: 5, gap: 5 },
       label: { fontSize: fontSize.s2 },
+    },
+    lg: {
+      container: { paddingHorizontal: 12, paddingVertical: 8, gap: 6 },
+      label: { fontSize: fontSize.s4 },
     },
   };
 

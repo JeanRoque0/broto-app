@@ -16,6 +16,7 @@ type CareRoutineProps = {
   onEdit?: (task: PlantTask) => void;
   lockedKinds?: readonly string[];
   onLocked?: () => void;
+  creating?: boolean;
 };
 
 export function CareRoutine({
@@ -23,6 +24,7 @@ export function CareRoutine({
   onEdit,
   lockedKinds = [],
   onLocked,
+  creating = false,
 }: CareRoutineProps) {
   const { t } = useTranslation("plants");
 
@@ -58,7 +60,7 @@ export function CareRoutine({
                   ? t("careTaskLocked")
                   : task.enabled
                     ? `${t("taskEveryDays", { count: task.interval_days })} · ${formatShortDate(parseDay(task.next_at))}`
-                    : t("careTaskOff")}
+                    : t(creating ? "careTaskNew" : "careTaskOff")}
               </Text>
             </View>
 
