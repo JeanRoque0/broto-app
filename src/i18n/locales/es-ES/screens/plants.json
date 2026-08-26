@@ -141,6 +141,7 @@
   "groupCreatePlant": "Registrar una planta nueva",
   "taskEditFirst": "Próxima vez",
   "taskEditEvery": "Cada cuánto",
+  "taskEditTime": "Hora",
   "taskEditSave": "Guardar",
   "taskEditClose": "Cerrar",
   "taskEditRemove": "Quitar tarea",

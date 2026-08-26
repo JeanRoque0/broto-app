@@ -39,7 +39,13 @@ export function previewCareTasks(
     ? FERTILIZER_DAYS[cuidados.adubo]
     : undefined;
 
-  const base = { id: "", plant_id: "", user_id: "", created_at: "" };
+  const base = {
+    id: "",
+    plant_id: "",
+    user_id: "",
+    created_at: "",
+    remind_at: null,
+  };
 
   return [
     {

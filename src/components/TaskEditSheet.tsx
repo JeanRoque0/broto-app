@@ -21,7 +21,31 @@ import { isTaskKind, parseDay, startOfDay } from "@/utils/tasks";
 
 type Unit = "day" | "week" | "month";
 
-type Step = "main" | "date" | "every";
+type Step = "main" | "date" | "every" | "time";
+
+const HOURS = Array.from({ length: 24 }, (_, index) => ({
+  value: index,
+  label: String(index).padStart(2, "0"),
+}));
+
+const MINUTES = [0, 15, 30, 45].map((value) => ({
+  value,
+  label: String(value).padStart(2, "0"),
+}));
+
+const DEFAULT_TIME = "09:00";
+
+function splitTime(value: string | null) {
+  const [hour, minute] = (value ?? DEFAULT_TIME).slice(0, 5).split(":").map(Number);
+  return {
+    hour: Number.isFinite(hour) ? hour : 9,
+    minute: MINUTES.some((item) => item.value === minute) ? minute : 0,
+  };
+}
+
+function joinTime(hour: number, minute: number) {
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+}
 
 const UNITS: Unit[] = ["day", "week", "month"];
 
@@ -91,6 +115,7 @@ type TaskEditSheetProps = {
   onSave: (payload: {
     interval_days: number;
     next_at: Date;
+    remind_at: string;
     enabled?: boolean;
   }) => void;
   onToggle: (enabled: boolean) => void;
@@ -110,6 +135,8 @@ export function TaskEditSheet({
   const [amount, setAmount] = useState(7);
   const [unit, setUnit] = useState<Unit>("day");
   const [nextAt, setNextAt] = useState(() => startOfDay(new Date()));
+  const [hour, setHour] = useState(9);
+  const [minute, setMinute] = useState(0);
   const [step, setStep] = useState<Step>("main");
 
   useEffect(() => {
@@ -119,6 +146,11 @@ export function TaskEditSheet({
     setAmount(split.amount);
     setUnit(split.unit);
     setNextAt(parseDay(task.next_at));
+
+    const time = splitTime(task.remind_at);
+    setHour(time.hour);
+    setMinute(time.minute);
+
     setStep("main");
   }, [task]);
 
@@ -150,10 +182,13 @@ export function TaskEditSheet({
 
   const everyLabel = t(EVERY_LABELS[unit], { count: amount });
 
+  const remindAt = joinTime(hour, minute);
+
   const titles: Record<Step, string> = {
     main: taskLabel,
     date: t("taskEditFirst"),
     every: t("taskEditEvery"),
+    time: t("taskEditTime"),
   };
 
   return (
@@ -194,6 +229,13 @@ export function TaskEditSheet({
               value={everyLabel}
               onPress={() => setStep("every")}
             />
+
+            <FieldRow
+              icon="clock"
+              label={t("taskEditTime")}
+              value={remindAt}
+              onPress={() => setStep("time")}
+            />
           </View>
 
           {task?.enabled === false ? (
@@ -204,6 +246,7 @@ export function TaskEditSheet({
                   onSave({
                     interval_days: amount * UNIT_DAYS[unit],
                     next_at: nextAt,
+                    remind_at: remindAt,
                     enabled: true,
                   })
                 }
@@ -226,6 +269,7 @@ export function TaskEditSheet({
                   onSave({
                     interval_days: amount * UNIT_DAYS[unit],
                     next_at: nextAt,
+                    remind_at: remindAt,
                   })
                 }
                 loading={saving}
@@ -262,6 +306,22 @@ export function TaskEditSheet({
             onPress={() => setStep("main")}
             variant="ghost"
             style={styles.stepBack}
+          />
+        </>
+      )}
+
+      {step === "time" && (
+        <>
+          <View style={[styles.picker, styles.wheels]}>
+            <WheelBand />
+            <WheelPicker items={HOURS} value={hour} onChange={setHour} />
+            <WheelPicker items={MINUTES} value={minute} onChange={setMinute} />
+          </View>
+
+          <Button
+            label={t("taskEditDone")}
+            onPress={() => setStep("main")}
+            style={styles.save}
           />
         </>
       )}

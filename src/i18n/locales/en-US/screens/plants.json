@@ -141,6 +141,7 @@
   "groupCreatePlant": "Add a brand new plant",
   "taskEditFirst": "Next time",
   "taskEditEvery": "How often",
+  "taskEditTime": "Time",
   "taskEditSave": "Save",
   "taskEditClose": "Close",
   "taskEditRemove": "Remove task",

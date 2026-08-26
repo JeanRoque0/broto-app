@@ -1,7 +1,9 @@
 import * as Notifications from "expo-notifications";
+import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Linking } from "react-native";
 
+import { usePlants } from "@/hooks/usePlants";
 import { usePlantTasks } from "@/hooks/usePlantTasks";
 import { getCredits } from "@/utils/credits";
 import { remindableTasks } from "@/utils/tasks";
@@ -14,6 +16,7 @@ import {
 
 export function useNotificationSettings() {
   const { data: profile } = useProfile();
+  const { data: plants } = usePlants();
   const { tasks: allTasks } = usePlantTasks();
   const tasks = remindableTasks(allTasks, getCredits(profile ?? null).isPro);
   const { mutate: updateProfile, isPending: saving } = useUpdateProfile();
@@ -21,7 +24,7 @@ export function useNotificationSettings() {
   const [blocked, setBlocked] = useState(false);
   const [scheduled, setScheduled] = useState(0);
   const [upcoming, setUpcoming] = useState<
-    { id: string; at: Date; body: string }[]
+    { id: string; at: Date; title: string; body: string }[]
   >([]);
   const [timeVisible, setTimeVisible] = useState(false);
   const [applying, setApplying] = useState(false);
@@ -46,15 +49,21 @@ export function useNotificationSettings() {
         return {
           id: item.identifier,
           at: stamp ? new Date(stamp) : null,
+          title: item.content.title ?? "",
           body: item.content.body ?? "",
         };
       })
       .filter(
-        (item): item is { id: string; at: Date; body: string } => !!item.at,
+        (
+          item,
+        ): item is { id: string; at: Date; title: string; body: string } =>
+          !!item.at,
       )
       .sort((a, b) => a.at.getTime() - b.at.getTime());
 
     setUpcoming(rows);
+
+    return list.length;
   }, []);
 
   useEffect(() => {
@@ -87,13 +96,15 @@ export function useNotificationSettings() {
 
       await rescheduleCareReminders({
         tasks,
+        plants: plants ?? [],
         reminderTime: nextTime,
         enabled: true,
+        chatNudge: true,
       });
 
       await refreshCount();
     },
-    [tasks, refreshCount],
+    [tasks, plants, refreshCount],
   );
 
   const apply = useCallback(
@@ -108,6 +119,24 @@ export function useNotificationSettings() {
     },
     [run],
   );
+  useFocusEffect(
+    useCallback(() => {
+      let alive = true;
+
+      (async () => {
+        const found = await refreshCount();
+        if (!alive || found > 0) return;
+        if (!enabled || tasks.length === 0) return;
+
+        await apply(enabled, reminderTime);
+      })();
+
+      return () => {
+        alive = false;
+      };
+    }, [refreshCount, apply, enabled, reminderTime, tasks.length]),
+  );
+
   function toggle() {
     const next = !enabled;
     setEnabled(next);

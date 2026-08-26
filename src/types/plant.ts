@@ -43,6 +43,7 @@ export interface PlantTask {
   kind: string;
   interval_days: number;
   next_at: string;
+  remind_at: string | null;
   enabled: boolean;
   created_at: string;
 }

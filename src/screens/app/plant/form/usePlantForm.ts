@@ -49,7 +49,10 @@ export type PlantFormValues = {
   wateredToday: boolean;
 };
 
-type TaskDraft = Pick<PlantTask, "interval_days" | "next_at" | "enabled">;
+type TaskDraft = Pick<
+  PlantTask,
+  "interval_days" | "next_at" | "remind_at" | "enabled"
+>;
 
 const DEFAULT_INTERVAL = 7;
 
@@ -365,6 +368,7 @@ export function usePlantForm() {
   async function saveTask(payload: {
     interval_days: number;
     next_at: Date;
+    remind_at: string;
     enabled?: boolean;
   }) {
     if (!editingTask) return;
@@ -372,6 +376,7 @@ export function usePlantForm() {
     const patch = {
       interval_days: payload.interval_days,
       next_at: toDateString(payload.next_at),
+      remind_at: payload.remind_at,
       ...(payload.enabled === undefined ? {} : { enabled: payload.enabled }),
     };
 
@@ -401,6 +406,7 @@ export function usePlantForm() {
       draftTask({
         interval_days: editingTask.interval_days,
         next_at: editingTask.next_at,
+        remind_at: editingTask.remind_at,
         enabled,
       });
       return;

@@ -4,11 +4,29 @@ const KEY = "broto.notifications.log";
 const KEEP_DAYS = 30;
 const LIMIT = 60;
 
+export type LogKind = "care" | "late" | "chat";
+
 export interface LogEntry {
   id: string;
   at: number;
-  count: number;
+  kind: LogKind;
+  plantId: string | null;
+  title: string;
+  body: string;
   read: boolean;
+}
+
+function isEntry(value: unknown): value is LogEntry {
+  const entry = value as LogEntry;
+
+  return (
+    !!entry &&
+    typeof entry.id === "string" &&
+    typeof entry.at === "number" &&
+    ["care", "late", "chat"].includes(entry.kind) &&
+    typeof entry.title === "string" &&
+    typeof entry.body === "string"
+  );
 }
 
 async function readAll(): Promise<LogEntry[]> {
@@ -17,7 +35,7 @@ async function readAll(): Promise<LogEntry[]> {
 
   try {
     const parsed = JSON.parse(stored);
-    return Array.isArray(parsed) ? parsed : [];
+    return Array.isArray(parsed) ? parsed.filter(isEntry) : [];
   } catch {
     return [];
   }
@@ -35,9 +53,7 @@ async function writeAll(entries: LogEntry[]) {
   return kept;
 }
 
-export async function recordPlanned(
-  planned: { id: string; at: number; count: number }[],
-) {
+export async function recordPlanned(planned: Omit<LogEntry, "read">[]) {
   const current = await readAll();
   const now = Date.now();
   const byId = new Map(current.map((entry) => [entry.id, entry]));
@@ -51,7 +67,7 @@ export async function recordPlanned(
     }
 
     if (known.at > now) {
-      byId.set(entry.id, { ...known, at: entry.at, count: entry.count });
+      byId.set(entry.id, { ...known, ...entry });
     }
   }
 
@@ -73,12 +89,3 @@ export async function markAllRead() {
   return writeAll(all.map((entry) => ({ ...entry, read: true })));
 }
 
-export async function removeEntry(id: string) {
-  const all = await readAll();
-  return writeAll(all.filter((entry) => entry.id !== id));
-}
-
-export async function clearLog() {
-  await AsyncStorage.removeItem(KEY);
-  return [];
-}

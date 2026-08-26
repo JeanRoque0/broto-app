@@ -2,6 +2,7 @@ import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import * as Localization from "expo-localization";
 
+import { usePlants } from "@/hooks/usePlants";
 import { usePlantTasks } from "@/hooks/usePlantTasks";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import {
@@ -14,6 +15,7 @@ import { remindableTasks } from "@/utils/tasks";
 export function useCareReminders() {
   const { data: profile } = useProfile();
   const { tasks } = usePlantTasks();
+  const { data: plants } = usePlants();
   const { mutate: updateProfile } = useUpdateProfile();
   const signature = useRef("");
 
@@ -36,7 +38,9 @@ export function useCareReminders() {
     const next = [
       profile.notifications_enabled,
       profile.reminder_time,
-      ...active.map((task) => `${task.id}:${task.next_at}`),
+      ...active.map(
+        (task) => `${task.id}:${task.next_at}:${task.remind_at ?? ""}`,
+      ),
     ].join("|");
 
     if (next === signature.current) return;
@@ -44,10 +48,12 @@ export function useCareReminders() {
 
     rescheduleCareReminders({
       tasks: active,
+      plants: plants ?? [],
       reminderTime: profile.reminder_time,
       enabled: profile.notifications_enabled,
+      chatNudge: true,
     });
-  }, [profile, tasks]);
+  }, [profile, tasks, plants]);
 
   useFocusEffect(sync);
 }

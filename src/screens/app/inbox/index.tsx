@@ -1,22 +1,42 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 
-import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Header } from "@/components/ui/Header";
 import { Loader } from "@/components/ui/Loader";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { useNotificationInbox } from "@/hooks/useNotificationInbox";
+import { LogEntry, LogKind } from "@/services/notificationLog";
 import { theme } from "@/style/theme";
 import { formatLongDate } from "@/utils/format";
 
 import { styles } from "./style";
 
+const ICONS: Record<
+  LogKind,
+  React.ComponentProps<typeof MaterialCommunityIcons>["name"]
+> = {
+  care: "watering-can-outline",
+  late: "alert-circle-outline",
+  chat: "chat-outline",
+};
+
 export default function InboxScreen() {
   const { t } = useTranslation("notifications");
-  const { entries, loading, remove, clear } = useNotificationInbox();
+  const router = useRouter();
+  const { entries, loading } = useNotificationInbox();
+
+  function open(entry: LogEntry) {
+    if (entry.kind === "chat") {
+      router.push("/(app)/(tabs)/chat");
+      return;
+    }
+
+    if (entry.plantId) router.push(`/(app)/plant/${entry.plantId}`);
+  }
 
   if (loading) {
     return (
@@ -52,43 +72,48 @@ export default function InboxScreen() {
             {t("inboxKeep")}
           </Text>
 
-          {entries.map((entry) => (
-            <View key={entry.id} style={styles.row}>
-              <View style={styles.rowIcon}>
-                <MaterialCommunityIcons
-                  name="watering-can-outline"
-                  size={20}
-                  color={theme.primary.clay}
-                />
-              </View>
+          {entries.map((entry) => {
+            const late = entry.kind === "late";
 
-              <View style={styles.rowTexts}>
-                <Text style={styles.rowBody}>
-                  {t("reminderBody", { count: entry.count })}
-                </Text>
-                <Text family="mono" style={styles.rowTime}>
-                  {formatLongDate(new Date(entry.at))}
-                </Text>
-              </View>
-
+            return (
               <RipplePressable
-                onPress={() => remove(entry.id)}
-                hitSlop={8}
-                style={styles.rowRemove}
+                key={entry.id}
+                onPress={() => open(entry)}
+                style={styles.row}
                 accessibilityRole="button"
-                accessibilityLabel={t("inboxRemove")}
+                accessibilityLabel={`${entry.title}: ${entry.body}`}
               >
-                <Feather name="x" size={15} color={theme.text.secondary} />
-              </RipplePressable>
-            </View>
-          ))}
+                <View style={[styles.rowIcon, late && styles.rowIconLate]}>
+                  <MaterialCommunityIcons
+                    name={ICONS[entry.kind]}
+                    size={20}
+                    color={late ? theme.functional.danger : theme.primary.clay}
+                  />
+                </View>
 
-          <Button
-            label={t("inboxClear")}
-            onPress={clear}
-            variant="ghost"
-            style={styles.clear}
-          />
+                <View style={styles.rowTexts}>
+                  <View style={styles.rowHead}>
+                    {!entry.read && <View style={styles.dot} />}
+                    <Text style={styles.rowTitle} numberOfLines={1}>
+                      {entry.title}
+                    </Text>
+                  </View>
+
+                  <Text style={styles.rowBody}>{entry.body}</Text>
+
+                  <Text family="mono" style={styles.rowTime}>
+                    {formatLongDate(new Date(entry.at))}
+                  </Text>
+                </View>
+
+                <Feather
+                  name="chevron-right"
+                  size={17}
+                  color={theme.text.secondary}
+                />
+              </RipplePressable>
+            );
+          })}
         </ScrollView>
       )}
     </Container>

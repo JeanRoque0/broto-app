@@ -89,6 +89,7 @@ export function usePlantDetail() {
   async function saveTask(payload: {
     interval_days: number;
     next_at: Date;
+    remind_at: string;
     enabled?: boolean;
   }) {
     if (!editingTask) return;
@@ -99,6 +100,7 @@ export function usePlantDetail() {
         payload: {
           interval_days: payload.interval_days,
           next_at: toDateString(payload.next_at),
+          remind_at: payload.remind_at,
           ...(payload.enabled === undefined ? {} : { enabled: payload.enabled }),
         },
       });

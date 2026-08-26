@@ -18,13 +18,16 @@ export const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     gap: theme.spacing.s3,
     padding: theme.spacing.s3,
     borderRadius: theme.radius.md,
     borderWidth: 1,
     borderColor: theme.functional.line,
     backgroundColor: theme.surface.card,
+  },
+  rowIconLate: {
+    backgroundColor: theme.functional.dangerSoft,
   },
   rowIcon: {
     width: 44,
@@ -37,24 +40,30 @@ export const styles = StyleSheet.create({
   rowTexts: {
     flex: 1,
     gap: 2,
+    paddingTop: 2,
+  },
+  rowHead: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.s2,
+  },
+  rowTitle: {
+    flex: 1,
+    ...type.sectionTitle,
+  },
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: theme.primary.clay,
   },
   rowBody: {
-    fontSize: fontSize.s6,
+    ...type.bodySm,
     color: theme.text.primary,
   },
   rowTime: {
     fontSize: fontSize.s2,
     color: theme.text.tertiary,
-  },
-  rowRemove: {
-    width: 32,
-    height: 32,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 16,
-  },
-  clear: {
-    marginTop: theme.spacing.s4,
   },
   empty: {
     flex: 1,

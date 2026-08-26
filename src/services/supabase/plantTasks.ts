@@ -15,7 +15,9 @@ export async function listPlantTasks(userId: string) {
 
 export async function updatePlantTask(
   taskId: string,
-  payload: Partial<Pick<PlantTask, "interval_days" | "next_at" | "enabled">>,
+  payload: Partial<
+    Pick<PlantTask, "interval_days" | "next_at" | "remind_at" | "enabled">
+  >,
 ) {
   const { error } = await supabase
     .from("plant_tasks")

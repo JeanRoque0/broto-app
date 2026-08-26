@@ -32,7 +32,7 @@ export function useUpdatePlantTask() {
     mutationFn: (params: {
       taskId: string;
       payload: Partial<
-        Pick<PlantTask, "interval_days" | "next_at" | "enabled">
+        Pick<PlantTask, "interval_days" | "next_at" | "remind_at" | "enabled">
       >;
     }) => updatePlantTask(params.taskId, params.payload),
     onSuccess: () => {

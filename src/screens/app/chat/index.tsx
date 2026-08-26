@@ -129,6 +129,9 @@ export default function ChatScreen() {
           </View>
         ) : (
           <FlashListContainer
+            maintainVisibleContentPosition={{
+              autoscrollToBottomThreshold: 0.2,
+            }}
             ref={list}
             data={items}
             keyExtractor={(item) => item.id}

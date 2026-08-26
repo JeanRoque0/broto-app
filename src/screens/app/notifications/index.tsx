@@ -2,6 +2,12 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  LinearTransition,
+  ReduceMotion,
+} from "react-native-reanimated";
 
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -50,6 +56,7 @@ export default function NotificationsScreen() {
   const [hour, minute] = reminderTime.slice(0, 5).split(":").map(Number);
   const [draftHour, setDraftHour] = useState(hour);
   const [draftMinute, setDraftMinute] = useState(minute);
+  const [expanded, setExpanded] = useState(false);
 
   return (
     <Container>
@@ -130,13 +137,26 @@ export default function NotificationsScreen() {
         )}
 
         {enabled && !applying && upcoming.length > 0 && (
-          <View style={styles.list}>
+          <Animated.View
+            style={styles.list}
+            layout={LinearTransition.duration(220).reduceMotion(
+              ReduceMotion.System,
+            )}
+          >
             <Text family="mono" style={styles.listLabel}>
               {t("upcomingNext")}
             </Text>
 
-            {upcoming.slice(0, PREVIEW).map((item) => (
-              <View key={item.id} style={styles.row}>
+            {(expanded ? upcoming : upcoming.slice(0, PREVIEW)).map((item) => (
+              <Animated.View
+                key={item.id}
+                style={styles.row}
+                entering={FadeIn.duration(180).reduceMotion(ReduceMotion.System)}
+                exiting={FadeOut.duration(140).reduceMotion(ReduceMotion.System)}
+                layout={LinearTransition.duration(220).reduceMotion(
+                  ReduceMotion.System,
+                )}
+              >
                 <View style={styles.rowDate}>
                   <Text family="mono" style={styles.rowDay}>
                     {item.at.getDate().toString().padStart(2, "0")}
@@ -147,6 +167,9 @@ export default function NotificationsScreen() {
                 </View>
 
                 <View style={styles.rowTexts}>
+                  <Text style={styles.rowTitle} numberOfLines={1}>
+                    {item.title}
+                  </Text>
                   <Text style={styles.rowBody} numberOfLines={2}>
                     {item.body}
                   </Text>
@@ -156,15 +179,30 @@ export default function NotificationsScreen() {
                     {item.at.getMinutes().toString().padStart(2, "0")}
                   </Text>
                 </View>
-              </View>
+              </Animated.View>
             ))}
 
             {upcoming.length > PREVIEW && (
-              <Text family="mono" style={styles.more}>
-                {t("upcomingMore", { count: upcoming.length - PREVIEW })}
-              </Text>
+              <RipplePressable
+                onPress={() => setExpanded((open) => !open)}
+                style={styles.moreRow}
+                accessibilityRole="button"
+                accessibilityState={{ expanded }}
+              >
+                <Text family="mono" style={styles.more}>
+                  {expanded
+                    ? t("upcomingLess")
+                    : t("upcomingMore", { count: upcoming.length - PREVIEW })}
+                </Text>
+
+                <Feather
+                  name={expanded ? "chevron-up" : "chevron-down"}
+                  size={15}
+                  color={theme.text.tertiary}
+                />
+              </RipplePressable>
             )}
-          </View>
+          </Animated.View>
         )}
 
         {enabled && !applying && upcoming.length === 0 && (
@@ -177,7 +215,7 @@ export default function NotificationsScreen() {
             <Text family="display" style={styles.emptyTitle}>
               {t("emptyTitle")}
             </Text>
-            <Text style={styles.hint}>{t("emptyText")}</Text>
+            <Text style={styles.emptyText}>{t("emptyText")}</Text>
           </View>
         )}
       </ScrollView>

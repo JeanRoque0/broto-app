@@ -81,8 +81,11 @@ export const styles = StyleSheet.create({
     flex: 1,
     gap: 2,
   },
+  rowTitle: {
+    ...type.sectionTitle,
+  },
   rowBody: {
-    fontSize: fontSize.s6,
+    ...type.bodySm,
     color: theme.text.primary,
   },
   rowTime: {
@@ -92,16 +95,26 @@ export const styles = StyleSheet.create({
   applying: {
     paddingVertical: theme.spacing.s6,
   },
+  moreRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: theme.spacing.s2,
+    paddingVertical: theme.spacing.s3,
+    borderRadius: theme.radius.md,
+  },
   more: {
     fontSize: fontSize.s2,
     color: theme.text.tertiary,
-    textAlign: "center",
-    marginTop: theme.spacing.s2,
   },
   empty: {
     alignItems: "center",
     gap: theme.spacing.s2,
     paddingVertical: theme.spacing.s6,
+  },
+  emptyText: {
+    ...type.bodySm,
+    textAlign: "center",
   },
   emptyTitle: {
     ...type.displayXs,
