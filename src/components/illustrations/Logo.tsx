@@ -3,7 +3,7 @@ import Svg, { G, Path, Rect } from "react-native-svg";
 import { theme } from "@/style/theme";
 
 const LEAF = "M38 39C38 22 30 15 20 9C34 12 41 23 42 34C44 20 53 12 64 8C52 17 45 26 44 39H38Z";
-const FIT = "translate(256 306) scale(6.3529) translate(-38 -39)";
+const FIT = "translate(256 306) scale(6.3529) translate(-42 -39)";
 const BODY = "M-94 2 L94 2 L72 96 Q72 112 54 112 L-54 112 Q-72 112 -72 96 Z";
 
 type LogoProps = {
@@ -18,7 +18,7 @@ export function Logo({ size = 64, tone = "color" }: LogoProps) {
   const rim = light ? theme.text.onPrimary : theme.primary.clay;
 
   return (
-    <Svg width={size} height={size} viewBox="135 103 292 367">
+    <Svg width={size} height={size} viewBox="110 103 292 367">
       <G transform={FIT} fill={plant}>
         <Path d={LEAF} />
       </G>

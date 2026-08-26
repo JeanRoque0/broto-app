@@ -13,10 +13,10 @@ const SITE = process.env.BROTO_WEB_DIR ?? path.join(__dirname, "..", "..", "web"
 const LEAF =
   "M38 39C38 22 30 15 20 9C34 12 41 23 42 34C44 20 53 12 64 8C52 17 45 26 44 39H38Z";
 const FIT =
-  "translate(256 306) scale(6.3529) translate(-38 -39)";
+  "translate(256 306) scale(6.3529) translate(-42 -39)";
 const BODY = "M-94 2 L94 2 L72 96 Q72 112 54 112 L-54 112 Q-72 112 -72 96 Z";
 
-const BOX = { cx: 256, cy: 287, height: 355 };
+const BOX = { cx: 256, cy: 286, height: 355 };
 
 function mark(plant, pot, rim) {
   return `
@@ -44,11 +44,11 @@ function canvas({ background, scale, flat, radius }) {
 
 const targets = [
   { file: "icon.png", size: 1024, background: SAND, scale: 0.74 },
-  { file: "android-icon-foreground.png", size: 1024, scale: 0.6 },
+  { file: "android-icon-foreground.png", size: 1024, scale: 0.46 },
   {
     file: "android-icon-monochrome.png",
     size: 1024,
-    scale: 0.6,
+    scale: 0.46,
     flat: "#000000",
   },
   { file: "splash-icon.png", size: 512, scale: 0.86 },
