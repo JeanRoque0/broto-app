@@ -16,9 +16,7 @@ export function LanguageSheet({ visible, onClose }: LanguageSheetProps) {
   const { t } = useTranslation();
   const chosen = useLanguageStore((state) => state.chosen);
   const setLanguage = useLanguageStore((state) => state.setLanguage);
-  const useSystemLanguage = useLanguageStore(
-    (state) => state.useSystemLanguage,
-  );
+  const followSystem = useLanguageStore((state) => state.followSystem);
 
   function handleSelect(code: LanguageCode) {
     setLanguage(code);
@@ -26,7 +24,7 @@ export function LanguageSheet({ visible, onClose }: LanguageSheetProps) {
   }
 
   function handleSystem() {
-    useSystemLanguage();
+    followSystem();
     onClose();
   }
 

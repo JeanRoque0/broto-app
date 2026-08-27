@@ -10,14 +10,14 @@
     "backgroundColor": "#F7F4ED",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "app.broto.mobile",
+      "bundleIdentifier": "com.broto.app",
       "usesAppleSignIn": true,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
-      "package": "app.broto.mobile",
+      "package": "com.broto.app",
       "adaptiveIcon": {
         "backgroundColor": "#F7F4ED",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

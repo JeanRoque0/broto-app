@@ -35,6 +35,8 @@
   "lastWater": "Regada em {{date}}",
   "neverWatered": "Ainda não regou",
   "fertilizerLabel": "Adubo",
+  "tempMinLabel": "Mínima",
+  "tempMaxLabel": "Máxima",
   "diagEyebrow": "Diagnósticos",
   "diagEmpty": "Nenhum problema registrado.",
   "diagResolve": "Marcar como resolvido",

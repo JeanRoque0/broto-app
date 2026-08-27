@@ -28,6 +28,20 @@ export const styles = StyleSheet.create({
   field: {
     gap: theme.spacing.s2,
   },
+  tempRow: {
+    flexDirection: "row",
+    gap: theme.spacing.s3,
+  },
+  tempCol: {
+    flex: 1,
+    gap: theme.spacing.s2,
+  },
+  tempCap: {
+    fontSize: fontSize.s1,
+    letterSpacing: 1.1,
+    textTransform: "uppercase",
+    color: theme.text.tertiary,
+  },
   fieldLabel: {
     ...type.sectionTitle,
     fontSize: fontSize.s5,

@@ -23,6 +23,7 @@ import { Stepper } from "@/components/ui/Stepper";
 import { StepTransition } from "@/components/ui/StepTransition";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
+import { toFahrenheit } from "@/utils/temperature";
 import { FertilizerPace, LightLevel } from "@/types/identification";
 
 import { SwitchRow } from "./components/SwitchRow";
@@ -55,6 +56,7 @@ export default function PlantFormScreen() {
     groups,
     isPro,
     isEditing,
+    unit,
     saving,
     step,
     stepIndex,
@@ -91,6 +93,11 @@ export default function PlantFormScreen() {
     saveTask,
     toggleTask,
   } = usePlantForm();
+
+  const formatTemp = (celsius: number) =>
+    unit === "fahrenheit"
+      ? `${toFahrenheit(celsius)} °F`
+      : `${celsius} °C`;
 
   const hasPhoto = !!photoUri || !!photoPath;
   const filledPhotoStep = step === "photo" && hasPhoto;
@@ -354,6 +361,52 @@ export default function PlantFormScreen() {
                       </View>
                     )}
                   />
+                </View>
+
+                <View style={styles.field}>
+                  <Text style={styles.fieldLabel}>
+                    {tAnalysis("temperatureLabel")}
+                  </Text>
+
+                  <View style={styles.tempRow}>
+                    <View style={styles.tempCol}>
+                      <Text family="mono" style={styles.tempCap}>
+                        {t("tempMinLabel")}
+                      </Text>
+                      <Controller
+                        control={control}
+                        name="tempMin"
+                        render={({ field: { onChange, value } }) => (
+                          <Stepper
+                            value={value}
+                            onChange={onChange}
+                            min={-10}
+                            max={45}
+                            format={formatTemp}
+                          />
+                        )}
+                      />
+                    </View>
+
+                    <View style={styles.tempCol}>
+                      <Text family="mono" style={styles.tempCap}>
+                        {t("tempMaxLabel")}
+                      </Text>
+                      <Controller
+                        control={control}
+                        name="tempMax"
+                        render={({ field: { onChange, value } }) => (
+                          <Stepper
+                            value={value}
+                            onChange={onChange}
+                            min={-10}
+                            max={45}
+                            format={formatTemp}
+                          />
+                        )}
+                      />
+                    </View>
+                  </View>
                 </View>
 
                 <Controller

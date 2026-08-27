@@ -298,6 +298,15 @@ export default function PlantDetailScreen() {
     events.length > 0 && { id: "history", label: t("historyEyebrow") },
   ].filter(Boolean) as Section[];
 
+  const temperature =
+    plant.temp_min_c !== null && plant.temp_max_c !== null
+      ? {
+          min_c: plant.temp_min_c,
+          max_c: plant.temp_max_c,
+          nota: facts?.temperatura?.nota ?? "",
+        }
+      : (facts?.temperatura ?? null);
+
   const care = [
     {
       icon: "water-outline" as const,
@@ -319,14 +328,11 @@ export default function PlantDetailScreen() {
       value: tAnalysis(`adubo_${plant.fertilizer}`, plant.fertilizer),
       note: plant.fertilizer_note ?? "",
     },
-    facts?.temperatura && {
+    temperature && {
       icon: "thermometer" as const,
       label: tAnalysis("temperatureLabel"),
-      value: tAnalysis(
-        "temperatureRange",
-        convertRange(facts.temperatura, unit),
-      ),
-      note: facts.temperatura.nota,
+      value: tAnalysis("temperatureRange", convertRange(temperature, unit)),
+      note: temperature.nota,
     },
     plant.care_notes && {
       icon: "note-text-outline" as const,

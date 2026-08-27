@@ -57,16 +57,18 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~10.0.0",
     "sharp": "^0.35.3",
     "typescript": "~5.9.2"
   },
   "scripts": {
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "eslint src --quiet",
+    "typecheck": "tsc --noEmit",
+    "icons": "node ./scripts/generate-icons.js"
   },
   "private": true
 }

@@ -35,6 +35,8 @@
   "lastWater": "Watered on {{date}}",
   "neverWatered": "Not watered yet",
   "fertilizerLabel": "Fertilizer",
+  "tempMinLabel": "Low",
+  "tempMaxLabel": "High",
   "diagEyebrow": "Diagnoses",
   "diagEmpty": "No problems logged.",
   "diagResolve": "Mark as resolved",

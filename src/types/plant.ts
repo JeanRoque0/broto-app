@@ -26,6 +26,8 @@ export interface Plant {
   rotate_days: number | null;
   repot_months: number | null;
   prune_month: number | null;
+  temp_min_c: number | null;
+  temp_max_c: number | null;
   care_notes: string | null;
 
   last_watered_at: string | null;
@@ -84,6 +86,8 @@ export type PlantInput = Pick<Plant, "nickname"> &
       | "rotate_days"
       | "repot_months"
       | "prune_month"
+      | "temp_min_c"
+      | "temp_max_c"
       | "care_notes"
       | "last_watered_at"
       | "notify_watering"

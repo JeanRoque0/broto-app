@@ -10,6 +10,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCreateGroup, useGroups } from "@/hooks/useGroups";
 import { taskKeys, usePlantTasks, useUpdatePlantTask } from "@/hooks/usePlantTasks";
 import { useProfile } from "@/hooks/useProfile";
+import { useSpeciesFacts } from "@/hooks/useSpeciesFacts";
+import { useTemperatureUnit } from "@/hooks/useTemperatureUnit";
 import { getCredits } from "@/utils/credits";
 import { FREE_TASK_KINDS, TASK_KINDS } from "@/utils/tasks";
 import {
@@ -47,6 +49,8 @@ export type PlantFormValues = {
   fertilizer: FertilizerPace | null;
   toxic: boolean;
   wateredToday: boolean;
+  tempMin: number;
+  tempMax: number;
 };
 
 type TaskDraft = Pick<
@@ -55,6 +59,8 @@ type TaskDraft = Pick<
 >;
 
 const DEFAULT_INTERVAL = 7;
+const DEFAULT_TEMP_MIN_C = 15;
+const DEFAULT_TEMP_MAX_C = 30;
 
 const FERTILIZER_DAYS: Record<string, number> = {
   quinzenal: 15,
@@ -85,6 +91,8 @@ export function usePlantForm() {
   const updatePlant = useUpdatePlant(plantId);
   const createGroup = useCreateGroup();
   const { tasks: allTasks } = usePlantTasks();
+  const { facts } = useSpeciesFacts(plant?.species_scientific);
+  const { unit } = useTemperatureUnit();
   const updateTask = useUpdatePlantTask();
 
   const [stepIndex, setStepIndex] = useState(0);
@@ -118,6 +126,8 @@ export function usePlantForm() {
       fertilizer: null,
       toxic: false,
       wateredToday: false,
+      tempMin: DEFAULT_TEMP_MIN_C,
+      tempMax: DEFAULT_TEMP_MAX_C,
     },
     mode: "onTouched",
   });
@@ -134,6 +144,10 @@ export function usePlantForm() {
       fertilizer: (plant.fertilizer as FertilizerPace | null) ?? null,
       toxic: plant.toxic_to_pets ?? false,
       wateredToday: false,
+      tempMin:
+        plant.temp_min_c ?? facts?.temperatura?.min_c ?? DEFAULT_TEMP_MIN_C,
+      tempMax:
+        plant.temp_max_c ?? facts?.temperatura?.max_c ?? DEFAULT_TEMP_MAX_C,
     });
 
     setPhotoPath(plant.photo_path);
@@ -206,6 +220,8 @@ export function usePlantForm() {
           light: values.light,
           fertilizer: values.fertilizer,
           toxic_to_pets: values.toxic,
+          temp_min_c: values.tempMin,
+          temp_max_c: values.tempMax,
           last_watered_at: wateredAt?.toISOString(),
         };
 
@@ -435,6 +451,7 @@ export function usePlantForm() {
     groups,
     isPro,
     isEditing,
+    unit,
     saving,
     step,
     stepIndex,

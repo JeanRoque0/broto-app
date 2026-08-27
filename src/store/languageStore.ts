@@ -10,7 +10,7 @@ interface LanguageState {
   chosen: LanguageCode | null;
   current: LanguageCode;
   setLanguage: (code: LanguageCode) => void;
-  useSystemLanguage: () => void;
+  followSystem: () => void;
   syncFromSystem: () => void;
 }
 
@@ -25,7 +25,7 @@ export const useLanguageStore = create<LanguageState>()(
         set({ chosen: code, current: code });
       },
 
-      useSystemLanguage: () => {
+      followSystem: () => {
         const detected = detectDeviceLanguage();
         i18n.changeLanguage(detected);
         set({ chosen: null, current: detected });
