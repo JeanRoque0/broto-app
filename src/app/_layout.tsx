@@ -19,6 +19,7 @@ import { AppErrorBoundary } from "@/components/AppErrorBoundary";
 import { ToastContainer } from "@/components/ui/Toast";
 import { useAuthListener } from "@/hooks/useAuth";
 import { useAuthDeepLink } from "@/hooks/useAuthDeepLink";
+import { useNotificationNavigation } from "@/hooks/useNotificationNavigation";
 import { useSystemLanguage } from "@/hooks/useSystemLanguage";
 import "@/i18n";
 import { theme } from "@/style/theme";
@@ -41,6 +42,7 @@ export const queryClient = new QueryClient({
 function AppContent() {
   useAuthListener();
   useAuthDeepLink();
+  useNotificationNavigation();
   useSystemLanguage();
   return <Slot />;
 }
