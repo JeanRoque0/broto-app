@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { AppErrorBoundary } from "@/components/AppErrorBoundary";
 import { ToastContainer } from "@/components/ui/Toast";
 import { useAuthListener } from "@/hooks/useAuth";
 import { useAuthDeepLink } from "@/hooks/useAuthDeepLink";
@@ -66,7 +67,9 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <StatusBar style="dark" />
-          <AppContent />
+          <AppErrorBoundary onReset={() => queryClient.clear()}>
+            <AppContent />
+          </AppErrorBoundary>
         </QueryClientProvider>
 
         <ToastContainer />

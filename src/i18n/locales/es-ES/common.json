@@ -6,6 +6,8 @@
   "retry": "Intentar de nuevo",
   "errorTitle": "Algo no funcionó",
   "errorDescription": "Inténtalo de nuevo en unos segundos.",
+  "crashTitle": "Esta pantalla falló",
+  "crashDescription": "El error quedó registrado. Inténtalo de nuevo.",
   "requestFailed": "No salió bien",
   "requestFailedSubtitle": "Inténtalo de nuevo en unos segundos.",
   "language": "Idioma",

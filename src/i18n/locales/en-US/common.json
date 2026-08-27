@@ -6,6 +6,8 @@
   "retry": "Try again",
   "errorTitle": "Something went wrong",
   "errorDescription": "Try again in a few seconds.",
+  "crashTitle": "This screen crashed",
+  "crashDescription": "The error was logged. Try again.",
   "requestFailed": "That didn't work",
   "requestFailedSubtitle": "Try again in a few seconds.",
   "language": "Language",

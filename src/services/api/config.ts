@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { Toast } from "@/components/ui/Toast";
 import i18n from "@/i18n";
+import { captureError } from "@/services/monitoring";
 import { supabase } from "@/services/supabase/client";
 
 export const api = axios.create({
@@ -36,6 +37,10 @@ api.interceptors.response.use(
       }
 
       const status = error.response.status;
+
+      if (status >= 500) {
+        captureError(error, { endpoint: error.config?.url ?? "", status });
+      }
 
       if (status === 402 || status === 401) {
         return Promise.reject(error);
