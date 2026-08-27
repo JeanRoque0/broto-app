@@ -39,6 +39,3 @@ yarn-error.*
 .env
 !.env.example
 
-# ferramentas locais
-CLAUDE.md
-.claude/
