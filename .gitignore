@@ -38,3 +38,7 @@ yarn-error.*
 # env (a anon key não é segredo, mas o arquivo local não vai pro repo)
 .env
 !.env.example
+
+# ferramentas locais
+CLAUDE.md
+.claude/
