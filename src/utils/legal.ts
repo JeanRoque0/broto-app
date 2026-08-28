@@ -5,7 +5,12 @@ import {
   isSupportedLanguage,
   LanguageCode,
 } from "@/constants/languages";
-import { LEGAL_PATHS, LegalDocument, SITE_BASE_URL } from "@/constants/legal";
+import {
+  LEGAL_PATHS,
+  LegalDocument,
+  SITE_BASE_URL,
+  TERMS_VERSION,
+} from "@/constants/legal";
 import i18n from "@/i18n";
 import { theme } from "@/style/theme";
 import { Profile } from "@/types/profile";
@@ -15,7 +20,7 @@ function currentLanguage(): LanguageCode {
 }
 
 export function needsConsent(profile: Profile) {
-  return !profile.accepted_terms_at;
+  return !profile.accepted_terms_at || profile.terms_version !== TERMS_VERSION;
 }
 
 export function legalUrl(document: LegalDocument) {

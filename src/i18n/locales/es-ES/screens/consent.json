@@ -7,5 +7,9 @@
   "tipsHint": "Opcional. Una vez al mes, como mucho.",
   "decline": "Rechazar",
   "declinedTitle": "Has salido",
-  "declinedSubtitle": "Sin aceptar los términos no se puede usar Broto. Tu cuenta sigue ahí si cambias de idea."
+  "declinedSubtitle": "Sin aceptar los términos no se puede usar Broto. Tu cuenta sigue ahí si cambias de idea.",
+  "updateEyebrow": "Documentos actualizados",
+  "updateTitle": "Cambiamos los términos",
+  "updateIntro": "Actualizamos los Términos de uso y la Política de privacidad. Échales un vistazo y acéptalos para seguir usando Broto.",
+  "updateDeclinedSubtitle": "Sin aceptar la nueva versión no puedes usar Broto. Tu cuenta y tus plantas siguen ahí si cambias de idea."
 }

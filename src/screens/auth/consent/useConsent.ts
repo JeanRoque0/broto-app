@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions } from "react-native";
 
 import { Toast } from "@/components/ui/Toast";
 import { TERMS_VERSION } from "@/constants/legal";
 import { useAuth } from "@/hooks/useAuth";
-import { profileKeys } from "@/hooks/useProfile";
+import { profileKeys, useProfile } from "@/hooks/useProfile";
 import { signOut } from "@/services/supabase/auth";
 import { acceptTerms } from "@/services/supabase/profile";
 
@@ -20,10 +20,20 @@ export function useConsent() {
   const { fontScale } = useWindowDimensions();
   const { userId } = useAuth();
   const queryClient = useQueryClient();
+  const { data: profile } = useProfile();
+
+  const updating = !!profile?.accepted_terms_at;
 
   const [terms, setTerms] = useState(false);
   const [tips, setTips] = useState(false);
   const [declining, setDeclining] = useState(false);
+  const seeded = useRef(false);
+
+  useEffect(() => {
+    if (seeded.current || !profile) return;
+    seeded.current = true;
+    setTips(profile.accepted_tips);
+  }, [profile]);
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -48,7 +58,7 @@ export function useConsent() {
       router.replace("/(auth)/welcome");
       Toast.show({
         text: t("declinedTitle"),
-        subtitle: t("declinedSubtitle"),
+        subtitle: t(updating ? "updateDeclinedSubtitle" : "declinedSubtitle"),
       });
     } catch {
       Toast.show({
@@ -67,6 +77,7 @@ export function useConsent() {
     setTips,
     loading: mutation.isPending,
     declining,
+    updating,
     stackedActions: fontScale > STACK_ACTIONS_ABOVE,
     canContinue: terms && !!userId,
     handleContinue: () => mutation.mutate(),
