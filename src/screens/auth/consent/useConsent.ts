@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions } from "react-native";
 
@@ -25,19 +25,11 @@ export function useConsent() {
   const updating = !!profile?.accepted_terms_at;
 
   const [terms, setTerms] = useState(false);
-  const [tips, setTips] = useState(false);
   const [declining, setDeclining] = useState(false);
-  const seeded = useRef(false);
-
-  useEffect(() => {
-    if (seeded.current || !profile) return;
-    seeded.current = true;
-    setTips(profile.accepted_tips);
-  }, [profile]);
 
   const mutation = useMutation({
     mutationFn: () =>
-      acceptTerms({ userId: userId!, tips, version: TERMS_VERSION }),
+      acceptTerms({ userId: userId!, version: TERMS_VERSION }),
     onSuccess: (profile) => {
       queryClient.setQueryData(profileKeys.detail(userId!), profile);
     },
@@ -72,9 +64,7 @@ export function useConsent() {
 
   return {
     terms,
-    tips,
     setTerms,
-    setTips,
     loading: mutation.isPending,
     declining,
     updating,

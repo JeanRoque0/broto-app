@@ -27,7 +27,6 @@ export type ProfileUpdate = Partial<
 
 export async function acceptTerms(params: {
   userId: string;
-  tips: boolean;
   version: string;
 }) {
   const now = new Date().toISOString();
@@ -37,8 +36,6 @@ export async function acceptTerms(params: {
     .update({
       accepted_terms_at: now,
       terms_version: params.version,
-      accepted_tips: params.tips,
-      accepted_tips_at: params.tips ? now : null,
     })
     .eq("id", params.userId)
     .select()

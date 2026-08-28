@@ -18,9 +18,7 @@ export default function ConsentScreen() {
   const { t: tCommon } = useTranslation();
   const {
     terms,
-    tips,
     setTerms,
-    setTips,
     loading,
     declining,
     updating,
@@ -61,18 +59,6 @@ export default function ConsentScreen() {
           </View>
         </Card>
 
-        <Card
-          style={styles.option}
-          onPress={() => setTips(!tips)}
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: tips }}
-        >
-          <Checkbox value={tips} onChange={setTips} />
-          <View style={styles.optionText}>
-            <Text style={styles.optionTitle}>{t("tips")}</Text>
-            <Text style={styles.optionHint}>{t("tipsHint")}</Text>
-          </View>
-        </Card>
       </View>
 
       <View
