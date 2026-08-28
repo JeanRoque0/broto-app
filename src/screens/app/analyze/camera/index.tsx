@@ -47,6 +47,9 @@ export default function CameraScreen() {
     freeQuota,
     renewsLabel,
     openPaywall,
+    singlePrice,
+    buying,
+    handleBuySingle,
     handleClose,
     tipsVisible,
     openTips,
@@ -230,7 +233,16 @@ export default function CameraScreen() {
           date: renewsLabel,
         })}
       >
-        <Button label={t("blockedPro")} onPress={openPaywall} />
+        <Button
+          label={t("blockedSingle", { price: singlePrice })}
+          onPress={handleBuySingle}
+          loading={buying}
+        />
+        <Button
+          label={t("blockedPro")}
+          onPress={openPaywall}
+          variant="outline"
+        />
         <Button
           label={t("blockedLater")}
           onPress={closeBlocked}

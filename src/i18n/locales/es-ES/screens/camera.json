@@ -35,5 +35,8 @@
   "tipsSingleText": "Con dos en el encuadre, la respuesta puede ser sobre la que no querías.",
   "tipsExtra": "Si hay una hoja manchada o con bichos, deja esa parte bien visible en el encuadre.",
   "tipsAction": "Entendido",
-  "tipsOpen": "Consejos de foto"
+  "tipsOpen": "Consejos de foto",
+  "blockedSingle": "Comprar 1 análisis · {{price}}",
+  "purchaseFailedTitle": "Compra no disponible",
+  "purchaseFailedText": "La compra todavía no está activada en esta versión."
 }

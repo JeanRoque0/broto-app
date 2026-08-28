@@ -35,5 +35,7 @@
   "usageCredits": "{{count}} análisis disponible",
   "usageCredits_other": "{{count}} análisis disponibles",
   "usageFreeHint": "El plan gratis da 1 análisis al mes.",
-  "capsTextChat": "Son {{chat}} mensajes al mes con Brotinho, y el contador se reinicia el día 1. Este plan mantiene los análisis del plan gratis. Ningún plan de Broto es ilimitado — el número está aquí, en los Términos y en la ficha de la tienda."
+  "capsTextChat": "Son {{chat}} mensajes al mes con Brotinho, y el contador se reinicia el día 1. Este plan mantiene los análisis del plan gratis. Ningún plan de Broto es ilimitado — el número está aquí, en los Términos y en la ficha de la tienda.",
+  "singleTitle": "¿Solo un análisis?",
+  "singleText": "Compra uno suelto, sin suscribirte. No caduca."
 }

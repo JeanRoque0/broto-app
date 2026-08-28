@@ -73,6 +73,8 @@ export default function PaywallScreen() {
     usage,
     buy,
     restore,
+    singlePrice,
+    buySingle,
   } = usePaywall();
 
   const features = kind === "pro" ? PRO_FEATURES : CHAT_FEATURES;
@@ -205,6 +207,20 @@ export default function PaywallScreen() {
               ? t("capsTextChat", { chat: CHAT_MONTH_CAP })
               : t("capsText", { analyses: MONTH_CAP, chat: CHAT_MONTH_CAP })}
           </Text>
+        </View>
+
+        <View style={styles.single}>
+          <View style={styles.singleTexts}>
+            <Text style={styles.singleTitle}>{t("singleTitle")}</Text>
+            <Text style={styles.singleText}>{t("singleText")}</Text>
+          </View>
+          <Button
+            label={singlePrice}
+            onPress={buySingle}
+            loading={busy}
+            variant="outline"
+            fullWidth={false}
+          />
         </View>
 
         <Button

@@ -150,6 +150,28 @@ export const styles = StyleSheet.create({
   capsText: {
     ...type.bodySm,
   },
+  single: {
+    marginTop: theme.spacing.s5,
+    padding: theme.spacing.s4,
+    borderRadius: theme.radius.md,
+    borderWidth: 1,
+    borderColor: theme.functional.line,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.s3,
+  },
+  singleTexts: {
+    flex: 1,
+    gap: 2,
+  },
+  singleTitle: {
+    fontSize: fontSize.s4,
+    fontWeight: "700",
+    color: theme.text.primary,
+  },
+  singleText: {
+    ...type.bodySm,
+  },
   action: {
     marginTop: theme.spacing.s5,
   },

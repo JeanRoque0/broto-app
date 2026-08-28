@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { CameraView, FlashMode, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -9,7 +10,13 @@ import { Toast } from "@/components/ui/Toast";
 import { FREE_QUOTA } from "@/constants";
 import { MAX_ANALYSIS_PHOTOS } from "@/constants";
 import { formatOrdinalDate } from "@/utils/format";
-import { useCredits, useRefreshProfileOnFocus } from "@/hooks/useProfile";
+import {
+  profileKeys,
+  useCredits,
+  useRefreshProfileOnFocus,
+} from "@/hooks/useProfile";
+import { useAuth } from "@/hooks/useAuth";
+import { purchaseProduct, SINGLE_ANALYSIS } from "@/services/purchases";
 import { useAnalysisStore, useOnboardingStore } from "@/store";
 
 export function useCamera() {
@@ -20,6 +27,9 @@ export function useCamera() {
   const [flash, setFlash] = useState<FlashMode>("off");
   const [capturing, setCapturing] = useState(false);
   const [blockedVisible, setBlockedVisible] = useState(false);
+  const [buying, setBuying] = useState(false);
+  const { userId } = useAuth();
+  const queryClient = useQueryClient();
 
   useRefreshProfileOnFocus();
   const credits = useCredits();
@@ -100,6 +110,26 @@ export function useCamera() {
     openPaywall: () => {
       setBlockedVisible(false);
       router.push("/(app)/paywall");
+    },
+    singlePrice: SINGLE_ANALYSIS.price,
+    buying,
+    handleBuySingle: async () => {
+      setBuying(true);
+
+      try {
+        await purchaseProduct(SINGLE_ANALYSIS.id);
+        await queryClient.invalidateQueries({
+          queryKey: profileKeys.detail(userId ?? ""),
+        });
+        setBlockedVisible(false);
+      } catch {
+        Toast.show({
+          text: t("purchaseFailedTitle"),
+          subtitle: t("purchaseFailedText"),
+        });
+      } finally {
+        setBuying(false);
+      }
     },
     handleAnalyze: () => {
       if (!credits.isPro && credits.total <= 0) {

@@ -12,7 +12,10 @@ import {
   purchaseProduct,
   purchasesAvailable,
   restorePurchases,
+  SINGLE_ANALYSIS,
 } from "@/services/purchases";
+
+type PlanKind = Exclude<ProductKind, "single">;
 
 export function usePaywall() {
   const router = useRouter();
@@ -20,9 +23,9 @@ export function usePaywall() {
   const credits = useCredits();
 
   const params = useLocalSearchParams<{ kind?: string }>();
-  const initial: ProductKind = params.kind === "chat" ? "chat" : "pro";
+  const initial: PlanKind = params.kind === "chat" ? "chat" : "pro";
 
-  const [kind, setKind] = useState<ProductKind>(initial);
+  const [kind, setKind] = useState<PlanKind>(initial);
   const [selected, setSelected] = useState<ProductId>(
     initial === "chat" ? "broto_chat_annual" : "broto_pro_annual",
   );
@@ -30,7 +33,7 @@ export function usePaywall() {
 
   const products = CATALOG.filter((product) => product.kind === kind);
 
-  function pickKind(next: ProductKind) {
+  function pickKind(next: PlanKind) {
     setKind(next);
     setSelected(next === "pro" ? "broto_pro_annual" : "broto_chat_annual");
   }
@@ -70,6 +73,8 @@ export function usePaywall() {
       renewsAt: credits.renewsAt,
     },
     buy: () => run(() => purchaseProduct(selected)),
+    singlePrice: SINGLE_ANALYSIS.price,
+    buySingle: () => run(() => purchaseProduct(SINGLE_ANALYSIS.id)),
     restore: () => run(restorePurchases),
     close: () => router.back(),
   };

@@ -35,5 +35,7 @@
   "usageCredits": "{{count}} analysis available",
   "usageCredits_other": "{{count}} analyses available",
   "usageFreeHint": "The free plan gives 1 analysis a month.",
-  "capsTextChat": "That is {{chat}} messages a month with Brotinho, and the counter resets on the 1st. This plan keeps the free plan analyses. No Broto plan is unlimited — the number is here, in the Terms and on the store listing."
+  "capsTextChat": "That is {{chat}} messages a month with Brotinho, and the counter resets on the 1st. This plan keeps the free plan analyses. No Broto plan is unlimited — the number is here, in the Terms and on the store listing.",
+  "singleTitle": "Just one analysis?",
+  "singleText": "Buy a single one, no subscription. It does not expire."
 }

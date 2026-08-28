@@ -2,10 +2,11 @@ export type ProductId =
   | "broto_pro_monthly"
   | "broto_pro_annual"
   | "broto_chat_monthly"
-  | "broto_chat_annual";
+  | "broto_chat_annual"
+  | "broto_analysis_single";
 
-export type ProductKind = "pro" | "chat";
-export type ProductPeriod = "month" | "year";
+export type ProductKind = "pro" | "chat" | "single";
+export type ProductPeriod = "month" | "year" | "once";
 
 export interface Product {
   id: ProductId;
@@ -49,7 +50,19 @@ export const CATALOG: Product[] = [
     monthly: "R$ 4,16",
     saves: "R$ 8,90",
   },
+  {
+    id: "broto_analysis_single",
+    kind: "single",
+    period: "once",
+    price: "R$ 1,90",
+    monthly: null,
+    saves: null,
+  },
 ];
+
+export const SINGLE_ANALYSIS = CATALOG.find(
+  (product) => product.kind === "single",
+)!;
 
 export const purchasesAvailable = false;
 

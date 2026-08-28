@@ -35,5 +35,8 @@
   "tipsSingleText": "With two in frame, the answer may be about the one you did not mean.",
   "tipsExtra": "If a leaf is spotted or has bugs, make sure that part is clearly in frame.",
   "tipsAction": "Got it",
-  "tipsOpen": "Photo tips"
+  "tipsOpen": "Photo tips",
+  "blockedSingle": "Buy 1 analysis · {{price}}",
+  "purchaseFailedTitle": "Purchase unavailable",
+  "purchaseFailedText": "Purchases are not switched on in this version yet."
 }

@@ -35,5 +35,7 @@
   "usageCredits": "{{count}} análise disponível",
   "usageCredits_other": "{{count}} análises disponíveis",
   "usageFreeHint": "O plano grátis dá 1 análise por mês.",
-  "capsTextChat": "São {{chat}} mensagens por mês com o Brotinho, e o contador zera no dia 1º. Este plano mantém as análises do plano grátis. Nenhum plano do Broto é ilimitado — o número está aqui, nos Termos e na ficha da loja."
+  "capsTextChat": "São {{chat}} mensagens por mês com o Brotinho, e o contador zera no dia 1º. Este plano mantém as análises do plano grátis. Nenhum plano do Broto é ilimitado — o número está aqui, nos Termos e na ficha da loja.",
+  "singleTitle": "Só uma análise?",
+  "singleText": "Compre avulsa, sem assinar nada. Ela não expira."
 }
