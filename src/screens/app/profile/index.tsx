@@ -11,6 +11,7 @@ import { useTabBarSpace } from "@/hooks/useTabBarSpace";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { Chip } from "@/components/ui/Chip";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { MenuRow } from "@/components/ui/Row";
@@ -49,6 +50,11 @@ export default function ProfileScreen() {
     openPaywall,
     openNotifications,
     openDeleteAccount,
+    revokeVisible,
+    revoking,
+    openRevoke,
+    closeRevoke,
+    handleRevoke,
     openTerms,
     openPrivacy,
     openRefund,
@@ -185,6 +191,11 @@ export default function ProfileScreen() {
               label={t("support")}
               icon="help-circle"
               onPress={openSupport}
+            />
+            <MenuRow
+              label={t("revoke")}
+              icon="rotate-ccw"
+              onPress={openRevoke}
               last
             />
           </Card>
@@ -213,6 +224,25 @@ export default function ProfileScreen() {
       <AvatarSheet visible={photoVisible} onClose={closePhotoSheet} />
 
       <LanguageSheet visible={languageVisible} onClose={closeLanguage} />
+
+      <ContainerModalCenter
+        visible={revokeVisible}
+        onClose={closeRevoke}
+        title={t("revokeTitle")}
+        description={t("revokeText")}
+      >
+        <Button
+          label={t("revokeConfirm")}
+          onPress={handleRevoke}
+          loading={revoking}
+          variant="danger"
+        />
+        <Button
+          label={t("revokeCancel")}
+          onPress={closeRevoke}
+          variant="ghost"
+        />
+      </ContainerModalCenter>
 
       <UnitsSheet
         visible={unitsVisible}

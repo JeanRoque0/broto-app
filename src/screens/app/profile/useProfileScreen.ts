@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -7,6 +8,7 @@ import { MONTH_CAP } from "@/constants";
 import { useAuth } from "@/hooks/useAuth";
 import { useCredits, useProfile } from "@/hooks/useProfile";
 import { signOut } from "@/services/supabase/auth";
+import { revokeTerms } from "@/services/supabase/profile";
 import { formatOrdinalDate } from "@/utils/format";
 import { openPrivacy, openRefund, openTerms } from "@/utils/legal";
 import { openSupportEmail } from "@/utils/support";
@@ -14,12 +16,15 @@ import { openSupportEmail } from "@/utils/support";
 export function useProfileScreen() {
   const { t } = useTranslation("profile");
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, userId } = useAuth();
   const { data: profile, isLoading } = useProfile();
   const credits = useCredits();
+  const queryClient = useQueryClient();
   const [signingOut, setSigningOut] = useState(false);
   const [languageVisible, setLanguageVisible] = useState(false);
   const [photoVisible, setPhotoVisible] = useState(false);
+  const [revokeVisible, setRevokeVisible] = useState(false);
+  const [revoking, setRevoking] = useState(false);
 
   const name =
     profile?.display_name ?? user?.user_metadata?.name ?? t("fallbackName");
@@ -33,6 +38,27 @@ export function useProfileScreen() {
   const chatLabel = credits.hasChat
     ? t("chatLeft", { count: credits.chatRemaining })
     : null;
+
+  const handleRevoke = useCallback(async () => {
+    if (!userId) return;
+
+    setRevoking(true);
+
+    try {
+      await revokeTerms(userId);
+      await signOut();
+      queryClient.clear();
+      router.replace("/(auth)/welcome");
+    } catch {
+      Toast.show({
+        text: t("revokeFailed"),
+        subtitle: t("revokeFailedSubtitle"),
+      });
+    } finally {
+      setRevoking(false);
+      setRevokeVisible(false);
+    }
+  }, [userId, queryClient, router, t]);
 
   const handleSignOut = useCallback(async () => {
     setSigningOut(true);
@@ -71,6 +97,11 @@ export function useProfileScreen() {
     openPaywall: () => router.push("/(app)/paywall"),
     openNotifications: () => router.push("/(app)/notifications"),
     openDeleteAccount: () => router.push("/(app)/deleteAccount"),
+    revokeVisible,
+    revoking,
+    openRevoke: () => setRevokeVisible(true),
+    closeRevoke: () => setRevokeVisible(false),
+    handleRevoke,
     openTerms,
     openPrivacy,
     openRefund,

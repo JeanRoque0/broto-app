@@ -78,5 +78,12 @@
   "chatLeft": "{{count}} message with Brotinho",
   "chatLeft_other": "{{count}} messages with Brotinho",
   "openMenu": "Open menu",
-  "closeMenu": "Close menu"
+  "closeMenu": "Close menu",
+  "revoke": "Withdraw acceptance of the terms",
+  "revokeTitle": "Withdraw your acceptance?",
+  "revokeText": "You will be signed out and can only use Broto again after accepting the terms once more. Your plants, photos and history stay saved — to erase everything, use Delete account.",
+  "revokeConfirm": "Withdraw and sign out",
+  "revokeCancel": "Keep using",
+  "revokeFailed": "Could not withdraw",
+  "revokeFailedSubtitle": "Try again in a few seconds."
 }

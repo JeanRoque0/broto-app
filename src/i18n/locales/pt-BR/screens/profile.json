@@ -78,5 +78,12 @@
   "chatLeft": "{{count}} mensagem com o Brotinho",
   "chatLeft_other": "{{count}} mensagens com o Brotinho",
   "openMenu": "Abrir menu",
-  "closeMenu": "Fechar menu"
+  "closeMenu": "Fechar menu",
+  "revoke": "Revogar aceite dos termos",
+  "revokeTitle": "Revogar o aceite?",
+  "revokeText": "Você sai da conta e só volta a usar o Broto depois de aceitar os termos de novo. Suas plantas, fotos e histórico continuam salvos — para apagar tudo, use Excluir conta.",
+  "revokeConfirm": "Revogar e sair",
+  "revokeCancel": "Continuar usando",
+  "revokeFailed": "Não deu para revogar",
+  "revokeFailedSubtitle": "Tente de novo em alguns segundos."
 }

@@ -45,6 +45,21 @@ export async function acceptTerms(params: {
   return data;
 }
 
+export async function revokeTerms(userId: string) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .update({
+      accepted_terms_at: null,
+      terms_version: null,
+    })
+    .eq("id", userId)
+    .select()
+    .single<Profile>();
+
+  if (error) throw error;
+  return data;
+}
+
 export async function updateProfile(userId: string, payload: ProfileUpdate) {
   const { data, error } = await supabase
     .from("profiles")
