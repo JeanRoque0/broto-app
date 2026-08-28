@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { CameraView, FlashMode, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Linking } from "react-native";
@@ -13,6 +13,7 @@ import { formatOrdinalDate } from "@/utils/format";
 import {
   profileKeys,
   useCredits,
+  useProfile,
   useRefreshProfileOnFocus,
 } from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
@@ -32,7 +33,15 @@ export function useCamera() {
   const queryClient = useQueryClient();
 
   useRefreshProfileOnFocus();
+  const { data: profile } = useProfile();
   const credits = useCredits();
+  const outOfCredits = !!profile && !credits.isPro && credits.total <= 0;
+
+  useFocusEffect(
+    useCallback(() => {
+      if (outOfCredits) setBlockedVisible(true);
+    }, [outOfCredits]),
+  );
   const photos = useAnalysisStore((state) => state.photos);
   const addPhoto = useAnalysisStore((state) => state.addPhoto);
   const removePhoto = useAnalysisStore((state) => state.removePhoto);
@@ -102,7 +111,7 @@ export function useCamera() {
     handleCapture,
     handlePickFromGallery,
     handleRemovePhoto: removePhoto,
-    blocked: !credits.isPro && credits.total <= 0,
+    blocked: outOfCredits,
     blockedVisible,
     closeBlocked: () => setBlockedVisible(false),
     freeQuota: FREE_QUOTA,
@@ -132,7 +141,7 @@ export function useCamera() {
       }
     },
     handleAnalyze: () => {
-      if (!credits.isPro && credits.total <= 0) {
+      if (outOfCredits) {
         setBlockedVisible(true);
         return;
       }

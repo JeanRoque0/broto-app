@@ -42,6 +42,7 @@ export default function CameraScreen() {
     handlePickFromGallery,
     handleRemovePhoto,
     handleAnalyze,
+    blocked,
     blockedVisible,
     closeBlocked,
     freeQuota,
@@ -193,6 +194,7 @@ export default function CameraScreen() {
           <View style={styles.action}>
             <Pressable
               onPress={handlePickFromGallery}
+              disabled={blocked}
               style={styles.sideButton}
               accessibilityRole="button"
               accessibilityLabel={t("gallery")}
@@ -205,7 +207,7 @@ export default function CameraScreen() {
           <View style={styles.action}>
             <Pressable
               onPress={handleCapture}
-              disabled={capturing}
+              disabled={capturing || blocked}
               accessibilityRole="button"
               accessibilityLabel={t("shutter")}
               style={[
