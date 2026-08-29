@@ -6,6 +6,7 @@ import { View } from "react-native";
 
 import { AddPlantSheet } from "@/components/AddPlantSheet";
 import { GroupPlantsSheet } from "@/components/GroupPlantsSheet";
+import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { NotificationBell } from "@/components/NotificationBell";
 import { GroupSheet } from "@/components/GroupSheet";
 import { EmptyPlantArt } from "@/components/illustrations/OnboardingArt";
@@ -159,6 +160,8 @@ export default function PlantsScreen() {
 
         <NotificationBell />
       </View>
+
+      <AnnouncementBanner style={styles.banner} />
 
       <SegmentedTabs
         options={[

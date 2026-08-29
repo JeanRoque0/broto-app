@@ -10,6 +10,7 @@ import { PlantPhoto } from "@/components/PlantPhoto";
 import { useTabBarSpace } from "@/hooks/useTabBarSpace";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { Card } from "@/components/ui/Card";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { Chip } from "@/components/ui/Chip";
@@ -115,6 +116,8 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.section}>
+          <AnnouncementBanner style={styles.banner} />
+
           <Card style={styles.planCard}>
             <View style={styles.planHead}>
               <View>

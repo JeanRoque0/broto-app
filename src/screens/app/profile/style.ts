@@ -65,6 +65,9 @@ export const styles = StyleSheet.create({
   editButton: {
     marginTop: theme.spacing.s4,
   },
+  banner: {
+    marginBottom: theme.spacing.s4,
+  },
   section: {
     paddingHorizontal: theme.screenPadding,
     marginTop: theme.spacing.s6,

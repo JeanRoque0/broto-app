@@ -4,6 +4,10 @@ import { theme } from "@/style/theme";
 import { fontSize, type } from "@/style/typography";
 
 export const styles = StyleSheet.create({
+  banner: {
+    marginHorizontal: theme.screenPadding,
+    marginBottom: theme.spacing.s4,
+  },
   topbar: {
     flexDirection: "row",
     alignItems: "center",
