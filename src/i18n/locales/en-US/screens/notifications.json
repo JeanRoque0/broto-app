@@ -13,8 +13,6 @@
   "chatBody": "Brotinho knows your plants and answers about them.",
   "enabledLabel": "Get reminders",
   "enabledHint": "Turned off, Broto never reminds you.",
-  "timeLabel": "Default time",
-  "timeHint": "Applies to tasks without their own time.",
   "blockedTitle": "Reminders blocked",
   "blockedText": "You denied permission. Allow it in system settings to receive again.",
   "blockedAction": "Open settings",

@@ -1,7 +1,11 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
-import { CHAT_NUDGE_DAYS, NOTIFICATION_LIMIT } from "@/constants";
+import {
+  CHAT_NUDGE_DAYS,
+  DEFAULT_REMINDER_TIME,
+  NOTIFICATION_LIMIT,
+} from "@/constants";
 import i18n from "@/i18n";
 import { Plant, PlantTask } from "@/types/plant";
 import { TASK_LABELS } from "@/utils/taskLabels";
@@ -44,7 +48,7 @@ async function ensureChannel() {
 }
 
 function parseTime(value: string | null | undefined, fallback: string | null) {
-  const [hour, minute] = (value ?? fallback ?? "09:00")
+  const [hour, minute] = (value ?? fallback ?? DEFAULT_REMINDER_TIME)
     .slice(0, 5)
     .split(":")
     .map(Number);

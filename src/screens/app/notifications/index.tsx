@@ -12,12 +12,10 @@ import Animated, {
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Loader } from "@/components/ui/Loader";
-import { ContainerModal } from "@/components/ui/ContainerModal";
 import { Header } from "@/components/ui/Header";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
-import { WheelBand, WheelPicker } from "@/components/ui/WheelPicker";
 import { theme } from "@/style/theme";
 
 import { formatMonth, formatWeekday } from "@/utils/format";
@@ -25,37 +23,19 @@ import { formatMonth, formatWeekday } from "@/utils/format";
 import { styles } from "./style";
 import { useNotificationSettings } from "./useNotifications";
 
-const HOURS = Array.from({ length: 24 }, (_, index) => ({
-  value: index,
-  label: String(index).padStart(2, "0"),
-}));
-
 const PREVIEW = 3;
-
-const MINUTES = [0, 15, 30, 45].map((value) => ({
-  value,
-  label: String(value).padStart(2, "0"),
-}));
 
 export default function NotificationsScreen() {
   const { t } = useTranslation("notifications");
   const {
     enabled,
-    reminderTime,
     blocked,
     upcoming,
     applying,
     toggle,
-    saveTime,
-    timeVisible,
-    openTime,
-    closeTime,
     openSettings,
   } = useNotificationSettings();
 
-  const [hour, minute] = reminderTime.slice(0, 5).split(":").map(Number);
-  const [draftHour, setDraftHour] = useState(hour);
-  const [draftMinute, setDraftMinute] = useState(minute);
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -103,32 +83,6 @@ export default function NotificationsScreen() {
           </View>
         </RipplePressable>
 
-        {enabled && (
-          <RipplePressable
-            onPress={() => {
-              setDraftHour(hour);
-              setDraftMinute(minute);
-              openTime();
-            }}
-            style={styles.card}
-            accessibilityRole="button"
-          >
-            <View style={styles.texts}>
-              <Text style={styles.label}>{t("timeLabel")}</Text>
-              <Text style={styles.hint}>{t("timeHint")}</Text>
-            </View>
-
-            <Text family="mono" style={styles.time}>
-              {reminderTime.slice(0, 5)}
-            </Text>
-
-            <Feather
-              name="chevron-right"
-              size={18}
-              color={theme.text.secondary}
-            />
-          </RipplePressable>
-        )}
 
         {enabled && applying && (
           <View style={styles.applying}>
@@ -220,38 +174,6 @@ export default function NotificationsScreen() {
         )}
       </ScrollView>
 
-      <ContainerModal
-        visible={timeVisible}
-        onClose={closeTime}
-        title={t("timeLabel")}
-        description={t("timeHint")}
-      >
-        <View style={styles.wheels}>
-          <WheelBand />
-          <WheelPicker
-            items={HOURS}
-            value={draftHour}
-            onChange={setDraftHour}
-          />
-          <WheelPicker
-            items={MINUTES}
-            value={draftMinute}
-            onChange={setDraftMinute}
-          />
-        </View>
-
-        <Button
-          label={t("save", { ns: "common" })}
-          onPress={() =>
-            saveTime(
-              `${String(draftHour).padStart(2, "0")}:${String(
-                draftMinute,
-              ).padStart(2, "0")}`,
-            )
-          }
-          style={styles.action}
-        />
-      </ContainerModal>
     </Container>
   );
 }

@@ -13,8 +13,6 @@
   "chatBody": "O Brotinho conhece as suas plantas e responde sobre elas.",
   "enabledLabel": "Receber lembretes",
   "enabledHint": "Desligado, o Broto não manda lembrete nenhum.",
-  "timeLabel": "Horário padrão",
-  "timeHint": "Vale para as tarefas sem horário próprio.",
   "blockedTitle": "Lembrete bloqueado",
   "blockedText": "Você negou a permissão. Libere nos ajustes do sistema pra voltar a receber.",
   "blockedAction": "Abrir ajustes",

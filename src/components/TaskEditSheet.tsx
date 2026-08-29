@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
+import { DEFAULT_REMINDER_TIME } from "@/constants";
 import { Button } from "@/components/ui/Button";
 import { Calendar } from "@/components/ui/Calendar";
 import {
@@ -33,7 +34,7 @@ const MINUTES = [0, 15, 30, 45].map((value) => ({
   label: String(value).padStart(2, "0"),
 }));
 
-const DEFAULT_TIME = "09:00";
+const DEFAULT_TIME = DEFAULT_REMINDER_TIME;
 
 function splitTime(value: string | null) {
   const [hour, minute] = (value ?? DEFAULT_TIME).slice(0, 5).split(":").map(Number);

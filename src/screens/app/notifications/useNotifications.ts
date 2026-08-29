@@ -3,6 +3,7 @@ import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Linking } from "react-native";
 
+import { DEFAULT_REMINDER_TIME } from "@/constants";
 import { usePlants } from "@/hooks/usePlants";
 import { usePlantTasks } from "@/hooks/usePlantTasks";
 import { getCredits } from "@/utils/credits";
@@ -26,12 +27,11 @@ export function useNotificationSettings() {
   const [upcoming, setUpcoming] = useState<
     { id: string; at: Date; title: string; body: string }[]
   >([]);
-  const [timeVisible, setTimeVisible] = useState(false);
   const [applying, setApplying] = useState(false);
 
   const stored = profile?.notifications_enabled ?? true;
   const [enabled, setEnabled] = useState(stored);
-  const reminderTime = profile?.reminder_time ?? "09:00";
+  const reminderTime = profile?.reminder_time ?? DEFAULT_REMINDER_TIME;
 
   useEffect(() => {
     setEnabled(stored);
@@ -147,15 +147,8 @@ export function useNotificationSettings() {
     apply(next, reminderTime);
   }
 
-  function saveTime(value: string) {
-    setTimeVisible(false);
-    updateProfile({ reminder_time: value });
-    apply(enabled, value);
-  }
-
   return {
     enabled,
-    reminderTime,
     blocked,
     scheduled,
     upcoming,
@@ -163,10 +156,6 @@ export function useNotificationSettings() {
     saving,
     hasTasks: tasks.length > 0,
     toggle,
-    saveTime,
-    timeVisible,
-    openTime: () => setTimeVisible(true),
-    closeTime: () => setTimeVisible(false),
     openSettings: () => Linking.openSettings(),
   };
 }

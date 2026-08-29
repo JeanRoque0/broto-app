@@ -13,8 +13,6 @@
   "chatBody": "Brotinho conoce tus plantas y responde sobre ellas.",
   "enabledLabel": "Recibir recordatorios",
   "enabledHint": "Apagado, Broto no te recuerda nada.",
-  "timeLabel": "Hora predeterminada",
-  "timeHint": "Vale para las tareas sin hora propia.",
   "blockedTitle": "Recordatorios bloqueados",
   "blockedText": "Negaste el permiso. Actívalo en los ajustes del sistema para volver a recibir.",
   "blockedAction": "Abrir ajustes",

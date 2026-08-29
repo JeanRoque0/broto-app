@@ -1,3 +1,5 @@
+export const DEFAULT_REMINDER_TIME = "09:00";
+
 export const FREE_QUOTA = 1;
 
 export const MONTH_CAP = 40;
