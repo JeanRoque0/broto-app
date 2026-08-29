@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Toast } from "@/components/ui/Toast";
-import { CHAT_DAILY_CAP, CHAT_MONTH_CAP } from "@/constants";
 import { useAuth } from "@/hooks/useAuth";
 import { useCredits, useProfile } from "@/hooks/useProfile";
 import { sendMessage } from "@/services/api/chat";
@@ -21,8 +20,8 @@ export const chatKeys = {
 };
 
 export function useChat() {
-  const { t } = useTranslation("chat");
   const { t: tCommon } = useTranslation();
+  const [cap, setCap] = useState<"day" | "month" | "plan" | null>(null);
   const router = useRouter();
   const { userId } = useAuth();
   const queryClient = useQueryClient();
@@ -89,20 +88,12 @@ export function useChat() {
       )?.response;
 
       if (response?.status === 402) {
-        router.push({ pathname: "/(app)/paywall", params: { kind: "chat" } });
+        setCap("plan");
         return;
       }
 
       if (response?.status === 429) {
-        const daily = response.data?.erro === "daily_cap";
-
-        Toast.show({
-          text: t(daily ? "capDayTitle" : "capMonthTitle"),
-          subtitle: t(daily ? "capDayText" : "capMonthText", {
-            day: CHAT_DAILY_CAP,
-            month: CHAT_MONTH_CAP,
-          }),
-        });
+        setCap(response.data?.erro === "daily_cap" ? "day" : "month");
         return;
       }
 
@@ -190,6 +181,8 @@ export function useChat() {
     threadsVisible,
     openThreads: () => setThreadsVisible(true),
     closeThreads: () => setThreadsVisible(false),
+    cap,
+    closeCap: () => setCap(null),
     openPaywall: (plan: "pro" | "chat" = "chat") =>
       router.push({ pathname: "/(app)/paywall", params: { kind: plan } }),
     fromSuggestion: !!params.q,

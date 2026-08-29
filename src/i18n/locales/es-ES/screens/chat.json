@@ -21,5 +21,9 @@
   "capDayTitle": "Hasta aquí por hoy",
   "capDayText": "Usaste los {{day}} mensajes del día. Mañana se reinicia y puedes seguir.",
   "capMonthTitle": "Hasta aquí este mes",
-  "capMonthText": "Usaste los {{month}} mensajes del mes. Se reinicia el día 1."
+  "capMonthText": "Usaste los {{month}} mensajes del mes. Se reinicia el día 1.",
+  "capPlanTitle": "Brotinho viene con un plan",
+  "capPlanText": "Hablar con él entra en el plan de Brotinho o en Pro. Son 150 mensajes al mes, hasta 30 por día.",
+  "capAction": "Entendido",
+  "capPlans": "Ver planes"
 }

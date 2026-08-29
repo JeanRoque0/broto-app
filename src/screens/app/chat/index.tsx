@@ -9,9 +9,11 @@ import {
   BrotinhoArt,
   BrotinhoFace,
 } from "@/components/illustrations/BrotinhoArt";
+import { CHAT_DAILY_CAP, CHAT_MONTH_CAP } from "@/constants";
 import { Button } from "@/components/ui/Button";
 import { CircleButton } from "@/components/ui/CircleButton";
 import { Container } from "@/components/ui/Container";
+import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { FlashListContainer } from "@/components/ui/FlashListContainer";
 import { Header } from "@/components/ui/Header";
 import { KeyboardAwareView } from "@/components/ui/KeyboardAwareView";
@@ -53,6 +55,8 @@ export default function ChatScreen() {
     openThreads,
     closeThreads,
     openPaywall,
+    cap,
+    closeCap,
   } = useChat();
 
   useEffect(() => {
@@ -226,6 +230,40 @@ export default function ChatScreen() {
         onRemove={removeThread}
         onNew={startNew}
       />
+
+      <ContainerModalCenter
+        visible={!!cap}
+        onClose={closeCap}
+        title={
+          cap === "plan"
+            ? t("capPlanTitle")
+            : cap === "day"
+              ? t("capDayTitle")
+              : t("capMonthTitle")
+        }
+        description={
+          cap === "plan"
+            ? t("capPlanText")
+            : cap === "day"
+              ? t("capDayText", { day: CHAT_DAILY_CAP })
+              : t("capMonthText", { month: CHAT_MONTH_CAP })
+        }
+      >
+        {cap === "plan" && (
+          <Button
+            label={t("capPlans")}
+            onPress={() => {
+              closeCap();
+              openPaywall("chat");
+            }}
+          />
+        )}
+        <Button
+          label={t("capAction")}
+          onPress={closeCap}
+          variant={cap === "plan" ? "ghost" : "primary"}
+        />
+      </ContainerModalCenter>
     </Container>
   );
 }

@@ -21,5 +21,9 @@
   "capDayTitle": "Chega por hoje",
   "capDayText": "Você usou as {{day}} mensagens do dia. Amanhã ele zera e dá para continuar.",
   "capMonthTitle": "Chega por este mês",
-  "capMonthText": "Você usou as {{month}} mensagens do mês. No dia 1º ele zera."
+  "capMonthText": "Você usou as {{month}} mensagens do mês. No dia 1º ele zera.",
+  "capPlanTitle": "O Brotinho é dos planos",
+  "capPlanText": "Conversar com ele entra no plano do Brotinho ou no Pro. São 150 mensagens por mês, com até 30 por dia.",
+  "capAction": "Entendi",
+  "capPlans": "Ver planos"
 }

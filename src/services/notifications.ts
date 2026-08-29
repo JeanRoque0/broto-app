@@ -3,7 +3,6 @@ import { Platform } from "react-native";
 
 import { CHAT_NUDGE_DAYS, NOTIFICATION_LIMIT } from "@/constants";
 import i18n from "@/i18n";
-import { Announcement } from "@/types/announcement";
 import { Plant, PlantTask } from "@/types/plant";
 import { TASK_LABELS } from "@/utils/taskLabels";
 import { isTaskKind, parseDay, startOfDay } from "@/utils/tasks";
