@@ -1,7 +1,11 @@
 import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
+import { Button } from "@/components/ui/Button";
+import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { useAnnouncement } from "@/hooks/useAnnouncement";
@@ -14,35 +18,66 @@ type AnnouncementBannerProps = {
 
 export function AnnouncementBanner({ style }: AnnouncementBannerProps) {
   const { t } = useTranslation();
-  const { announcement, title, body, dismiss } = useAnnouncement();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const { announcement, title, body, detail, dismiss } = useAnnouncement();
 
   if (!announcement) return null;
 
   const price = announcement.kind === "price";
 
+  function openPlans() {
+    setOpen(false);
+    dismiss();
+    router.push("/(app)/paywall");
+  }
+
   return (
-    <View style={[styles.container, price && styles.price, style]}>
-      <Feather
-        name={price ? "tag" : "info"}
-        size={18}
-        color={price ? theme.primary.clay : theme.secondary.moss}
-        style={styles.icon}
-      />
-
-      <View style={styles.texts}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.body}>{body}</Text>
-      </View>
-
-      <RipplePressable
-        onPress={dismiss}
-        style={styles.close}
+    <>
+      <Pressable
+        onPress={() => setOpen(true)}
+        style={[styles.container, price && styles.price, style]}
         accessibilityRole="button"
-        accessibilityLabel={t("dismissNotice")}
+        accessibilityLabel={title}
       >
-        <Feather name="x" size={16} color={theme.text.secondary} />
-      </RipplePressable>
-    </View>
+        <Feather
+          name={price ? "tag" : "info"}
+          size={18}
+          color={price ? theme.primary.clay : theme.secondary.moss}
+          style={styles.icon}
+        />
+
+        <View style={styles.texts}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.body} numberOfLines={2}>
+            {body}
+          </Text>
+        </View>
+
+        <RipplePressable
+          onPress={dismiss}
+          style={styles.close}
+          accessibilityRole="button"
+          accessibilityLabel={t("dismissNotice")}
+        >
+          <Feather name="x" size={16} color={theme.text.secondary} />
+        </RipplePressable>
+      </Pressable>
+
+      <ContainerModalCenter
+        visible={open}
+        onClose={() => setOpen(false)}
+        title={title}
+        description={detail}
+      >
+        {price && <Button label={t("noticePlans")} onPress={openPlans} />}
+        <Button
+          label={price ? t("noticeClose") : t("noticeOk")}
+          onPress={() => setOpen(false)}
+          variant={price ? "ghost" : "primary"}
+        />
+      </ContainerModalCenter>
+    </>
   );
 }
 

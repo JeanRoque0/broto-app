@@ -27,5 +27,8 @@
   "tabProfile": "Perfil",
   "tabSearch": "Buscar",
   "tabChat": "Brotinho",
-  "dismissNotice": "Fechar aviso"
+  "dismissNotice": "Fechar aviso",
+  "noticePlans": "Ver planos",
+  "noticeClose": "Fechar",
+  "noticeOk": "Entendi"
 }

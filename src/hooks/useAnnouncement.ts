@@ -49,6 +49,10 @@ export function useAnnouncement() {
     announcement: visible ? data : null,
     title: data ? pick(data.title, i18n.language) : "",
     body: data ? pick(data.body, i18n.language) : "",
+    detail: data
+      ? pick(data.detail ?? data.body, i18n.language) ||
+        pick(data.body, i18n.language)
+      : "",
     dismiss: () => data && dismiss.mutate(data),
   };
 }
