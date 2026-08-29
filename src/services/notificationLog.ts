@@ -1,6 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const KEY = "broto.notifications.log";
+const LEGACY_KEY = "broto.notifications.log";
+
+function keyFor(userId: string) {
+  return `broto.notifications.log.${userId}`;
+}
 const KEEP_DAYS = 30;
 const LIMIT = 60;
 
@@ -29,8 +33,8 @@ function isEntry(value: unknown): value is LogEntry {
   );
 }
 
-async function readAll(): Promise<LogEntry[]> {
-  const stored = await AsyncStorage.getItem(KEY);
+async function readAll(userId: string): Promise<LogEntry[]> {
+  const stored = await AsyncStorage.getItem(keyFor(userId));
   if (!stored) return [];
 
   try {
@@ -41,7 +45,7 @@ async function readAll(): Promise<LogEntry[]> {
   }
 }
 
-async function writeAll(entries: LogEntry[]) {
+async function writeAll(userId: string, entries: LogEntry[]) {
   const floor = Date.now() - KEEP_DAYS * 24 * 60 * 60 * 1000;
 
   const kept = entries
@@ -49,12 +53,15 @@ async function writeAll(entries: LogEntry[]) {
     .sort((a, b) => b.at - a.at)
     .slice(0, LIMIT);
 
-  await AsyncStorage.setItem(KEY, JSON.stringify(kept));
+  await AsyncStorage.setItem(keyFor(userId), JSON.stringify(kept));
   return kept;
 }
 
-export async function recordPlanned(planned: Omit<LogEntry, "read">[]) {
-  const current = await readAll();
+export async function recordPlanned(
+  userId: string,
+  planned: Omit<LogEntry, "read">[],
+) {
+  const current = await readAll(userId);
   const now = Date.now();
   const byId = new Map(current.map((entry) => [entry.id, entry]));
 
@@ -71,25 +78,25 @@ export async function recordPlanned(planned: Omit<LogEntry, "read">[]) {
     }
   }
 
-  return writeAll([...byId.values()]);
+  return writeAll(userId, [...byId.values()]);
 }
 
-export async function listDelivered(now = Date.now()) {
-  const all = await readAll();
+export async function listDelivered(userId: string, now = Date.now()) {
+  const all = await readAll(userId);
   return all.filter((entry) => entry.at <= now);
 }
 
-export async function countUnread(now = Date.now()) {
-  const all = await readAll();
+export async function countUnread(userId: string, now = Date.now()) {
+  const all = await readAll(userId);
   return all.filter((entry) => entry.at <= now && !entry.read).length;
 }
 
-export async function clearLog() {
-  await AsyncStorage.removeItem(KEY);
+export async function clearLog(userId: string) {
+  await AsyncStorage.multiRemove([keyFor(userId), LEGACY_KEY]);
 }
 
-export async function markAllRead() {
-  const all = await readAll();
-  return writeAll(all.map((entry) => ({ ...entry, read: true })));
+export async function markAllRead(userId: string) {
+  const all = await readAll(userId);
+  return writeAll(userId, all.map((entry) => ({ ...entry, read: true })));
 }
 

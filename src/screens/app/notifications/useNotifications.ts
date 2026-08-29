@@ -75,6 +75,8 @@ export function useNotificationSettings() {
 
   const run = useCallback(
     async (nextEnabled: boolean, nextTime: string) => {
+      if (!profile) return;
+
       if (!nextEnabled) {
         await cancelCareReminders();
         setScheduled(0);
@@ -95,6 +97,7 @@ export function useNotificationSettings() {
       setBlocked(false);
 
       await rescheduleCareReminders({
+        userId: profile.id,
         tasks,
         plants: plants ?? [],
         reminderTime: nextTime,
@@ -104,7 +107,7 @@ export function useNotificationSettings() {
 
       await refreshCount();
     },
-    [tasks, plants, refreshCount],
+    [profile, tasks, plants, refreshCount],
   );
 
   const apply = useCallback(

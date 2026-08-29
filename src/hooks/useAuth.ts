@@ -15,10 +15,13 @@ export function useAuthListener() {
     const { data: subscription } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === "SIGNED_OUT") {
+          const previous = useAuthStore.getState().user?.id;
+
           clearAuth();
           queryClient.clear();
           useAnalysisStore.getState().reset();
-          resetReminders().catch(() => undefined);
+
+          if (previous) resetReminders(previous).catch(() => undefined);
         } else {
           setSession(session);
         }

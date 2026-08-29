@@ -134,6 +134,7 @@ function slotContent(slot: Slot) {
 }
 
 interface ScheduleParams {
+  userId: string;
   tasks: PlantTask[];
   plants: Plant[];
   reminderTime: string | null;
@@ -142,6 +143,7 @@ interface ScheduleParams {
 }
 
 export async function rescheduleCareReminders({
+  userId,
   tasks,
   plants,
   reminderTime,
@@ -219,14 +221,14 @@ export async function rescheduleCareReminders({
     });
   }
 
-  await recordPlanned(planned);
+  await recordPlanned(userId, planned);
 
   return planned.length;
 }
 
-export async function resetReminders() {
+export async function resetReminders(userId: string) {
   await Notifications.cancelAllScheduledNotificationsAsync();
-  await clearLog();
+  await clearLog(userId);
 }
 
 export async function cancelCareReminders() {

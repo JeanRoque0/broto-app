@@ -47,6 +47,7 @@ export function useCareReminders() {
     signature.current = next;
 
     rescheduleCareReminders({
+      userId: profile.id,
       tasks: active,
       plants: plants ?? [],
       reminderTime: profile.reminder_time,

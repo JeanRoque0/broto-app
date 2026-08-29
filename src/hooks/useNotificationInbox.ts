@@ -1,6 +1,8 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 
+import { useAuth } from "@/hooks/useAuth";
+
 import {
   LogEntry,
   countUnread,
@@ -9,27 +11,32 @@ import {
 } from "@/services/notificationLog";
 
 export function useUnreadNotifications() {
+  const { userId } = useAuth();
   const [unread, setUnread] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
-      countUnread().then(setUnread);
-    }, []),
+      if (!userId) return;
+      countUnread(userId).then(setUnread);
+    }, [userId]),
   );
 
   return unread;
 }
 
 export function useNotificationInbox() {
+  const { userId } = useAuth();
   const [entries, setEntries] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
-    const list = await listDelivered();
+    if (!userId) return;
+
+    const list = await listDelivered(userId);
     setEntries(list);
     setLoading(false);
-    await markAllRead();
-  }, []);
+    await markAllRead(userId);
+  }, [userId]);
 
   useFocusEffect(
     useCallback(() => {
