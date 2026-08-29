@@ -22,7 +22,6 @@
   "retake": "Repetir foto",
   "analyze": "Analizar",
   "blockedTitle": "Se acabaron tus análisis del mes",
-  "blockedText": "Usaste los {{quota}} análisis gratis. La cuota vuelve el {{date}}.",
   "blockedPro": "Ver planes",
   "blockedLater": "Ahora no",
   "tipsTitle": "Cómo hacer la foto",
@@ -38,5 +37,9 @@
   "tipsOpen": "Consejos de foto",
   "blockedSingle": "Comprar 1 análisis · {{price}}",
   "purchaseFailedTitle": "Compra no disponible",
-  "purchaseFailedText": "La compra todavía no está activada en esta versión."
+  "purchaseFailedText": "La compra todavía no está activada en esta versión.",
+  "blockedText_one": "Usaste tu análisis gratis del mes. La cuota vuelve el {{date}}.",
+  "blockedText_other": "Usaste los {{count}} análisis gratis del mes. La cuota vuelve el {{date}}.",
+  "capTitle": "Hasta aquí este mes",
+  "capText": "Usaste los {{cap}} análisis de tu plan. La cuota vuelve el {{date}}, y los sueltos no tienen límite."
 }

@@ -17,5 +17,9 @@
   "lockedDescription": "He knows your plants routine and diagnosis, and answers any time. He comes with the complete plan, and you can also subscribe to him alone.",
   "suggestionsEyebrow": "Ask Brotinho",
   "lockedChatAction": "Subscribe to Brotinho only",
-  "lockedProAction": "See the complete plan"
+  "lockedProAction": "See the complete plan",
+  "capDayTitle": "That is it for today",
+  "capDayText": "You used your {{day}} messages for today. It resets tomorrow and you can carry on.",
+  "capMonthTitle": "That is it for this month",
+  "capMonthText": "You used your {{month}} messages for the month. It resets on the 1st."
 }

@@ -22,7 +22,6 @@
   "retake": "Retake",
   "analyze": "Analyze",
   "blockedTitle": "You are out of analyses this month",
-  "blockedText": "You used your {{quota}} free analyses. The quota resets on {{date}}.",
   "blockedPro": "See plans",
   "blockedLater": "Not now",
   "tipsTitle": "How to take the photo",
@@ -38,5 +37,9 @@
   "tipsOpen": "Photo tips",
   "blockedSingle": "Buy 1 analysis · {{price}}",
   "purchaseFailedTitle": "Purchase unavailable",
-  "purchaseFailedText": "Purchases are not switched on in this version yet."
+  "purchaseFailedText": "Purchases are not switched on in this version yet.",
+  "blockedText_one": "You used your free analysis for the month. Your quota returns on {{date}}.",
+  "blockedText_other": "You used your {{count}} free analyses for the month. Your quota returns on {{date}}.",
+  "capTitle": "That is it for this month",
+  "capText": "You used the {{cap}} analyses in your plan. Your quota returns on {{date}}, and single ones have no limit."
 }

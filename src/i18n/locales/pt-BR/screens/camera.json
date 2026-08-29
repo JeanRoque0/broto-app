@@ -22,7 +22,6 @@
   "retake": "Tirar de novo",
   "analyze": "Analisar",
   "blockedTitle": "Suas análises deste mês acabaram",
-  "blockedText": "Você usou as {{quota}} análises grátis. A cota volta em {{date}}.",
   "blockedPro": "Ver planos",
   "blockedLater": "Agora não",
   "tipsTitle": "Como tirar a foto",
@@ -38,5 +37,9 @@
   "tipsOpen": "Dicas de foto",
   "blockedSingle": "Comprar 1 análise · {{price}}",
   "purchaseFailedTitle": "Compra indisponível",
-  "purchaseFailedText": "A compra ainda não está ligada nesta versão."
+  "purchaseFailedText": "A compra ainda não está ligada nesta versão.",
+  "blockedText_one": "Você usou sua análise grátis do mês. A cota volta em {{date}}.",
+  "blockedText_other": "Você usou as {{count}} análises grátis do mês. A cota volta em {{date}}.",
+  "capTitle": "Chega por este mês",
+  "capText": "Você fez as {{cap}} análises do seu plano. A cota volta em {{date}}, e a avulsa não tem limite."
 }

@@ -17,5 +17,9 @@
   "lockedDescription": "Ele conhece a rotina e o diagnóstico das suas plantas, e tira dúvida a qualquer hora. Vem no plano completo, e também dá pra assinar ele sozinho.",
   "suggestionsEyebrow": "Perguntar ao Brotinho",
   "lockedChatAction": "Assinar só o Brotinho",
-  "lockedProAction": "Ver o plano completo"
+  "lockedProAction": "Ver o plano completo",
+  "capDayTitle": "Chega por hoje",
+  "capDayText": "Você usou as {{day}} mensagens do dia. Amanhã ele zera e dá para continuar.",
+  "capMonthTitle": "Chega por este mês",
+  "capMonthText": "Você usou as {{month}} mensagens do mês. No dia 1º ele zera."
 }

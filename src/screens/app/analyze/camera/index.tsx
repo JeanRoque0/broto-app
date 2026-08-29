@@ -46,6 +46,8 @@ export default function CameraScreen() {
     blockedVisible,
     closeBlocked,
     freeQuota,
+    monthCap,
+    atMonthCap,
     renewsLabel,
     openPaywall,
     singlePrice,
@@ -229,22 +231,25 @@ export default function CameraScreen() {
       <ContainerModalCenter
         visible={blockedVisible}
         onClose={closeBlocked}
-        title={t("blockedTitle")}
-        description={t("blockedText", {
-          quota: freeQuota,
-          date: renewsLabel,
-        })}
+        title={atMonthCap ? t("capTitle") : t("blockedTitle")}
+        description={
+          atMonthCap
+            ? t("capText", { cap: monthCap, date: renewsLabel })
+            : t("blockedText", { count: freeQuota, date: renewsLabel })
+        }
       >
         <Button
           label={t("blockedSingle", { price: singlePrice })}
           onPress={handleBuySingle}
           loading={buying}
         />
-        <Button
-          label={t("blockedPro")}
-          onPress={openPaywall}
-          variant="outline"
-        />
+        {!atMonthCap && (
+          <Button
+            label={t("blockedPro")}
+            onPress={openPaywall}
+            variant="outline"
+          />
+        )}
         <Button
           label={t("blockedLater")}
           onPress={closeBlocked}

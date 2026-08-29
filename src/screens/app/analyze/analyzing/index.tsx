@@ -1,6 +1,8 @@
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+
+import { MONTH_CAP } from "@/constants";
 import { LayoutChangeEvent, View } from "react-native";
 import Animated, {
   cancelAnimation,
@@ -78,7 +80,7 @@ export default function AnalyzingScreen() {
         <View style={styles.container}>
           <ErrorState
             title={t(state.title)}
-            description={t(state.text)}
+            description={t(state.text, { cap: MONTH_CAP })}
             onRetry={
               {
                 illegible: newPhoto,

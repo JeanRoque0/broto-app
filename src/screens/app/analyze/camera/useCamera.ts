@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Linking } from "react-native";
 
 import { Toast } from "@/components/ui/Toast";
-import { FREE_QUOTA } from "@/constants";
+import { FREE_QUOTA, MONTH_CAP } from "@/constants";
 import { MAX_ANALYSIS_PHOTOS } from "@/constants";
 import { formatOrdinalDate } from "@/utils/format";
 import {
@@ -35,7 +35,9 @@ export function useCamera() {
   useRefreshProfileOnFocus();
   const { data: profile } = useProfile();
   const credits = useCredits();
-  const outOfCredits = !!profile && !credits.isPro && credits.total <= 0;
+  const noFreeCredits = !!profile && !credits.isPro && credits.total <= 0;
+  const atMonthCap = !!profile && credits.isPro && credits.monthRemaining <= 0;
+  const outOfCredits = noFreeCredits || atMonthCap;
 
   useFocusEffect(
     useCallback(() => {
@@ -115,6 +117,8 @@ export function useCamera() {
     blockedVisible,
     closeBlocked: () => setBlockedVisible(false),
     freeQuota: FREE_QUOTA,
+    monthCap: MONTH_CAP,
+    atMonthCap,
     renewsLabel: formatOrdinalDate(credits.renewsAt),
     openPaywall: () => {
       setBlockedVisible(false);

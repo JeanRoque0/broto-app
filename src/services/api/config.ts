@@ -42,7 +42,7 @@ api.interceptors.response.use(
         captureError(error, { endpoint: error.config?.url ?? "", status });
       }
 
-      if (status === 402 || status === 401) {
+      if (status === 402 || status === 401 || status === 429) {
         return Promise.reject(error);
       }
 
