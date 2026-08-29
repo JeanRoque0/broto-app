@@ -22,6 +22,7 @@ const ICONS: Record<
   care: "watering-can-outline",
   late: "alert-circle-outline",
   chat: "chat-outline",
+  notice: "bullhorn-outline",
 };
 
 export default function InboxScreen() {
@@ -32,6 +33,11 @@ export default function InboxScreen() {
   function open(entry: LogEntry) {
     if (entry.kind === "chat") {
       router.push("/(app)/(tabs)/chat");
+      return;
+    }
+
+    if (entry.kind === "notice") {
+      router.push("/(app)/(tabs)");
       return;
     }
 

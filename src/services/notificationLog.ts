@@ -8,7 +8,7 @@ function keyFor(userId: string) {
 const KEEP_DAYS = 30;
 const LIMIT = 60;
 
-export type LogKind = "care" | "late" | "chat";
+export type LogKind = "care" | "late" | "chat" | "notice";
 
 export interface LogEntry {
   id: string;
@@ -27,7 +27,7 @@ function isEntry(value: unknown): value is LogEntry {
     !!entry &&
     typeof entry.id === "string" &&
     typeof entry.at === "number" &&
-    ["care", "late", "chat"].includes(entry.kind) &&
+    ["care", "late", "chat", "notice"].includes(entry.kind) &&
     typeof entry.title === "string" &&
     typeof entry.body === "string"
   );

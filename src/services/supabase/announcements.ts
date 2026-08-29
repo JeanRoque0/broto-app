@@ -5,7 +5,7 @@ import { supabase } from "./client";
 export async function getActiveAnnouncement() {
   const { data, error } = await supabase
     .from("announcements")
-    .select("id, kind, title, body, starts_at, ends_at")
+    .select("id, kind, title, body, starts_at, notify_at, ends_at")
     .order("starts_at", { ascending: false })
     .limit(1)
     .maybeSingle<Announcement>();

@@ -6,5 +6,6 @@ export interface Announcement {
   title: Record<string, string>;
   body: Record<string, string>;
   starts_at: string;
+  notify_at: string | null;
   ends_at: string | null;
 }

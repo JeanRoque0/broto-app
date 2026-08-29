@@ -29,6 +29,11 @@ export function useNotificationNavigation() {
       return;
     }
 
+    if (data?.kind === "notice") {
+      router.push("/(app)/(tabs)");
+      return;
+    }
+
     if (typeof plantId === "string" && plantId) {
       router.push(`/(app)/plant/${plantId}`);
     }

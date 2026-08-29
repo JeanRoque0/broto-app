@@ -3,6 +3,7 @@ import { Platform } from "react-native";
 
 import { CHAT_NUDGE_DAYS, NOTIFICATION_LIMIT } from "@/constants";
 import i18n from "@/i18n";
+import { Announcement } from "@/types/announcement";
 import { Plant, PlantTask } from "@/types/plant";
 import { TASK_LABELS } from "@/utils/taskLabels";
 import { isTaskKind, parseDay, startOfDay } from "@/utils/tasks";
@@ -140,6 +141,14 @@ interface ScheduleParams {
   reminderTime: string | null;
   enabled: boolean;
   chatNudge: boolean;
+  notice?: NoticeSlot | null;
+}
+
+export interface NoticeSlot {
+  id: string;
+  title: string;
+  body: string;
+  at: Date;
 }
 
 export async function rescheduleCareReminders({
@@ -149,6 +158,7 @@ export async function rescheduleCareReminders({
   reminderTime,
   enabled,
   chatNudge,
+  notice,
 }: ScheduleParams) {
   await Notifications.cancelAllScheduledNotificationsAsync();
 
@@ -165,6 +175,30 @@ export async function rescheduleCareReminders({
   );
 
   const planned: Omit<LogEntry, "read">[] = [];
+
+  if (notice && notice.at.getTime() > Date.now()) {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: notice.title,
+        body: notice.body,
+        data: { kind: "notice" },
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+        date: notice.at,
+        channelId: Platform.OS === "android" ? CHANNEL : undefined,
+      },
+    });
+
+    planned.push({
+      id: `notice:${notice.id}`,
+      at: notice.at.getTime(),
+      kind: "notice",
+      plantId: null,
+      title: notice.title,
+      body: notice.body,
+    });
+  }
 
   for (const slot of slots) {
     const { title, body } = slotContent(slot);
