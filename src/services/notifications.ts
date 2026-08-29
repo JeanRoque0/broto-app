@@ -7,7 +7,7 @@ import { Plant, PlantTask } from "@/types/plant";
 import { TASK_LABELS } from "@/utils/taskLabels";
 import { isTaskKind, parseDay, startOfDay } from "@/utils/tasks";
 
-import { LogEntry, recordPlanned } from "./notificationLog";
+import { clearLog, LogEntry, recordPlanned } from "./notificationLog";
 
 const CHANNEL = "care-reminders";
 
@@ -222,6 +222,11 @@ export async function rescheduleCareReminders({
   await recordPlanned(planned);
 
   return planned.length;
+}
+
+export async function resetReminders() {
+  await Notifications.cancelAllScheduledNotificationsAsync();
+  await clearLog();
 }
 
 export async function cancelCareReminders() {

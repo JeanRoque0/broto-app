@@ -1,8 +1,9 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
+import { resetReminders } from "@/services/notifications";
 import { supabase } from "@/services/supabase/client";
-import { useAuthStore } from "@/store";
+import { useAnalysisStore, useAuthStore } from "@/store";
 
 export function useAuthListener() {
   const setSession = useAuthStore((state) => state.setSession);
@@ -16,6 +17,8 @@ export function useAuthListener() {
         if (event === "SIGNED_OUT") {
           clearAuth();
           queryClient.clear();
+          useAnalysisStore.getState().reset();
+          resetReminders().catch(() => undefined);
         } else {
           setSession(session);
         }

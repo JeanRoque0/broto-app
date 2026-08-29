@@ -84,6 +84,10 @@ export async function countUnread(now = Date.now()) {
   return all.filter((entry) => entry.at <= now && !entry.read).length;
 }
 
+export async function clearLog() {
+  await AsyncStorage.removeItem(KEY);
+}
+
 export async function markAllRead() {
   const all = await readAll();
   return writeAll(all.map((entry) => ({ ...entry, read: true })));
