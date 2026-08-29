@@ -9,5 +9,8 @@
   "updateEyebrow": "Documentos actualizados",
   "updateTitle": "Cambiamos los términos",
   "updateIntro": "Actualizamos los Términos de uso y la Política de privacidad. Échales un vistazo y acéptalos para seguir usando Broto.",
-  "updateDeclinedSubtitle": "Sin aceptar la nueva versión no puedes usar Broto. Tu cuenta y tus plantas siguen ahí si cambias de idea."
+  "updateDeclinedSubtitle": "Sin aceptar la nueva versión no puedes usar Broto. Tu cuenta y tus plantas siguen ahí si cambias de idea.",
+  "revokedEyebrow": "Aceptación revocada",
+  "revokedTitle": "Revocaste la aceptación",
+  "revokedIntro": "Para volver a usar Broto, acepta los términos de nuevo. Tus plantas y fotos siguen como las dejaste."
 }

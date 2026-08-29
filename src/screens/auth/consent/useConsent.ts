@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { profileKeys, useProfile } from "@/hooks/useProfile";
 import { signOut } from "@/services/supabase/auth";
 import { acceptTerms } from "@/services/supabase/profile";
+import { consentRevoked } from "@/utils/legal";
 
 const STACK_ACTIONS_ABOVE = 1.4;
 
@@ -22,7 +23,8 @@ export function useConsent() {
   const queryClient = useQueryClient();
   const { data: profile } = useProfile();
 
-  const updating = !!profile?.accepted_terms_at;
+  const revoked = !!profile && consentRevoked(profile);
+  const updating = !!profile?.accepted_terms_at && !revoked;
 
   const [terms, setTerms] = useState(false);
   const [declining, setDeclining] = useState(false);
@@ -68,6 +70,7 @@ export function useConsent() {
     loading: mutation.isPending,
     declining,
     updating,
+    revoked,
     stackedActions: fontScale > STACK_ACTIONS_ABOVE,
     canContinue: terms && !!userId,
     handleContinue: () => mutation.mutate(),

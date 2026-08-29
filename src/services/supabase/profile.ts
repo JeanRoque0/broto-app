@@ -36,6 +36,7 @@ export async function acceptTerms(params: {
     .update({
       accepted_terms_at: now,
       terms_version: params.version,
+      revoked_terms_at: null,
     })
     .eq("id", params.userId)
     .select()
@@ -49,8 +50,7 @@ export async function revokeTerms(userId: string) {
   const { data, error } = await supabase
     .from("profiles")
     .update({
-      accepted_terms_at: null,
-      terms_version: null,
+      revoked_terms_at: new Date().toISOString(),
     })
     .eq("id", userId)
     .select()

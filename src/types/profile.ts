@@ -27,6 +27,7 @@ export interface Profile {
 
   accepted_terms_at: string | null;
   terms_version: string | null;
+  revoked_terms_at: string | null;
   dismissed_announcement: string | null;
   accepted_tips: boolean;
   accepted_tips_at: string | null;

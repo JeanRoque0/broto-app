@@ -19,8 +19,20 @@ function currentLanguage(): LanguageCode {
   return isSupportedLanguage(i18n.language) ? i18n.language : FALLBACK_LANGUAGE;
 }
 
+export function consentRevoked(profile: Profile) {
+  return (
+    !!profile.revoked_terms_at &&
+    (!profile.accepted_terms_at ||
+      profile.revoked_terms_at > profile.accepted_terms_at)
+  );
+}
+
 export function needsConsent(profile: Profile) {
-  return !profile.accepted_terms_at || profile.terms_version !== TERMS_VERSION;
+  return (
+    !profile.accepted_terms_at ||
+    profile.terms_version !== TERMS_VERSION ||
+    consentRevoked(profile)
+  );
 }
 
 export function legalUrl(document: LegalDocument) {

@@ -22,6 +22,7 @@ export default function ConsentScreen() {
     loading,
     declining,
     updating,
+    revoked,
     stackedActions,
     canContinue,
     handleContinue,
@@ -31,13 +32,13 @@ export default function ConsentScreen() {
   return (
     <Container>
       <View style={styles.content}>
-        <Eyebrow>{t(updating ? "updateEyebrow" : "eyebrow")}</Eyebrow>
+        <Eyebrow>{revoked ? t("revokedEyebrow") : updating ? t("updateEyebrow") : t("eyebrow")}</Eyebrow>
 
         <Text family="display" style={styles.title}>
-          {t(updating ? "updateTitle" : "title")}
+          {revoked ? t("revokedTitle") : updating ? t("updateTitle") : t("title")}
         </Text>
         <Text style={styles.intro}>
-          {t(updating ? "updateIntro" : "intro")}
+          {revoked ? t("revokedIntro") : updating ? t("updateIntro") : t("intro")}
         </Text>
 
         <Card
