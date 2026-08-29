@@ -86,5 +86,5 @@
   "savedPlantTitle": "Ya está en tus plantas",
   "savedPlantAction": "Abrir la planta",
   "monthCapTitle": "Por este mes basta",
-  "monthCapText": "Hiciste los {{cap}} análisis del mes. Se reinicia el día 1, y los sueltos están siempre disponibles."
+  "monthCapText": "Hiciste los {{cap}} análisis del mes. Vuelven el {{date}}, y los sueltos no tienen límite."
 }

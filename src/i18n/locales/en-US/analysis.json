@@ -86,5 +86,5 @@
   "savedPlantTitle": "Already in your plants",
   "savedPlantAction": "Open the plant",
   "monthCapTitle": "That is it for this month",
-  "monthCapText": "You made the {{cap}} analyses for the month. It resets on the 1st, and single analyses are always available."
+  "monthCapText": "You made the {{cap}} analyses for the month. They come back on {{date}}, and single ones have no limit."
 }

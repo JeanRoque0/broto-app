@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Toast } from "@/components/ui/Toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useCredits, useProfile } from "@/hooks/useProfile";
+import { formatOrdinalDate } from "@/utils/format";
 import { sendMessage } from "@/services/api/chat";
 import {
   ChatMessage,
@@ -161,6 +162,7 @@ export function useChat() {
   }
 
   return {
+    renewsLabel: formatOrdinalDate(credits.renewsAt),
     hasChat: credits.hasChat,
     remaining: credits.chatRemaining,
     remainingToday: credits.chatRemainingToday,

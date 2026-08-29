@@ -86,5 +86,5 @@
   "savedPlantTitle": "Já está nas suas plantas",
   "savedPlantAction": "Abrir a planta",
   "monthCapTitle": "Chega por este mês",
-  "monthCapText": "Você fez as {{cap}} análises do mês. No dia 1º ele zera, e dá para comprar avulsas a qualquer momento."
+  "monthCapText": "Você fez as {{cap}} análises do mês. Elas voltam em {{date}}, e a avulsa não tem limite."
 }

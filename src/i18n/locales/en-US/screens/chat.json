@@ -21,7 +21,7 @@
   "capDayTitle": "That is it for today",
   "capDayText": "You used your {{day}} messages for today. It resets tomorrow and you can carry on.",
   "capMonthTitle": "That is it for this month",
-  "capMonthText": "You used your {{month}} messages for the month. It resets on the 1st.",
+  "capMonthText": "You used your {{month}} messages for the month. They come back on {{date}}.",
   "capPlanTitle": "Brotinho comes with a plan",
   "capPlanText": "Talking to him is part of the Brotinho plan or Pro. That is 150 messages a month, up to 30 a day.",
   "capAction": "Got it",

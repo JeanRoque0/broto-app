@@ -57,6 +57,7 @@ export default function ChatScreen() {
     openPaywall,
     cap,
     closeCap,
+    renewsLabel,
   } = useChat();
 
   useEffect(() => {
@@ -246,7 +247,10 @@ export default function ChatScreen() {
             ? t("capPlanText")
             : cap === "day"
               ? t("capDayText", { day: CHAT_DAILY_CAP })
-              : t("capMonthText", { month: CHAT_MONTH_CAP })
+              : t("capMonthText", {
+                month: CHAT_MONTH_CAP,
+                date: renewsLabel,
+              })
         }
       >
         {cap === "plan" && (

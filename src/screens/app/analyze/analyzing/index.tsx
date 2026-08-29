@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { MONTH_CAP } from "@/constants";
+import { useCredits } from "@/hooks/useProfile";
+import { formatOrdinalDate } from "@/utils/format";
 import { LayoutChangeEvent, View } from "react-native";
 import Animated, {
   cancelAnimation,
@@ -43,6 +45,7 @@ const ERROR_STATES = {
 export default function AnalyzingScreen() {
   const { t } = useTranslation("analysis");
   const { phase, photo, sent, total, retry, newPhoto, close } = useAnalyzing();
+  const credits = useCredits();
   const [frameHeight, setFrameHeight] = useState(0);
   const offset = useSharedValue(0);
 
@@ -80,7 +83,10 @@ export default function AnalyzingScreen() {
         <View style={styles.container}>
           <ErrorState
             title={t(state.title)}
-            description={t(state.text, { cap: MONTH_CAP })}
+            description={t(state.text, {
+              cap: MONTH_CAP,
+              date: formatOrdinalDate(credits.renewsAt),
+            })}
             onRetry={
               {
                 illegible: newPhoto,
