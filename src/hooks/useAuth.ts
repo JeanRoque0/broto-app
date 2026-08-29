@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
-import { resetReminders } from "@/services/notifications";
+import { unregisterPushToken } from "@/services/push";
 import { supabase } from "@/services/supabase/client";
 import { useAnalysisStore, useAuthStore } from "@/store";
 
@@ -15,13 +15,11 @@ export function useAuthListener() {
     const { data: subscription } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === "SIGNED_OUT") {
-          const previous = useAuthStore.getState().user?.id;
-
           clearAuth();
           queryClient.clear();
           useAnalysisStore.getState().reset();
 
-          if (previous) resetReminders(previous).catch(() => undefined);
+          unregisterPushToken().catch(() => undefined);
         } else {
           setSession(session);
         }

@@ -1,74 +1,55 @@
+import * as Localization from "expo-localization";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
-import * as Localization from "expo-localization";
+import { useTranslation } from "react-i18next";
 
-import { useAnnouncement } from "@/hooks/useAnnouncement";
-import { usePlants } from "@/hooks/usePlants";
-import { usePlantTasks } from "@/hooks/usePlantTasks";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import {
   configureNotifications,
-  rescheduleCareReminders,
+  ensureNotificationPermission,
 } from "@/services/notifications";
-import { getCredits } from "@/utils/credits";
-import { remindableTasks } from "@/utils/tasks";
+import { registerPushToken } from "@/services/push";
+
+const SEEN_INTERVAL_MS = 60 * 60 * 1000;
 
 export function useCareReminders() {
+  const { i18n } = useTranslation();
   const { data: profile } = useProfile();
-  const { tasks } = usePlantTasks();
-  const { data: plants } = usePlants();
   const { mutate: updateProfile } = useUpdateProfile();
-  const { announcement, title, body } = useAnnouncement();
-  const signature = useRef("");
+  const registered = useRef(false);
+  const seenAt = useRef(0);
 
   useEffect(() => {
     configureNotifications();
   }, []);
 
   useEffect(() => {
-    if (!profile || profile.timezone) return;
+    if (!profile || registered.current) return;
+    registered.current = true;
 
-    const zone = Localization.getCalendars()[0]?.timeZone;
-    if (zone) updateProfile({ timezone: zone });
-  }, [profile, updateProfile]);
+    ensureNotificationPermission().then((granted) => {
+      if (granted) registerPushToken(profile.id);
+    });
+  }, [profile]);
 
   const sync = useCallback(() => {
     if (!profile) return;
 
-    const active = remindableTasks(tasks, getCredits(profile).isPro);
+    const zone = Localization.getCalendars()[0]?.timeZone;
+    const payload: Record<string, string> = {};
 
-    const notice =
-      announcement?.notify_at && title
-        ? {
-            id: announcement.id,
-            title,
-            body,
-            at: new Date(announcement.notify_at),
-          }
-        : null;
+    if (!profile.timezone && zone) payload.timezone = zone;
+    if (profile.language !== i18n.language) payload.language = i18n.language;
 
-    const next = [
-      profile.notifications_enabled,
-      profile.reminder_time,
-      notice?.id ?? "",
-      ...active.map(
-        (task) => `${task.id}:${task.next_at}:${task.remind_at ?? ""}`,
-      ),
-    ].join("|");
+    const now = Date.now();
 
-    if (next === signature.current) return;
-    signature.current = next;
+    if (now - seenAt.current > SEEN_INTERVAL_MS) {
+      seenAt.current = now;
+      payload.last_seen_at = new Date().toISOString();
+    }
 
-    rescheduleCareReminders({
-      userId: profile.id,
-      tasks: active,
-      plants: plants ?? [],
-      reminderTime: profile.reminder_time,
-      enabled: profile.notifications_enabled,
-      chatNudge: true,
-      notice,
-    });
-  }, [profile, tasks, plants, announcement, title, body]);
+    if (Object.keys(payload).length > 0) updateProfile(payload);
+  }, [profile, i18n.language, updateProfile]);
 
   useFocusEffect(sync);
 }

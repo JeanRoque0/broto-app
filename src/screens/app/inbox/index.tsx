@@ -9,14 +9,14 @@ import { Loader } from "@/components/ui/Loader";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { useNotificationInbox } from "@/hooks/useNotificationInbox";
-import { LogEntry, LogKind } from "@/services/notificationLog";
+import { ReminderEvent, ReminderKind } from "@/types/reminder";
 import { theme } from "@/style/theme";
 import { formatLongDate } from "@/utils/format";
 
 import { styles } from "./style";
 
 const ICONS: Record<
-  LogKind,
+  ReminderKind,
   React.ComponentProps<typeof MaterialCommunityIcons>["name"]
 > = {
   care: "watering-can-outline",
@@ -30,7 +30,7 @@ export default function InboxScreen() {
   const router = useRouter();
   const { entries, loading } = useNotificationInbox();
 
-  function open(entry: LogEntry) {
+  function open(entry: ReminderEvent) {
     if (entry.kind === "chat") {
       router.push("/(app)/(tabs)/chat");
       return;
@@ -41,7 +41,7 @@ export default function InboxScreen() {
       return;
     }
 
-    if (entry.plantId) router.push(`/(app)/plant/${entry.plantId}`);
+    if (entry.plant_id) router.push(`/(app)/plant/${entry.plant_id}`);
   }
 
   if (loading) {
@@ -99,7 +99,7 @@ export default function InboxScreen() {
 
                 <View style={styles.rowTexts}>
                   <View style={styles.rowHead}>
-                    {!entry.read && <View style={styles.dot} />}
+                    {!entry.read_at && <View style={styles.dot} />}
                     <Text style={styles.rowTitle} numberOfLines={1}>
                       {entry.title}
                     </Text>
@@ -108,7 +108,7 @@ export default function InboxScreen() {
                   <Text style={styles.rowBody}>{entry.body}</Text>
 
                   <Text family="mono" style={styles.rowTime}>
-                    {formatLongDate(new Date(entry.at))}
+                    {formatLongDate(new Date(entry.sent_at))}
                   </Text>
                 </View>
 

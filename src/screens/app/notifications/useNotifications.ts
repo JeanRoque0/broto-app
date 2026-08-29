@@ -1,21 +1,30 @@
 import * as Notifications from "expo-notifications";
-import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Linking } from "react-native";
 
 import { DEFAULT_REMINDER_TIME } from "@/constants";
 import { usePlants } from "@/hooks/usePlants";
 import { usePlantTasks } from "@/hooks/usePlantTasks";
-import { getCredits } from "@/utils/credits";
-import { remindableTasks } from "@/utils/tasks";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
-import {
-  cancelCareReminders,
-  ensureNotificationPermission,
-  rescheduleCareReminders,
-} from "@/services/notifications";
+import { ensureNotificationPermission } from "@/services/notifications";
+import { registerPushToken, unregisterPushToken } from "@/services/push";
+import { getCredits } from "@/utils/credits";
+import { TASK_LABELS } from "@/utils/taskLabels";
+import { isTaskKind, parseDay, startOfDay } from "@/utils/tasks";
+import { remindableTasks } from "@/utils/tasks";
+
+const HORIZON = 20;
+
+interface Upcoming {
+  id: string;
+  at: Date;
+  title: string;
+  body: string;
+}
 
 export function useNotificationSettings() {
+  const { t: tPlants } = useTranslation("plants");
   const { data: profile } = useProfile();
   const { data: plants } = usePlants();
   const { tasks: allTasks } = usePlantTasks();
@@ -23,64 +32,75 @@ export function useNotificationSettings() {
   const { mutate: updateProfile, isPending: saving } = useUpdateProfile();
 
   const [blocked, setBlocked] = useState(false);
-  const [scheduled, setScheduled] = useState(0);
-  const [upcoming, setUpcoming] = useState<
-    { id: string; at: Date; title: string; body: string }[]
-  >([]);
   const [applying, setApplying] = useState(false);
 
   const stored = profile?.notifications_enabled ?? true;
   const [enabled, setEnabled] = useState(stored);
-  const reminderTime = profile?.reminder_time ?? DEFAULT_REMINDER_TIME;
 
   useEffect(() => {
     setEnabled(stored);
   }, [stored]);
 
-  const refreshCount = useCallback(async () => {
-    const list = await Notifications.getAllScheduledNotificationsAsync();
-    setScheduled(list.length);
-
-    const rows = list
-      .map((item) => {
-        const trigger = item.trigger as { value?: number; date?: number };
-        const stamp = trigger?.value ?? trigger?.date;
-
-        return {
-          id: item.identifier,
-          at: stamp ? new Date(stamp) : null,
-          title: item.content.title ?? "",
-          body: item.content.body ?? "",
-        };
-      })
-      .filter(
-        (
-          item,
-        ): item is { id: string; at: Date; title: string; body: string } =>
-          !!item.at,
-      )
-      .sort((a, b) => a.at.getTime() - b.at.getTime());
-
-    setUpcoming(rows);
-
-    return list.length;
-  }, []);
-
   useEffect(() => {
     Notifications.getPermissionsAsync().then((status) => {
       setBlocked(!status.granted && !status.canAskAgain);
     });
-    refreshCount();
-  }, [refreshCount]);
+  }, []);
 
-  const run = useCallback(
-    async (nextEnabled: boolean, nextTime: string) => {
-      if (!profile) return;
+  const upcoming = useMemo<Upcoming[]>(() => {
+    if (!enabled) return [];
 
-      if (!nextEnabled) {
-        await cancelCareReminders();
-        setScheduled(0);
-        setUpcoming([]);
+    const byId = new Map((plants ?? []).map((plant) => [plant.id, plant]));
+    const today = startOfDay(new Date());
+    const slots = new Map<string, Upcoming & { kinds: string[] }>();
+
+    for (const task of tasks) {
+      if (!task.enabled || !isTaskKind(task.kind)) continue;
+
+      const plant = byId.get(task.plant_id);
+      if (!plant) continue;
+
+      const due = startOfDay(parseDay(task.next_at));
+      const late = due.getTime() < today.getTime();
+      const at = new Date(late ? today : due);
+      const [hour, minute] = (task.remind_at ?? DEFAULT_REMINDER_TIME)
+        .slice(0, 5)
+        .split(":")
+        .map(Number);
+
+      at.setHours(hour, minute, 0, 0);
+
+      const key = `${plant.id}:${at.getTime()}`;
+      const slot = slots.get(key) ?? {
+        id: key,
+        at,
+        title: plant.nickname,
+        body: "",
+        kinds: [],
+      };
+
+      slot.kinds.push(
+        tPlants(TASK_LABELS[task.kind as keyof typeof TASK_LABELS]),
+      );
+      slots.set(key, slot);
+    }
+
+    return [...slots.values()]
+      .map((slot) => ({ ...slot, body: slot.kinds.join(", ") }))
+      .sort((a, b) => a.at.getTime() - b.at.getTime())
+      .slice(0, HORIZON);
+  }, [enabled, tasks, plants, tPlants]);
+
+  const toggle = useCallback(async () => {
+    const next = !enabled;
+
+    setEnabled(next);
+    setApplying(true);
+
+    try {
+      if (!next) {
+        updateProfile({ notifications_enabled: false });
+        await unregisterPushToken();
         return;
       }
 
@@ -89,68 +109,23 @@ export function useNotificationSettings() {
       if (!granted) {
         const status = await Notifications.getPermissionsAsync();
         setBlocked(!status.canAskAgain);
-        setScheduled(0);
-        setUpcoming([]);
+        setEnabled(false);
         return;
       }
 
       setBlocked(false);
+      updateProfile({ notifications_enabled: true });
 
-      await rescheduleCareReminders({
-        userId: profile.id,
-        tasks,
-        plants: plants ?? [],
-        reminderTime: nextTime,
-        enabled: true,
-        chatNudge: true,
-      });
-
-      await refreshCount();
-    },
-    [profile, tasks, plants, refreshCount],
-  );
-
-  const apply = useCallback(
-    async (nextEnabled: boolean, nextTime: string) => {
-      setApplying(true);
-
-      try {
-        await run(nextEnabled, nextTime);
-      } finally {
-        setApplying(false);
-      }
-    },
-    [run],
-  );
-  useFocusEffect(
-    useCallback(() => {
-      let alive = true;
-
-      (async () => {
-        const found = await refreshCount();
-        if (!alive || found > 0) return;
-        if (!enabled || tasks.length === 0) return;
-
-        await apply(enabled, reminderTime);
-      })();
-
-      return () => {
-        alive = false;
-      };
-    }, [refreshCount, apply, enabled, reminderTime, tasks.length]),
-  );
-
-  function toggle() {
-    const next = !enabled;
-    setEnabled(next);
-    updateProfile({ notifications_enabled: next });
-    apply(next, reminderTime);
-  }
+      if (profile) await registerPushToken(profile.id);
+    } finally {
+      setApplying(false);
+    }
+  }, [enabled, profile, updateProfile]);
 
   return {
     enabled,
     blocked,
-    scheduled,
+    scheduled: upcoming.length,
     upcoming,
     applying,
     saving,
