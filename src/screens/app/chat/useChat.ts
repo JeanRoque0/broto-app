@@ -45,6 +45,8 @@ export function useChat() {
     null,
   );
   const [thinking, setThinking] = useState(0);
+  const [editing, setEditing] = useState<ChatMessage | null>(null);
+  const abort = useRef<AbortController | null>(null);
 
   const autoSent = useRef(false);
 
@@ -61,8 +63,15 @@ export function useChat() {
   });
 
   const send = useMutation({
-    mutationFn: (text: string) =>
-      sendMessage({ message: text, threadId, plantId }),
+    mutationFn: (text: string) => {
+      abort.current = new AbortController();
+      return sendMessage({
+        message: text,
+        threadId,
+        plantId,
+        signal: abort.current.signal,
+      });
+    },
     onSuccess: (result) => {
       setThreadId(result.threadId);
       setTyping({ full: result.reply, shown: 0 });
@@ -75,6 +84,8 @@ export function useChat() {
       setPending(null);
       setTyping(null);
       refetchProfile();
+
+      if ((error as { code?: string })?.code === "ERR_CANCELED") return;
 
       const response = (
         error as {
@@ -193,24 +204,46 @@ export function useChat() {
     if (!text || send.isPending) return;
 
     setDraft("");
+    setEditing(null);
     setPending(text);
     send.mutate(text);
   }
 
   function stop() {
-    setTyping((current) =>
-      current ? { ...current, shown: current.full.length } : current,
-    );
+    if (typing) {
+      setTyping((current) =>
+        current ? { ...current, shown: current.full.length } : current,
+      );
+      return;
+    }
+
+    abort.current?.abort();
+    abort.current = null;
+    setPending(null);
+
+    if (threadId) {
+      queryClient.invalidateQueries({ queryKey: chatKeys.messages(threadId) });
+    }
   }
 
   function edit(message: ChatMessage) {
-    if (message.role !== "user" || send.isPending) return;
+    if (message.role !== "user" || send.isPending || message.id === "pending") {
+      return;
+    }
+
+    setEditing(message);
     setDraft(message.content);
+  }
+
+  function cancelEdit() {
+    setEditing(null);
+    setDraft("");
   }
 
   function startNew() {
     setTyping(null);
     setPending(null);
+    setEditing(null);
     setThreadId(null);
     setPlantId(null);
     setDraft("");
@@ -235,6 +268,9 @@ export function useChat() {
     isLoading: !!threadId && messages.isLoading,
     isSending: send.isPending,
     isTyping: !!typing,
+    editing,
+    cancelEdit,
+    busy: send.isPending || !!typing,
     thinkingIndex: thinking,
     stop,
     edit,

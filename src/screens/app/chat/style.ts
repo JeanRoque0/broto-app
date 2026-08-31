@@ -105,6 +105,37 @@ export const styles = StyleSheet.create({
     ...type.bodySm,
     textAlign: "center",
   },
+  bubbleEditing: {
+    borderWidth: 1.5,
+    borderColor: theme.primary.clay,
+  },
+  editingBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.s2,
+    marginHorizontal: theme.screenPadding,
+    marginBottom: theme.spacing.s2,
+    paddingVertical: theme.spacing.s2,
+    paddingHorizontal: theme.spacing.s3,
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.primary.claySoft,
+  },
+  editingTexts: {
+    flex: 1,
+  },
+  editingLabel: {
+    fontSize: fontSize.s2,
+    fontWeight: "700",
+    color: theme.primary.clay,
+  },
+  editingText: {
+    fontSize: fontSize.s3,
+    color: theme.text.secondary,
+  },
+  editingClose: {
+    padding: theme.spacing.s1,
+    borderRadius: theme.radius.sm,
+  },
   composer: {
     flexDirection: "row",
     alignItems: "flex-end",

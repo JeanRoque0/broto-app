@@ -31,5 +31,7 @@
   "thinkingC": "Almost there…",
   "thinkingD": "Writing…",
   "editMessage": "Edit and send again",
-  "stop": "Stop"
+  "stop": "Stop",
+  "editingTitle": "Editing",
+  "editingCancel": "Cancel editing"
 }

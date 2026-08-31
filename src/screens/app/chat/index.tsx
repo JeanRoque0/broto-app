@@ -65,10 +65,12 @@ export default function ChatScreen() {
     cap,
     closeCap,
     renewsLabel,
-    isTyping,
     thinkingIndex,
     stop,
     edit,
+    editing,
+    cancelEdit,
+    busy,
   } = useChat();
 
   useEffect(() => {
@@ -201,7 +203,11 @@ export default function ChatScreen() {
                 <View style={styles.bubbleRow}>
                   <RipplePressable
                     onPress={() => edit(item)}
-                    style={[styles.bubble, styles.fromUser]}
+                    style={[
+                      styles.bubble,
+                      styles.fromUser,
+                      editing?.id === item.id && styles.bubbleEditing,
+                    ]}
                     accessibilityRole="button"
                     accessibilityLabel={t("editMessage")}
                   >
@@ -218,6 +224,28 @@ export default function ChatScreen() {
               )
             }
           />
+        )}
+
+        {editing && (
+          <View style={styles.editingBar}>
+            <Feather name="edit-2" size={13} color={theme.primary.clay} />
+
+            <View style={styles.editingTexts}>
+              <Text style={styles.editingLabel}>{t("editingTitle")}</Text>
+              <Text style={styles.editingText} numberOfLines={1}>
+                {editing.content}
+              </Text>
+            </View>
+
+            <RipplePressable
+              onPress={cancelEdit}
+              style={styles.editingClose}
+              accessibilityRole="button"
+              accessibilityLabel={t("editingCancel")}
+            >
+              <Feather name="x" size={15} color={theme.text.secondary} />
+            </RipplePressable>
+          </View>
         )}
 
         <View
@@ -240,18 +268,15 @@ export default function ChatScreen() {
           />
 
           <RipplePressable
-            onPress={isTyping ? stop : submit}
-            disabled={!isTyping && (!draft.trim() || isSending)}
-            style={[
-              styles.send,
-              !isTyping && (!draft.trim() || isSending) && styles.sendOff,
-            ]}
+            onPress={busy ? stop : submit}
+            disabled={!busy && !draft.trim()}
+            style={[styles.send, !busy && !draft.trim() && styles.sendOff]}
             accessibilityRole="button"
-            accessibilityLabel={isTyping ? t("stop") : t("send")}
+            accessibilityLabel={busy ? t("stop") : t("send")}
           >
             <Feather
-              name={isTyping ? "square" : "arrow-up"}
-              size={isTyping ? 15 : 20}
+              name={busy ? "square" : "arrow-up"}
+              size={busy ? 15 : 20}
               color={theme.text.onDark}
             />
           </RipplePressable>

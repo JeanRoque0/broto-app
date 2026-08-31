@@ -31,5 +31,7 @@
   "thinkingC": "Casi listo...",
   "thinkingD": "Escribiendo...",
   "editMessage": "Editar y enviar de nuevo",
-  "stop": "Parar"
+  "stop": "Parar",
+  "editingTitle": "Editando",
+  "editingCancel": "Cancelar edición"
 }
