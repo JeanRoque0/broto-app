@@ -25,5 +25,11 @@
   "capPlanTitle": "Brotinho viene con un plan",
   "capPlanText": "Hablar con él entra en el plan de Brotinho o en Pro. Son 150 mensajes al mes, hasta 30 por día.",
   "capAction": "Entendido",
-  "capPlans": "Ver planes"
+  "capPlans": "Ver planes",
+  "thinkingA": "Pensando...",
+  "thinkingB": "Mirando tus plantas...",
+  "thinkingC": "Casi listo...",
+  "thinkingD": "Escribiendo...",
+  "editMessage": "Editar y enviar de nuevo",
+  "stop": "Parar"
 }

@@ -29,6 +29,13 @@ import { TypingDots } from "./components/TypingDots";
 import { styles } from "./style";
 import { useChat } from "./useChat";
 
+const THINKING = [
+  "thinkingA",
+  "thinkingB",
+  "thinkingC",
+  "thinkingD",
+] as const;
+
 export default function ChatScreen() {
   const { t } = useTranslation("chat");
   const insets = useSafeAreaInsets();
@@ -58,16 +65,35 @@ export default function ChatScreen() {
     cap,
     closeCap,
     renewsLabel,
+    isTyping,
+    thinkingIndex,
+    stop,
+    edit,
   } = useChat();
 
   useEffect(() => {
     if (items.length === 0) return;
-    const timer = setTimeout(
-      () => list.current?.scrollToEnd({ animated: true }),
-      80,
-    );
+
+    const last = items[items.length - 1];
+    const anchor = items.findIndex((item) => item.id === "pending");
+
+    const timer = setTimeout(() => {
+      if (anchor >= 0) {
+        list.current?.scrollToIndex({
+          index: anchor,
+          viewPosition: 0,
+          animated: true,
+        });
+        return;
+      }
+
+      if (last.id !== "typing") {
+        list.current?.scrollToEnd({ animated: true });
+      }
+    }, 80);
+
     return () => clearTimeout(timer);
-  }, [items.length, isSending]);
+  }, [items, isSending]);
 
   if (!hasChat) {
     return (
@@ -160,6 +186,9 @@ export default function ChatScreen() {
                   <View style={styles.typing}>
                     <BrotinhoFace size={28} />
                     <TypingDots />
+                    <Text style={styles.thinking}>
+                      {t(THINKING[thinkingIndex % THINKING.length])}
+                    </Text>
                   </View>
                 )}
                 {failed && !isSending && (
@@ -170,9 +199,14 @@ export default function ChatScreen() {
             renderItem={({ item }) =>
               item.role === "user" ? (
                 <View style={styles.bubbleRow}>
-                  <View style={[styles.bubble, styles.fromUser]}>
+                  <RipplePressable
+                    onPress={() => edit(item)}
+                    style={[styles.bubble, styles.fromUser]}
+                    accessibilityRole="button"
+                    accessibilityLabel={t("editMessage")}
+                  >
                     <Text style={styles.bubbleText}>{item.content}</Text>
-                  </View>
+                  </RipplePressable>
                 </View>
               ) : (
                 <View style={[styles.bubbleRow, styles.botRow]}>
@@ -206,16 +240,20 @@ export default function ChatScreen() {
           />
 
           <RipplePressable
-            onPress={submit}
-            disabled={!draft.trim() || isSending}
+            onPress={isTyping ? stop : submit}
+            disabled={!isTyping && (!draft.trim() || isSending)}
             style={[
               styles.send,
-              (!draft.trim() || isSending) && styles.sendOff,
+              !isTyping && (!draft.trim() || isSending) && styles.sendOff,
             ]}
             accessibilityRole="button"
-            accessibilityLabel={t("send")}
+            accessibilityLabel={isTyping ? t("stop") : t("send")}
           >
-            <Feather name="arrow-up" size={20} color={theme.text.onDark} />
+            <Feather
+              name={isTyping ? "square" : "arrow-up"}
+              size={isTyping ? 15 : 20}
+              color={theme.text.onDark}
+            />
           </RipplePressable>
         </View>
       </KeyboardAwareView>

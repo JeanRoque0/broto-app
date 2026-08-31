@@ -57,6 +57,10 @@ export const styles = StyleSheet.create({
     lineHeight: 22,
     color: theme.text.primary,
   },
+  thinking: {
+    ...type.bodySm,
+    color: theme.text.tertiary,
+  },
   typing: {
     flexDirection: "row",
     alignItems: "center",

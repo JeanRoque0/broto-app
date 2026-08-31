@@ -15,6 +15,11 @@ import {
   removeThread,
 } from "@/services/supabase/chat";
 
+const TYPING_TICK_MS = 24;
+const TYPING_STEP = 3;
+const TYPING_SETTLE_MS = 220;
+const THINKING_ROTATE_MS = 2600;
+
 export const chatKeys = {
   threads: (userId: string) => ["chatThreads", userId] as const,
   messages: (threadId: string) => ["chatMessages", threadId] as const,
@@ -36,8 +41,11 @@ export function useChat() {
   const [plantId, setPlantId] = useState<string | null>(params.plantId ?? null);
   const [pending, setPending] = useState<string | null>(null);
   const [threadsVisible, setThreadsVisible] = useState(false);
+  const [typing, setTyping] = useState<{ full: string; shown: number } | null>(
+    null,
+  );
+  const [thinking, setThinking] = useState(0);
 
-  const restored = useRef(false);
   const autoSent = useRef(false);
 
   const threads = useQuery({
@@ -45,18 +53,6 @@ export function useChat() {
     queryFn: () => listThreads(userId!),
     enabled: !!userId && credits.hasChat,
   });
-
-  useEffect(() => {
-    if (restored.current) return;
-    if (params.q) {
-      restored.current = true;
-      return;
-    }
-    if (threads.data?.length) {
-      restored.current = true;
-      setThreadId(threads.data[0].id);
-    }
-  }, [params.q, threads.data]);
 
   const messages = useQuery({
     queryKey: chatKeys.messages(threadId ?? ""),
@@ -68,11 +64,8 @@ export function useChat() {
     mutationFn: (text: string) =>
       sendMessage({ message: text, threadId, plantId }),
     onSuccess: (result) => {
-      setPending(null);
       setThreadId(result.threadId);
-      queryClient.invalidateQueries({
-        queryKey: chatKeys.messages(result.threadId),
-      });
+      setTyping({ full: result.reply, shown: 0 });
       queryClient.invalidateQueries({
         queryKey: chatKeys.threads(userId ?? ""),
       });
@@ -80,6 +73,7 @@ export function useChat() {
     },
     onError: (error) => {
       setPending(null);
+      setTyping(null);
       refetchProfile();
 
       const response = (
@@ -112,6 +106,51 @@ export function useChat() {
     send.mutate(params.q);
   }, [params.q, send]);
 
+  useEffect(() => {
+    if (!typing) return;
+
+    if (typing.shown >= typing.full.length) {
+      const timer = setTimeout(() => {
+        setPending(null);
+        setTyping(null);
+        if (threadId) {
+          queryClient.invalidateQueries({
+            queryKey: chatKeys.messages(threadId),
+          });
+        }
+      }, TYPING_SETTLE_MS);
+
+      return () => clearTimeout(timer);
+    }
+
+    const timer = setTimeout(() => {
+      setTyping((current) =>
+        current
+          ? {
+              ...current,
+              shown: Math.min(current.full.length, current.shown + TYPING_STEP),
+            }
+          : current,
+      );
+    }, TYPING_TICK_MS);
+
+    return () => clearTimeout(timer);
+  }, [typing, threadId, queryClient]);
+
+  useEffect(() => {
+    if (!send.isPending) {
+      setThinking(0);
+      return;
+    }
+
+    const timer = setInterval(
+      () => setThinking((index) => index + 1),
+      THINKING_ROTATE_MS,
+    );
+
+    return () => clearInterval(timer);
+  }, [send.isPending]);
+
   const remove = useMutation({
     mutationFn: removeThread,
     onSuccess: (_data, removedId) => {
@@ -124,19 +163,30 @@ export function useChat() {
 
   const items = useMemo<ChatMessage[]>(() => {
     const stored = messages.data ?? [];
-    if (!pending) return stored;
+    const extra: ChatMessage[] = [];
 
-    return [
-      ...stored,
-      {
+    if (pending) {
+      extra.push({
         id: "pending",
         thread_id: threadId ?? "",
         role: "user",
         content: pending,
         created_at: new Date().toISOString(),
-      },
-    ];
-  }, [messages.data, pending, threadId]);
+      });
+    }
+
+    if (typing) {
+      extra.push({
+        id: "typing",
+        thread_id: threadId ?? "",
+        role: "assistant",
+        content: typing.full.slice(0, typing.shown),
+        created_at: new Date().toISOString(),
+      });
+    }
+
+    return extra.length ? [...stored, ...extra] : stored;
+  }, [messages.data, pending, typing, threadId]);
 
   function submit() {
     const text = draft.trim();
@@ -147,8 +197,20 @@ export function useChat() {
     send.mutate(text);
   }
 
+  function stop() {
+    setTyping((current) =>
+      current ? { ...current, shown: current.full.length } : current,
+    );
+  }
+
+  function edit(message: ChatMessage) {
+    if (message.role !== "user" || send.isPending) return;
+    setDraft(message.content);
+  }
+
   function startNew() {
-    restored.current = true;
+    setTyping(null);
+    setPending(null);
     setThreadId(null);
     setPlantId(null);
     setDraft("");
@@ -172,6 +234,10 @@ export function useChat() {
     items,
     isLoading: !!threadId && messages.isLoading,
     isSending: send.isPending,
+    isTyping: !!typing,
+    thinkingIndex: thinking,
+    stop,
+    edit,
     failed: send.isError,
     draft,
     setDraft,
