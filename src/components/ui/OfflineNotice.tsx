@@ -1,7 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { Easing, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Animated, {
+  Easing,
   FadeIn,
   FadeOut,
   LinearTransition,
