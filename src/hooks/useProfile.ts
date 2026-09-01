@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -8,7 +8,6 @@ import {
   ProfileUpdate,
   updateProfile,
 } from "@/services/supabase/profile";
-import { useAuthStore } from "@/store";
 import { getCredits } from "@/utils/credits";
 
 export const profileKeys = {
@@ -17,17 +16,12 @@ export const profileKeys = {
 
 export function useProfile() {
   const { userId } = useAuth();
-  const setProfile = useAuthStore((state) => state.setProfile);
 
   const query = useQuery({
     queryKey: profileKeys.detail(userId ?? ""),
     queryFn: () => getProfile(userId!),
     enabled: !!userId,
   });
-
-  useEffect(() => {
-    if (query.data) setProfile(query.data);
-  }, [query.data, setProfile]);
 
   return query;
 }
