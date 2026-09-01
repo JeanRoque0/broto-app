@@ -237,6 +237,7 @@ export function useChat() {
 
   function cancelEdit() {
     setEditing(null);
+    setDraft("");
   }
 
   function startNew() {
