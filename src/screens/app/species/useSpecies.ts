@@ -2,6 +2,7 @@ import * as Clipboard from "expo-clipboard";
 import { useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { LayoutChangeEvent } from "react-native";
 
 import { Toast } from "@/components/ui/Toast";
 import { useCreatePlant } from "@/hooks/usePlants";
@@ -22,6 +23,7 @@ export function useSpecies() {
   const { shot, share, sharing } = useShareCard();
 
   const [photoIndex, setPhotoIndex] = useState<number | null>(null);
+  const [footerHeight, setFooterHeight] = useState(0);
 
   const title = species?.common ?? species?.scientific ?? "";
 
@@ -80,6 +82,9 @@ export function useSpecies() {
     shot,
     share,
     sharing,
+    footerHeight,
+    onFooterLayout: (event: LayoutChangeEvent) =>
+      setFooterHeight(event.nativeEvent.layout.height),
     photoIndex,
     openPhoto: (index: number) => setPhotoIndex(index),
     closePhoto: () => setPhotoIndex(null),

@@ -29,6 +29,8 @@ export default function SpeciesScreen() {
     copy,
     shot,
     share,
+    footerHeight,
+    onFooterLayout,
     photoIndex,
     openPhoto,
     closePhoto,
@@ -56,7 +58,10 @@ export default function SpeciesScreen() {
       />
 
       <ScrollView
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: footerHeight + theme.spacing.s5 },
+        ]}
         showsVerticalScrollIndicator={false}
       >
         {images.length > 0 && (
@@ -133,10 +138,11 @@ export default function SpeciesScreen() {
           </View>
         </View>
 
-        <View style={[styles.block, styles.action]}>
-          <Button label={t("add")} onPress={add} loading={adding} />
-        </View>
       </ScrollView>
+
+      <View style={styles.footer} onLayout={onFooterLayout}>
+        <Button label={t("add")} onPress={add} loading={adding} />
+      </View>
 
       <SpeciesShareCard
         ref={shot}

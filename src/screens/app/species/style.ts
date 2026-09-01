@@ -7,6 +7,18 @@ export const styles = StyleSheet.create({
   content: {
     paddingBottom: theme.spacing.s6,
   },
+  footer: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: theme.screenPadding,
+    paddingTop: theme.spacing.s4,
+    paddingBottom: theme.spacing.s4,
+    backgroundColor: theme.surface.base,
+    borderTopWidth: 1,
+    borderTopColor: theme.functional.line,
+  },
   copy: {
     flexDirection: "row",
     alignItems: "center",
@@ -71,7 +83,5 @@ export const styles = StyleSheet.create({
   suggestions: {
     marginTop: theme.spacing.s6,
   },
-  action: {
-    marginTop: theme.spacing.s6,
-  },
+
 });
