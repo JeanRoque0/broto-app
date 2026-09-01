@@ -2,6 +2,8 @@ import Svg, { Circle, Ellipse, G, Path, Rect } from "react-native-svg";
 
 import { theme } from "@/style/theme";
 
+const SPROUT = "M0 -30 Q7 -38 1.5 -45";
+
 const POT_BODY = "M-94 2 L94 2 L72 96 Q72 112 54 112 L-54 112 Q-72 112 -72 96 Z";
 
 function Face({ scale = 1 }) {
@@ -55,22 +57,18 @@ export function BrotinhoArt({ size = 148 }) {
         <Path d={POT_BODY} fill={theme.illustration.pot} />
       </G>
 
-      <G transform="translate(100 82)">
+      <G transform="translate(100 72)">
         <Path
-          d="M-4 40 L-4 12 Q-4 4 4 4 L4 40 Z"
+          d="M-4 52 L-4 12 Q-4 4 4 4 L4 52 Z"
           fill={theme.illustration.leafDeep}
         />
 
         <Path
-          d="M-1 -18 Q-1 -30 -2 -38"
+          d={SPROUT}
           fill="none"
           stroke={theme.illustration.leafDeep}
-          strokeWidth={4.5}
+          strokeWidth={3.5}
           strokeLinecap="round"
-        />
-        <Path
-          d="M-2 -36 Q11 -42 10 -57 Q-4 -50 -2 -36 Z"
-          fill={theme.illustration.leafDeep}
         />
 
         <Circle cx={0} cy={0} r={34} fill={theme.illustration.leaf} />
