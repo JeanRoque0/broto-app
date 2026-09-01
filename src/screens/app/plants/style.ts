@@ -4,6 +4,9 @@ import { theme } from "@/style/theme";
 import { fontSize, type } from "@/style/typography";
 
 export const styles = StyleSheet.create({
+  pager: {
+    flex: 1,
+  },
   tabs: {
     marginBottom: theme.spacing.s3,
   },

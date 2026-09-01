@@ -1,8 +1,14 @@
 import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import {
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 import { AddPlantSheet } from "@/components/AddPlantSheet";
 import { GroupPlantsSheet } from "@/components/GroupPlantsSheet";
@@ -27,7 +33,9 @@ import { TasksPanel } from "./components/TasksPanel";
 import { styles } from "./style";
 import { usePlantsScreen } from "./usePlantsScreen";
 
-type Tab = "plants" | "tasks" | "analyses";
+const TABS = ["plants", "tasks", "analyses"] as const;
+
+type Tab = (typeof TABS)[number];
 
 export default function PlantsScreen() {
   const { t } = useTranslation("plants");
@@ -36,6 +44,19 @@ export default function PlantsScreen() {
   const fabBottom = tabBarSpace - theme.spacing.s3;
   const params = useLocalSearchParams<{ tab?: string }>();
   const [tab, setTab] = useState<Tab>("plants");
+  const { width } = useWindowDimensions();
+  const pager = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    pager.current?.scrollTo({ x: TABS.indexOf(tab) * width, animated: true });
+  }, [tab, width]);
+
+  const onPageSettle = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const page = Math.round(event.nativeEvent.contentOffset.x / width);
+    const next = TABS[page];
+
+    if (next && next !== tab) setTab(next);
+  };
 
   useEffect(() => {
     if (params.tab === "tasks" || params.tab === "analyses") {
@@ -181,24 +202,38 @@ export default function PlantsScreen() {
     <Container>
       {header}
 
-      {tab === "tasks" ? (
-        <TasksPanel bottomSpace={listBottom} />
-      ) : tab === "analyses" ? (
-        <AnalysesPanel bottomSpace={listBottom} />
-      ) : (
-        <PlantsPanel
-          bottomSpace={listBottom}
-          plants={plants}
-          groups={groups}
-          plantsByGroup={plantsByGroup}
-          refreshing={isRefetching}
-          onRefresh={refetch}
-          onOpenPlant={openPlant}
-          onOpenGroup={openGroup}
-          onAddToGroup={openPick}
-          onNewGroup={openGroupSheet}
-        />
-      )}
+      <ScrollView
+        ref={pager}
+        horizontal
+        pagingEnabled
+        style={styles.pager}
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={onPageSettle}
+        scrollEventThrottle={16}
+      >
+        <View style={{ width }}>
+          <PlantsPanel
+            bottomSpace={listBottom}
+            plants={plants}
+            groups={groups}
+            plantsByGroup={plantsByGroup}
+            refreshing={isRefetching}
+            onRefresh={refetch}
+            onOpenPlant={openPlant}
+            onOpenGroup={openGroup}
+            onAddToGroup={openPick}
+            onNewGroup={openGroupSheet}
+          />
+        </View>
+
+        <View style={{ width }}>
+          <TasksPanel bottomSpace={listBottom} />
+        </View>
+
+        <View style={{ width }}>
+          <AnalysesPanel bottomSpace={listBottom} />
+        </View>
+      </ScrollView>
 
       <Fab
         onPress={openAdd}
