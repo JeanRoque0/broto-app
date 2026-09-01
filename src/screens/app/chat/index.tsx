@@ -34,6 +34,7 @@ import { styles } from "./style";
 import { useChat } from "./useChat";
 
 const TAIL_RESERVE = 260;
+const FOCUS_DELAY = 420;
 const LOW = 0.25;
 
 function Quota({
@@ -87,6 +88,7 @@ export default function ChatScreen() {
   const { t } = useTranslation("chat");
   const insets = useSafeAreaInsets();
   const list = useRef<FlashListRef<ChatMessage>>(null);
+  const field = useRef<TextInput>(null);
   const [focused, setFocused] = useState(false);
   const [viewport, setViewport] = useState(0);
   const {
@@ -129,6 +131,13 @@ export default function ChatScreen() {
   const intro = intros[introSeed % intros.length];
 
   const tail = Math.max(0, viewport - TAIL_RESERVE);
+
+  useEffect(() => {
+    if (!hasChat) return;
+
+    const timer = setTimeout(() => field.current?.focus(), FOCUS_DELAY);
+    return () => clearTimeout(timer);
+  }, [hasChat]);
 
   useEffect(() => {
     const subscription = BackHandler.addEventListener(
@@ -277,6 +286,7 @@ export default function ChatScreen() {
           ]}
         >
           <TextInput
+            ref={field}
             style={[styles.field, focused && styles.fieldFocused]}
             value={draft}
             onChangeText={setDraft}
