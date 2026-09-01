@@ -697,7 +697,9 @@ export default function PlantDetailScreen() {
 
                           {recheckTask ? (
                             <Text style={styles.followDone}>
-                              {t("followReminded")}
+                              {t("followReminded", {
+                                date: formatShortDate(recheckTask.next_at),
+                              })}
                             </Text>
                           ) : (
                             <Button

@@ -196,5 +196,5 @@
   "followAction": "Analizar de nuevo",
   "taskRecheck": "Reanalizar",
   "followRemind": "Recordarme en 7 días",
-  "followReminded": "Te recordaremos en 7 días"
+  "followReminded": "Recordatorio para el {{date}}"
 }
