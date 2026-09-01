@@ -103,7 +103,7 @@ export const styles = StyleSheet.create({
     marginTop: theme.spacing.s4,
   },
   groupLabel: {
-    fontSize: fontSize.s4,
+    fontSize: fontSize.s3,
     fontWeight: "500",
     letterSpacing: 0.8,
     textTransform: "uppercase",
