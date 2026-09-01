@@ -82,17 +82,6 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: theme.spacing.s3,
   },
-  intro: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: theme.spacing.s3,
-    paddingHorizontal: theme.spacing.s6,
-  },
-  introTitle: {
-    ...type.displayXs,
-    textAlign: "center",
-  },
   introText: {
     ...type.bodySm,
     textAlign: "center",

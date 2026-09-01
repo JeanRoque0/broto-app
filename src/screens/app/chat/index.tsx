@@ -45,7 +45,6 @@ const THINKING = [
 
 export default function ChatScreen() {
   const router = useRouter();
-  const [introSeed] = useState(() => Math.floor(Math.random() * 1000));
   const { t } = useTranslation("chat");
   const insets = useSafeAreaInsets();
   const list = useRef<FlashListRef<ChatMessage>>(null);
@@ -76,6 +75,7 @@ export default function ChatScreen() {
     cap,
     closeCap,
     renewsLabel,
+    greeting,
     isTyping,
     thinkingIndex,
     menuVisible,
@@ -87,9 +87,6 @@ export default function ChatScreen() {
     closeUsage,
     remainingToday,
   } = useChat();
-
-  const intros = t("intros", { returnObjects: true }) as unknown as string[];
-  const intro = intros[introSeed % intros.length];
 
   const tail = Math.max(0, viewport - TAIL_RESERVE);
 
@@ -192,12 +189,11 @@ export default function ChatScreen() {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={
-              <View style={styles.intro}>
-                <BrotinhoArt size={132} />
-
-                <Text family="display" style={styles.introTitle}>
-                  {intro}
-                </Text>
+              <View style={[styles.bubbleRow, styles.botRow]}>
+                <BrotinhoFace size={28} />
+                <View style={[styles.bubble, styles.fromBot]}>
+                  <Text style={styles.bubbleText}>{greeting}</Text>
+                </View>
               </View>
             }
             ListFooterComponent={

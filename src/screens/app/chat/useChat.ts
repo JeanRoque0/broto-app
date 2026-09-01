@@ -27,14 +27,39 @@ export const chatKeys = {
 };
 
 export function useChat() {
+  const { t } = useTranslation("chat");
   const { t: tCommon } = useTranslation();
   const [cap, setCap] = useState<"day" | "month" | "plan" | null>(null);
   const router = useRouter();
-  const { userId } = useAuth();
+  const { userId, user } = useAuth();
   const queryClient = useQueryClient();
   const credits = useCredits();
   const online = useOnline();
-  const { refetch: refetchProfile } = useProfile();
+  const { data: profile, refetch: refetchProfile } = useProfile();
+
+  const greeting = useMemo(() => {
+    const full = (
+      profile?.display_name ??
+      user?.user_metadata?.name ??
+      ""
+    ).trim();
+    const name = full.split(" ")[0];
+    const hour = new Date().getHours();
+
+    if (!name) {
+      return hour < 12
+        ? t("greetingMorning")
+        : hour < 18
+          ? t("greetingAfternoon")
+          : t("greetingEvening");
+    }
+
+    return hour < 12
+      ? t("greetingMorningNamed", { name })
+      : hour < 18
+        ? t("greetingAfternoonNamed", { name })
+        : t("greetingEveningNamed", { name });
+  }, [profile?.display_name, user?.user_metadata?.name, t]);
 
   const params = useLocalSearchParams<{ q?: string; plantId?: string }>();
 
@@ -252,6 +277,7 @@ export function useChat() {
   }
 
   return {
+    greeting,
     renewsLabel: formatOrdinalDate(credits.renewsAt),
     hasChat: credits.hasChat,
     remaining: credits.chatRemaining,
