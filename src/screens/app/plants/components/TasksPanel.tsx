@@ -20,9 +20,10 @@ import { useTasks } from "./useTasks";
 
 type TasksPanelProps = {
   bottomSpace: number;
+  onSwipeLock?: (locked: boolean) => void;
 };
 
-export function TasksPanel({ bottomSpace }: TasksPanelProps) {
+export function TasksPanel({ bottomSpace, onSwipeLock }: TasksPanelProps) {
   const { t } = useTranslation("plants");
   const {
     days,
@@ -52,6 +53,7 @@ export function TasksPanel({ bottomSpace }: TasksPanelProps) {
           selected={selected}
           initialIndex={initialIndex}
           onSelect={select}
+          onSwipeLock={onSwipeLock}
         />
       </View>
 

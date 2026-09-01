@@ -46,6 +46,7 @@ export default function PlantsScreen() {
   const [tab, setTab] = useState<Tab>("plants");
   const { width } = useWindowDimensions();
   const pager = useRef<ScrollView>(null);
+  const [swiping, setSwiping] = useState(true);
 
   useEffect(() => {
     pager.current?.scrollTo({ x: TABS.indexOf(tab) * width, animated: true });
@@ -206,6 +207,7 @@ export default function PlantsScreen() {
         ref={pager}
         horizontal
         pagingEnabled
+        scrollEnabled={swiping}
         style={styles.pager}
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={onPageSettle}
@@ -227,7 +229,10 @@ export default function PlantsScreen() {
         </View>
 
         <View style={{ width }}>
-          <TasksPanel bottomSpace={listBottom} />
+          <TasksPanel
+            bottomSpace={listBottom}
+            onSwipeLock={(locked) => setSwiping(!locked)}
+          />
         </View>
 
         <View style={{ width }}>

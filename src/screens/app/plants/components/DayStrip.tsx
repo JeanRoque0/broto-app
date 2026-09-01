@@ -24,6 +24,7 @@ type DayStripProps = {
   selected: Date;
   initialIndex: number;
   onSelect: (day: Date) => void;
+  onSwipeLock?: (locked: boolean) => void;
 };
 
 export function DayStrip({
@@ -31,6 +32,7 @@ export function DayStrip({
   selected,
   initialIndex,
   onSelect,
+  onSwipeLock,
 }: DayStripProps) {
   const today = useRef(new Date()).current;
   const listRef = useRef<FlatList<Date>>(null);
@@ -83,6 +85,10 @@ export function DayStrip({
         ref={listRef}
         data={days}
         horizontal
+        onTouchStart={() => onSwipeLock?.(true)}
+        onTouchEnd={() => onSwipeLock?.(false)}
+        onTouchCancel={() => onSwipeLock?.(false)}
+        onMomentumScrollEnd={() => onSwipeLock?.(false)}
         showsHorizontalScrollIndicator={false}
         keyExtractor={(day) => day.toISOString()}
         contentContainerStyle={styles.strip}
