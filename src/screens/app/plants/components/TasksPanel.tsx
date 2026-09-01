@@ -1,5 +1,4 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
@@ -20,11 +19,10 @@ import { TaskRow } from "./TaskRow";
 import { useTasks } from "./useTasks";
 
 type TasksPanelProps = {
-  header: ReactElement;
   bottomSpace: number;
 };
 
-export function TasksPanel({ header, bottomSpace }: TasksPanelProps) {
+export function TasksPanel({ bottomSpace }: TasksPanelProps) {
   const { t } = useTranslation("plants");
   const {
     days,
@@ -48,8 +46,6 @@ export function TasksPanel({ header, bottomSpace }: TasksPanelProps) {
 
   const listHeader = (
     <>
-      {header}
-
       <View style={styles.panel}>
         <DayStrip
           days={days}

@@ -178,13 +178,14 @@ export default function PlantsScreen() {
 
   return (
     <Container>
+      {header}
+
       {tab === "tasks" ? (
-        <TasksPanel header={header} bottomSpace={listBottom} />
+        <TasksPanel bottomSpace={listBottom} />
       ) : tab === "analyses" ? (
-        <AnalysesPanel header={header} bottomSpace={listBottom} />
+        <AnalysesPanel bottomSpace={listBottom} />
       ) : (
         <PlantsPanel
-          header={header}
           bottomSpace={listBottom}
           plants={plants}
           groups={groups}

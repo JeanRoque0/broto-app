@@ -1,5 +1,4 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
@@ -31,11 +30,10 @@ const HEALTH = {
 } as const;
 
 type AnalysesPanelProps = {
-  header: ReactElement;
   bottomSpace: number;
 };
 
-export function AnalysesPanel({ header, bottomSpace }: AnalysesPanelProps) {
+export function AnalysesPanel({ bottomSpace }: AnalysesPanelProps) {
   const { t } = useTranslation("analysis");
   const { items, isLoading, isError, refetch, open, startAnalysis } =
     useAnalyses();
@@ -45,8 +43,6 @@ export function AnalysesPanel({ header, bottomSpace }: AnalysesPanelProps) {
   if (isLoading || failed || items.length === 0) {
     return (
       <View>
-        {header}
-
         <View style={styles.panel}>
           {isLoading && <Loader />}
 
@@ -71,8 +67,6 @@ export function AnalysesPanel({ header, bottomSpace }: AnalysesPanelProps) {
     <FlashListContainer
       data={items}
       keyExtractor={(item) => item.id}
-      ListHeaderComponent={header}
-      ListHeaderComponentStyle={styles.headSpace}
       contentContainerStyle={{ paddingBottom: bottomSpace }}
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
@@ -144,9 +138,6 @@ const styles = StyleSheet.create({
   panel: {
     marginTop: theme.spacing.s6,
     paddingHorizontal: theme.screenPadding,
-  },
-  headSpace: {
-    marginBottom: theme.spacing.s5,
   },
   padded: {
     paddingHorizontal: theme.screenPadding,

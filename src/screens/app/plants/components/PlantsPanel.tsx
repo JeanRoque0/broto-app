@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { ReactElement, useMemo } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
@@ -20,7 +20,6 @@ type Row =
   | { key: string; kind: "plant"; plant: Plant };
 
 type PlantsPanelProps = {
-  header: ReactElement;
   bottomSpace: number;
   plants: Plant[];
   groups: PlantGroup[];
@@ -34,7 +33,6 @@ type PlantsPanelProps = {
 };
 
 export function PlantsPanel({
-  header,
   bottomSpace,
   plants,
   groups,
@@ -74,7 +72,6 @@ export function PlantsPanel({
       extraData={plantsByGroup}
       keyExtractor={(row) => row.key}
       getItemType={(row) => row.kind}
-      ListHeaderComponent={header}
       contentContainerStyle={{ paddingBottom: bottomSpace }}
       showsVerticalScrollIndicator={false}
       refreshControl={
