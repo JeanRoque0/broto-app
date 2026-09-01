@@ -33,5 +33,6 @@
   "editMessage": "Editar e enviar de novo",
   "stop": "Parar",
   "editingTitle": "Editando",
-  "editingCancel": "Cancelar edição"
+  "editingCancel": "Cancelar edição",
+  "editingSave": "Salvar edição"
 }

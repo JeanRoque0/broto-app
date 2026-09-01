@@ -29,6 +29,8 @@ import { TypingDots } from "./components/TypingDots";
 import { styles } from "./style";
 import { useChat } from "./useChat";
 
+const TAIL_RESERVE = 260;
+
 const THINKING = [
   "thinkingA",
   "thinkingB",
@@ -41,6 +43,7 @@ export default function ChatScreen() {
   const insets = useSafeAreaInsets();
   const list = useRef<FlashListRef<ChatMessage>>(null);
   const [focused, setFocused] = useState(false);
+  const [viewport, setViewport] = useState(0);
   const {
     hasChat,
     remaining,
@@ -73,29 +76,18 @@ export default function ChatScreen() {
     busy,
   } = useChat();
 
+  const tail = Math.max(0, viewport - TAIL_RESERVE);
+
   useEffect(() => {
     if (items.length === 0) return;
 
-    const last = items[items.length - 1];
-    const anchor = items.findIndex((item) => item.id === "pending");
-
-    const timer = setTimeout(() => {
-      if (anchor >= 0) {
-        list.current?.scrollToIndex({
-          index: anchor,
-          viewPosition: 0,
-          animated: true,
-        });
-        return;
-      }
-
-      if (last.id !== "typing") {
-        list.current?.scrollToEnd({ animated: true });
-      }
-    }, 80);
+    const timer = setTimeout(
+      () => list.current?.scrollToEnd({ animated: true }),
+      80,
+    );
 
     return () => clearTimeout(timer);
-  }, [items, isSending]);
+  }, [items.length, busy]);
 
   if (!hasChat) {
     return (
@@ -156,6 +148,10 @@ export default function ChatScreen() {
       </Text>
 
       <KeyboardAwareView style={styles.flex}>
+        <View
+          style={styles.flex}
+          onLayout={(event) => setViewport(event.nativeEvent.layout.height)}
+        >
         {isLoading ? (
           <View style={styles.loading}>
             <Loader />
@@ -193,6 +189,7 @@ export default function ChatScreen() {
                     </Text>
                   </View>
                 )}
+                {busy && <View style={{ height: tail }} />}
                 {failed && !isSending && (
                   <Text style={styles.failed}>{t("failed")}</Text>
                 )}
@@ -225,6 +222,8 @@ export default function ChatScreen() {
             }
           />
         )}
+
+        </View>
 
         {editing && (
           <View style={styles.editingBar}>
@@ -272,10 +271,12 @@ export default function ChatScreen() {
             disabled={!busy && !draft.trim()}
             style={[styles.send, !busy && !draft.trim() && styles.sendOff]}
             accessibilityRole="button"
-            accessibilityLabel={busy ? t("stop") : t("send")}
+            accessibilityLabel={
+              busy ? t("stop") : editing ? t("editingSave") : t("send")
+            }
           >
             <Feather
-              name={busy ? "square" : "arrow-up"}
+              name={busy ? "square" : editing ? "check" : "arrow-up"}
               size={busy ? 15 : 20}
               color={theme.text.onDark}
             />
