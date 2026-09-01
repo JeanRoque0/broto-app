@@ -33,6 +33,7 @@ export default function PlantsScreen() {
   const { t } = useTranslation("plants");
   const tabBarSpace = useTabBarSpace();
   const listBottom = tabBarSpace + FAB_SIZE + theme.spacing.s4;
+  const fabBottom = tabBarSpace - theme.spacing.s3;
   const params = useLocalSearchParams<{ tab?: string }>();
   const [tab, setTab] = useState<Tab>("plants");
 
@@ -199,7 +200,7 @@ export default function PlantsScreen() {
 
       <Fab
         onPress={openAdd}
-        bottom={tabBarSpace}
+        bottom={fabBottom}
         accessibilityLabel={t("addPlant")}
       >
         <Feather name="plus" size={22} color={theme.text.onPrimary} />
