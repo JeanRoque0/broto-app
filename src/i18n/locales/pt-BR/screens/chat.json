@@ -30,9 +30,10 @@
   "thinkingB": "Olhando as suas plantas...",
   "thinkingC": "Quase lá...",
   "thinkingD": "Escrevendo...",
-  "editMessage": "Editar e enviar de novo",
-  "stop": "Parar",
-  "editingTitle": "Editando",
-  "editingCancel": "Cancelar edição",
-  "editingSave": "Salvar edição"
+  "menu": "Mais opções",
+  "menuTitle": "Suas mensagens",
+  "gaugeMonth": "No mês",
+  "gaugeDay": "Hoje",
+  "gaugeOf": "{{left}} de {{total}}",
+  "gaugeRenews": "O mês renova em {{date}}."
 }

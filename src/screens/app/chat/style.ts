@@ -136,6 +136,42 @@ export const styles = StyleSheet.create({
     padding: theme.spacing.s1,
     borderRadius: theme.radius.sm,
   },
+  gauge: {
+    gap: theme.spacing.s2,
+    marginBottom: theme.spacing.s4,
+  },
+  gaugeHead: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "baseline",
+  },
+  gaugeLabel: {
+    fontSize: fontSize.s4,
+    fontWeight: "700",
+    color: theme.text.primary,
+  },
+  gaugeValue: {
+    fontSize: fontSize.s3,
+    color: theme.text.secondary,
+  },
+  track: {
+    height: 8,
+    borderRadius: 999,
+    overflow: "hidden",
+    backgroundColor: theme.functional.line,
+  },
+  fill: {
+    height: "100%",
+    borderRadius: 999,
+    backgroundColor: theme.secondary.moss,
+  },
+  gaugeHint: {
+    ...type.bodySm,
+    marginBottom: theme.spacing.s5,
+  },
+  menuAction: {
+    marginBottom: theme.spacing.s3,
+  },
   composer: {
     flexDirection: "row",
     alignItems: "flex-end",

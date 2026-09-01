@@ -13,6 +13,7 @@ import { CHAT_DAILY_CAP, CHAT_MONTH_CAP } from "@/constants";
 import { Button } from "@/components/ui/Button";
 import { CircleButton } from "@/components/ui/CircleButton";
 import { Container } from "@/components/ui/Container";
+import { ContainerModal } from "@/components/ui/ContainerModal";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { FlashListContainer } from "@/components/ui/FlashListContainer";
 import { Header } from "@/components/ui/Header";
@@ -68,12 +69,12 @@ export default function ChatScreen() {
     cap,
     closeCap,
     renewsLabel,
+    isTyping,
     thinkingIndex,
-    stop,
-    edit,
-    editing,
-    cancelEdit,
-    busy,
+    menuVisible,
+    openMenu,
+    closeMenu,
+    remainingToday,
   } = useChat();
 
   const tail = Math.max(0, viewport - TAIL_RESERVE);
@@ -87,7 +88,7 @@ export default function ChatScreen() {
     );
 
     return () => clearTimeout(timer);
-  }, [items.length, busy]);
+  }, [items.length, isSending, isTyping]);
 
   if (!hasChat) {
     return (
@@ -125,27 +126,15 @@ export default function ChatScreen() {
         showBack
         title={t("title")}
         rightAction={
-          <View style={styles.actions}>
-            <CircleButton
-              onPress={openThreads}
-              accessibilityLabel={t("threads")}
-            >
-              <Feather name="clock" size={16} color={theme.text.primary} />
-            </CircleButton>
-
-            <CircleButton
-              onPress={startNew}
-              accessibilityLabel={t("newThread")}
-            >
-              <Feather name="plus" size={17} color={theme.text.primary} />
-            </CircleButton>
-          </View>
+          <CircleButton onPress={openMenu} accessibilityLabel={t("menu")}>
+            <Feather
+              name="more-horizontal"
+              size={18}
+              color={theme.text.primary}
+            />
+          </CircleButton>
         }
       />
-
-      <Text family="mono" style={styles.quota}>
-        {t("remaining", { count: remaining })}
-      </Text>
 
       <KeyboardAwareView style={styles.flex}>
         <View
@@ -189,7 +178,9 @@ export default function ChatScreen() {
                     </Text>
                   </View>
                 )}
-                {busy && <View style={{ height: tail }} />}
+                {(isSending || isTyping) && (
+                  <View style={{ height: tail }} />
+                )}
                 {failed && !isSending && (
                   <Text style={styles.failed}>{t("failed")}</Text>
                 )}
@@ -198,18 +189,9 @@ export default function ChatScreen() {
             renderItem={({ item }) =>
               item.role === "user" ? (
                 <View style={styles.bubbleRow}>
-                  <RipplePressable
-                    onPress={() => edit(item)}
-                    style={[
-                      styles.bubble,
-                      styles.fromUser,
-                      editing?.id === item.id && styles.bubbleEditing,
-                    ]}
-                    accessibilityRole="button"
-                    accessibilityLabel={t("editMessage")}
-                  >
+                  <View style={[styles.bubble, styles.fromUser]}>
                     <Text style={styles.bubbleText}>{item.content}</Text>
-                  </RipplePressable>
+                  </View>
                 </View>
               ) : (
                 <View style={[styles.bubbleRow, styles.botRow]}>
@@ -224,28 +206,6 @@ export default function ChatScreen() {
         )}
 
         </View>
-
-        {editing && (
-          <View style={styles.editingBar}>
-            <Feather name="edit-2" size={13} color={theme.primary.clay} />
-
-            <View style={styles.editingTexts}>
-              <Text style={styles.editingLabel}>{t("editingTitle")}</Text>
-              <Text style={styles.editingText} numberOfLines={1}>
-                {editing.content}
-              </Text>
-            </View>
-
-            <RipplePressable
-              onPress={cancelEdit}
-              style={styles.editingClose}
-              accessibilityRole="button"
-              accessibilityLabel={t("editingCancel")}
-            >
-              <Feather name="x" size={15} color={theme.text.secondary} />
-            </RipplePressable>
-          </View>
-        )}
 
         <View
           style={[
@@ -267,19 +227,16 @@ export default function ChatScreen() {
           />
 
           <RipplePressable
-            onPress={busy ? stop : submit}
-            disabled={!busy && !draft.trim()}
-            style={[styles.send, !busy && !draft.trim() && styles.sendOff]}
+            onPress={submit}
+            disabled={!draft.trim() || isSending}
+            style={[
+              styles.send,
+              (!draft.trim() || isSending) && styles.sendOff,
+            ]}
             accessibilityRole="button"
-            accessibilityLabel={
-              busy ? t("stop") : editing ? t("editingSave") : t("send")
-            }
+            accessibilityLabel={t("send")}
           >
-            <Feather
-              name={busy ? "square" : editing ? "check" : "arrow-up"}
-              size={busy ? 15 : 20}
-              color={theme.text.onDark}
-            />
+            <Feather name="arrow-up" size={20} color={theme.text.onDark} />
           </RipplePressable>
         </View>
       </KeyboardAwareView>
@@ -295,6 +252,73 @@ export default function ChatScreen() {
         onRemove={removeThread}
         onNew={startNew}
       />
+
+      <ContainerModal
+        visible={menuVisible}
+        onClose={closeMenu}
+        title={t("menuTitle")}
+      >
+        <View style={styles.gauge}>
+          <View style={styles.gaugeHead}>
+            <Text style={styles.gaugeLabel}>{t("gaugeMonth")}</Text>
+            <Text family="mono" style={styles.gaugeValue}>
+              {t("gaugeOf", { left: remaining, total: CHAT_MONTH_CAP })}
+            </Text>
+          </View>
+
+          <View style={styles.track}>
+            <View
+              style={[
+                styles.fill,
+                { width: `${(remaining / CHAT_MONTH_CAP) * 100}%` },
+              ]}
+            />
+          </View>
+        </View>
+
+        <View style={styles.gauge}>
+          <View style={styles.gaugeHead}>
+            <Text style={styles.gaugeLabel}>{t("gaugeDay")}</Text>
+            <Text family="mono" style={styles.gaugeValue}>
+              {t("gaugeOf", {
+                left: remainingToday,
+                total: CHAT_DAILY_CAP,
+              })}
+            </Text>
+          </View>
+
+          <View style={styles.track}>
+            <View
+              style={[
+                styles.fill,
+                { width: `${(remainingToday / CHAT_DAILY_CAP) * 100}%` },
+              ]}
+            />
+          </View>
+        </View>
+
+        <Text style={styles.gaugeHint}>
+          {t("gaugeRenews", { date: renewsLabel })}
+        </Text>
+
+        <Button
+          label={t("newThread")}
+          onPress={() => {
+            closeMenu();
+            startNew();
+          }}
+          style={styles.menuAction}
+        />
+
+        <Button
+          label={t("threads")}
+          onPress={() => {
+            closeMenu();
+            openThreads();
+          }}
+          variant="outline"
+        />
+      </ContainerModal>
 
       <ContainerModalCenter
         visible={!!cap}

@@ -47,8 +47,7 @@ export function useChat() {
     null,
   );
   const [thinking, setThinking] = useState(0);
-  const [editing, setEditing] = useState<ChatMessage | null>(null);
-  const abort = useRef<AbortController | null>(null);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   const autoSent = useRef(false);
 
@@ -65,15 +64,8 @@ export function useChat() {
   });
 
   const send = useMutation({
-    mutationFn: (text: string) => {
-      abort.current = new AbortController();
-      return sendMessage({
-        message: text,
-        threadId,
-        plantId,
-        signal: abort.current.signal,
-      });
-    },
+    mutationFn: (text: string) =>
+      sendMessage({ message: text, threadId, plantId }),
     onSuccess: (result) => {
       setThreadId(result.threadId);
       setTyping({ full: result.reply, shown: 0 });
@@ -86,8 +78,6 @@ export function useChat() {
       setPending(null);
       setTyping(null);
       refetchProfile();
-
-      if ((error as { code?: string })?.code === "ERR_CANCELED") return;
 
       const response = (
         error as {
@@ -208,46 +198,14 @@ export function useChat() {
     if (!text || send.isPending || !online) return;
 
     setDraft("");
-    setEditing(null);
     setPending(text);
     send.mutate(text);
-  }
-
-  function stop() {
-    if (typing) {
-      setTyping((current) =>
-        current ? { ...current, shown: current.full.length } : current,
-      );
-      return;
-    }
-
-    abort.current?.abort();
-    abort.current = null;
-    setPending(null);
-
-    if (threadId) {
-      queryClient.invalidateQueries({ queryKey: chatKeys.messages(threadId) });
-    }
-  }
-
-  function edit(message: ChatMessage) {
-    if (message.role !== "user" || send.isPending || message.id === "pending") {
-      return;
-    }
-
-    setEditing(message);
-    setDraft(message.content);
-  }
-
-  function cancelEdit() {
-    setEditing(null);
-    setDraft("");
   }
 
   function startNew() {
     setTyping(null);
     setPending(null);
-    setEditing(null);
+    setMenuVisible(false);
     setThreadId(null);
     setPlantId(null);
     setDraft("");
@@ -273,12 +231,10 @@ export function useChat() {
     isSending: send.isPending,
     isTyping: !!typing,
     online,
-    editing,
-    cancelEdit,
-    busy: send.isPending || !!typing,
     thinkingIndex: thinking,
-    stop,
-    edit,
+    menuVisible,
+    openMenu: () => setMenuVisible(true),
+    closeMenu: () => setMenuVisible(false),
     failed: send.isError,
     draft,
     setDraft,
