@@ -186,5 +186,7 @@
   "taskDoneLabel": "Task done",
   "taskNextDate": "Next: {{date}}",
   "careTasksLocked": "Unlock these tasks",
-  "careTaskLocked": "Locked"
+  "careTaskLocked": "Locked",
+  "timelineTitle": "How it changed",
+  "timelineHint": "Every analysis you made of it, oldest to newest."
 }

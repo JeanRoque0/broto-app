@@ -36,6 +36,7 @@ import { TaskEditSheet } from "@/components/TaskEditSheet";
 import { ChatSuggestions } from "@/components/ChatSuggestions";
 import { QuizCard } from "@/components/QuizCard";
 import { PlantPhoto } from "@/components/PlantPhoto";
+import { PlantTimeline } from "./components/PlantTimeline";
 import { BackIcon } from "@/components/ui/BackIcon";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -109,6 +110,8 @@ export default function PlantDetailScreen() {
     saveTask,
     toggleTask,
     diagnoses,
+    timeline,
+    openAnalysis,
     resolve,
     resolving,
     startNewAnalysis,
@@ -294,6 +297,7 @@ export default function PlantDetailScreen() {
       id: "confirm",
       label: tAnalysis("confirmEyebrow"),
     },
+    timeline.length > 1 && { id: "timeline", label: t("timelineTitle") },
     events.length > 0 && { id: "history", label: t("historyEyebrow") },
   ].filter(Boolean) as Section[];
 
@@ -677,6 +681,19 @@ export default function PlantDetailScreen() {
                   />
                 </View>
               )}
+            </View>
+          )}
+
+          {timeline.length > 1 && (
+            <View style={styles.section} onLayout={registerSection("timeline")}>
+              <View style={styles.padded}>
+                <Text family="display" style={styles.sectionTitle}>
+                  {t("timelineTitle")}
+                </Text>
+                <Text style={styles.sectionHint}>{t("timelineHint")}</Text>
+              </View>
+
+              <PlantTimeline items={timeline} onOpen={openAnalysis} />
             </View>
           )}
 

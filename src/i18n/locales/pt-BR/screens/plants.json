@@ -186,5 +186,7 @@
   "taskDoneLabel": "Tarefa concluída",
   "taskNextDate": "Próxima: {{date}}",
   "careTasksLocked": "Desbloquear estas tarefas",
-  "careTaskLocked": "Bloqueado"
+  "careTaskLocked": "Bloqueado",
+  "timelineTitle": "Como ela mudou",
+  "timelineHint": "Cada análise que você fez dela, da mais antiga para a mais nova."
 }

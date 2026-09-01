@@ -6,6 +6,7 @@ import { Toast } from "@/components/ui/Toast";
 import { useAnalysisStore } from "@/store";
 import { toDateString } from "@/services/supabase/plantTasks";
 import { usePlantTasks, useUpdatePlantTask } from "@/hooks/usePlantTasks";
+import { Identification } from "@/types/identification";
 import { PlantTask } from "@/types/plant";
 import { useProfile } from "@/hooks/useProfile";
 import { blockedOffline } from "@/utils/offline";
@@ -40,6 +41,13 @@ export function usePlantDetail() {
   const resolveMutation = useResolveIdentification(plantId);
   const resetAnalysis = useAnalysisStore((state) => state.reset);
   const setAnalysisPlant = useAnalysisStore((state) => state.setPlantId);
+  const setPhotoPaths = useAnalysisStore((state) => state.setPhotoPaths);
+  const setResult = useAnalysisStore((state) => state.setResult);
+  const setIdentificationId = useAnalysisStore(
+    (state) => state.setIdentificationId,
+  );
+  const setWasHelpful = useAnalysisStore((state) => state.setWasHelpful);
+  const setFromHistory = useAnalysisStore((state) => state.setFromHistory);
   const logCare = useLogCare(plantId);
   const archivePlant = useArchivePlant();
 
@@ -165,6 +173,19 @@ export function usePlantDetail() {
     diagnoses: (identifications ?? []).filter(
       (item) => item.result?.saude !== "saudavel",
     ),
+    timeline: [...(identifications ?? [])].sort(
+      (a, b) => +new Date(a.created_at) - +new Date(b.created_at),
+    ),
+    openAnalysis: (item: Identification) => {
+      resetAnalysis();
+      setPhotoPaths([item.photo_path]);
+      setResult(item.result);
+      setIdentificationId(item.id);
+      setAnalysisPlant(item.plant_id);
+      setWasHelpful(item.was_helpful);
+      setFromHistory(true);
+      router.push("/(app)/analyze/result");
+    },
     resolve: (id: string) => resolveMutation.mutate({ id, resolved: true }),
     resolving: resolveMutation.isPending,
     startNewAnalysis: () => {
