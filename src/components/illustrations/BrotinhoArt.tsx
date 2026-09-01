@@ -2,6 +2,8 @@ import Svg, { Circle, Ellipse, G, Path, Rect } from "react-native-svg";
 
 import { theme } from "@/style/theme";
 
+const POT_BODY = "M-94 2 L94 2 L72 96 Q72 112 54 112 L-54 112 Q-72 112 -72 96 Z";
+
 function Face({ scale = 1 }) {
   return (
     <G transform={`scale(${scale})`}>
@@ -41,55 +43,40 @@ export function BrotinhoArt({ size = 148 }) {
     <Svg width={size} height={size} viewBox="0 0 200 200">
       <Circle cx={100} cy={100} r={92} fill={theme.illustration.canvas} />
 
-      <G transform="translate(100 118)">
-        <Path
-          d="M-30 -6 L30 -6 L23 46 Q0 52 -23 46 Z"
-          fill={theme.illustration.pot}
-        />
+      <G transform="translate(100 146) scale(0.33) translate(0 -33)">
         <Rect
-          x={-34}
-          y={-14}
-          width={68}
-          height={14}
-          rx={7}
+          x={-108}
+          y={-46}
+          width={216}
+          height={40}
+          rx={14}
           fill={theme.illustration.potRim}
         />
+        <Path d={POT_BODY} fill={theme.illustration.pot} />
       </G>
 
-      <G transform="translate(100 74)">
+      <G transform="translate(100 82)">
         <Path
-          d="M-4 34 L-4 6 Q-4 -2 4 -2 L4 34 Z"
+          d="M-4 40 L-4 12 Q-4 4 4 4 L4 40 Z"
           fill={theme.illustration.leafDeep}
         />
 
-        <G transform="translate(-30 -6) rotate(-24)">
-          <Ellipse
-            cx={-16}
-            cy={0}
-            rx={22}
-            ry={13}
-            fill={theme.illustration.leafDark}
-          />
-        </G>
-
-        <G transform="translate(30 -6) rotate(24)">
-          <Ellipse
-            cx={16}
-            cy={0}
-            rx={22}
-            ry={13}
-            fill={theme.illustration.leafDark}
-          />
-        </G>
-
-        <Circle cx={0} cy={-14} r={40} fill={theme.illustration.leaf} />
         <Path
-          d="M0 -54 Q10 -66 2 -76 Q-2 -66 -6 -60 Z"
+          d="M-1 -18 Q-1 -30 -2 -38"
+          fill="none"
+          stroke={theme.illustration.leafDeep}
+          strokeWidth={4.5}
+          strokeLinecap="round"
+        />
+        <Path
+          d="M-2 -36 Q11 -42 10 -57 Q-4 -50 -2 -36 Z"
           fill={theme.illustration.leafDeep}
         />
 
-        <G transform="translate(0 -12)">
-          <Face />
+        <Circle cx={0} cy={0} r={34} fill={theme.illustration.leaf} />
+
+        <G transform="translate(0 2)">
+          <Face scale={0.85} />
         </G>
       </G>
     </Svg>
