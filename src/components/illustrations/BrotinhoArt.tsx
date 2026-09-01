@@ -2,8 +2,8 @@ import Svg, { Circle, Ellipse, G, Path, Rect } from "react-native-svg";
 
 import { theme } from "@/style/theme";
 
-const SPROUT = "M0 -30 Q7 -38 1.5 -45";
-
+const SPROUT = "M0 -42 Q3.7 -46.4 4.9 -51.3";
+const SPROUT_RADIUS = 48;
 const POT_BODY = "M-94 2 L94 2 L72 96 Q72 112 54 112 L-54 112 Q-72 112 -72 96 Z";
 
 function Face({ scale = 1 }) {
@@ -40,10 +40,39 @@ function Face({ scale = 1 }) {
   );
 }
 
+function Sprout({ radius }: { radius: number }) {
+  return (
+    <G transform={`scale(${radius / SPROUT_RADIUS})`}>
+      <Path
+        d={SPROUT}
+        fill="none"
+        stroke={theme.illustration.leafDeep}
+        strokeWidth={5}
+        strokeLinecap="round"
+      />
+    </G>
+  );
+}
+
 export function BrotinhoArt({ size = 148 }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 200 200">
       <Circle cx={100} cy={100} r={92} fill={theme.illustration.canvas} />
+
+      <G transform="translate(100 72)">
+        <Path
+          d="M-4 60 L-4 12 Q-4 4 4 4 L4 60 Z"
+          fill={theme.illustration.leafDeep}
+        />
+
+        <Circle cx={0} cy={0} r={34} fill={theme.illustration.leaf} />
+
+        <Sprout radius={34} />
+
+        <G transform="translate(0 2)">
+          <Face scale={0.85} />
+        </G>
+      </G>
 
       <G transform="translate(100 146) scale(0.33) translate(0 -33)">
         <Rect
@@ -56,27 +85,6 @@ export function BrotinhoArt({ size = 148 }) {
         />
         <Path d={POT_BODY} fill={theme.illustration.pot} />
       </G>
-
-      <G transform="translate(100 72)">
-        <Path
-          d="M-4 52 L-4 12 Q-4 4 4 4 L4 52 Z"
-          fill={theme.illustration.leafDeep}
-        />
-
-        <Path
-          d={SPROUT}
-          fill="none"
-          stroke={theme.illustration.leafDeep}
-          strokeWidth={3.5}
-          strokeLinecap="round"
-        />
-
-        <Circle cx={0} cy={0} r={34} fill={theme.illustration.leaf} />
-
-        <G transform="translate(0 2)">
-          <Face scale={0.85} />
-        </G>
-      </G>
     </Svg>
   );
 }
@@ -85,13 +93,11 @@ export function BrotinhoFace({ size = 34 }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 100 100">
       <Circle cx={50} cy={50} r={48} fill={theme.illustration.leaf} />
-      <Path
-        d="M50 8 Q60 -4 52 -14"
-        fill="none"
-        stroke={theme.illustration.leafDeep}
-        strokeWidth={5}
-        strokeLinecap="round"
-      />
+
+      <G transform="translate(50 50)">
+        <Sprout radius={SPROUT_RADIUS} />
+      </G>
+
       <G transform="translate(50 52) scale(1.15)">
         <Face />
       </G>
