@@ -188,5 +188,10 @@
   "careTasksLocked": "Desbloquear estas tareas",
   "careTaskLocked": "Bloqueado",
   "timelineTitle": "Cómo cambió",
-  "timelineHint": "Cada análisis que le hiciste, del más antiguo al más nuevo."
+  "timelineHint": "Cada análisis que le hiciste, del más antiguo al más nuevo.",
+  "followTitle": "¿Cómo va?",
+  "followText_zero": "Acabas de ver este problema. En unos días, analiza de nuevo para saber si el tratamiento funcionó.",
+  "followText_one": "Hace 1 día que viste este problema. Analiza de nuevo para saber si el tratamiento funcionó.",
+  "followText_other": "Hace {{count}} días que viste este problema. Analiza de nuevo para saber si el tratamiento funcionó.",
+  "followAction": "Analizar de nuevo"
 }

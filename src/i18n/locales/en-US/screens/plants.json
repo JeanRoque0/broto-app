@@ -188,5 +188,10 @@
   "careTasksLocked": "Unlock these tasks",
   "careTaskLocked": "Locked",
   "timelineTitle": "How it changed",
-  "timelineHint": "Every analysis you made of it, oldest to newest."
+  "timelineHint": "Every analysis you made of it, oldest to newest.",
+  "followTitle": "How is it going?",
+  "followText_zero": "You just spotted this. In a few days, analyse again to see if the treatment worked.",
+  "followText_one": "It has been 1 day since you spotted this. Analyse again to see if the treatment worked.",
+  "followText_other": "It has been {{count}} days since you spotted this. Analyse again to see if the treatment worked.",
+  "followAction": "Analyse again"
 }

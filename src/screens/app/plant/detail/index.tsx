@@ -64,6 +64,12 @@ import { usePlantDetail } from "./usePlantDetail";
 const SNAP = DIAGNOSIS_CARD_WIDTH + theme.spacing.s3;
 type SectionLayout = { y: number; parent?: string; chip: boolean };
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+function daysSince(iso: string) {
+  return Math.max(0, Math.floor((Date.now() - +new Date(iso)) / DAY_MS));
+}
+
 const NAV_GAP = 6;
 const NAV_SETTLE = 700;
 const BAR_IN = 110;
@@ -657,6 +663,36 @@ export default function PlantDetailScreen() {
                         />
                       </View>
                     ) : null}
+
+                    {analysis.id === openDiagnosis?.id && (
+                      <View style={styles.padded}>
+                        <Card style={styles.followCard}>
+                          <View style={styles.followHead}>
+                            <Feather
+                              name="repeat"
+                              size={15}
+                              color={theme.primary.clay}
+                            />
+                            <Text style={styles.followTitle}>
+                              {t("followTitle")}
+                            </Text>
+                          </View>
+
+                          <Text style={styles.followText}>
+                            {t("followText", {
+                              count: daysSince(analysis.created_at),
+                            })}
+                          </Text>
+
+                          <Button
+                            label={t("followAction")}
+                            onPress={startNewAnalysis}
+                            size="md"
+                            style={styles.followButton}
+                          />
+                        </Card>
+                      </View>
+                    )}
 
                     <View style={styles.padded}>
                       <Button

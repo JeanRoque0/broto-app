@@ -237,6 +237,28 @@ export const styles = StyleSheet.create({
   newAnalysis: {
     marginTop: theme.spacing.s4,
   },
+  followCard: {
+    gap: theme.spacing.s2,
+    marginTop: theme.spacing.s4,
+    backgroundColor: theme.primary.claySoft,
+    borderColor: theme.primary.clayBorder,
+  },
+  followHead: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.s2,
+  },
+  followTitle: {
+    fontSize: fontSize.s5,
+    fontWeight: "700",
+    color: theme.text.primary,
+  },
+  followText: {
+    ...type.bodySm,
+  },
+  followButton: {
+    marginTop: theme.spacing.s2,
+  },
   resolveButton: {
     marginTop: theme.spacing.s3,
   },
