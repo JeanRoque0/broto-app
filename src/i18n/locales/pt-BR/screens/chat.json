@@ -31,9 +31,11 @@
   "thinkingC": "Quase lá...",
   "thinkingD": "Escrevendo...",
   "menu": "Mais opções",
-  "menuTitle": "Suas mensagens",
+  "menuTitle": "Opções do Brotinho",
   "gaugeMonth": "No mês",
   "gaugeDay": "Hoje",
-  "gaugeOf": "{{left}} de {{total}}",
-  "gaugeRenews": "O mês renova em {{date}}."
+  "gaugeRenews": "O mês renova em {{date}}.",
+  "menuUsage": "Uso do Brotinho",
+  "menuHistory": "Histórico",
+  "usageDescription": "Quanto ainda dá para conversar antes de zerar."
 }

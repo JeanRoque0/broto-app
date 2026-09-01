@@ -136,25 +136,33 @@ export const styles = StyleSheet.create({
     padding: theme.spacing.s1,
     borderRadius: theme.radius.sm,
   },
-  gauge: {
-    gap: theme.spacing.s2,
-    marginBottom: theme.spacing.s4,
+  menuCard: {
+    padding: 0,
+    marginTop: theme.spacing.s5,
   },
-  gaugeHead: {
+  gauges: {
+    gap: theme.spacing.s4,
+    marginTop: theme.spacing.s6,
+  },
+  quotaRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "baseline",
+    alignItems: "center",
+    gap: theme.spacing.s3,
   },
-  gaugeLabel: {
+  quotaLabel: {
     fontSize: fontSize.s4,
     fontWeight: "700",
     color: theme.text.primary,
+    width: 68,
   },
-  gaugeValue: {
+  quotaValue: {
     fontSize: fontSize.s3,
     color: theme.text.secondary,
+    width: 44,
+    textAlign: "right",
   },
   track: {
+    flex: 1,
     height: 8,
     borderRadius: 999,
     overflow: "hidden",
@@ -167,10 +175,7 @@ export const styles = StyleSheet.create({
   },
   gaugeHint: {
     ...type.bodySm,
-    marginBottom: theme.spacing.s5,
-  },
-  menuAction: {
-    marginBottom: theme.spacing.s3,
+    marginTop: theme.spacing.s3,
   },
   composer: {
     flexDirection: "row",

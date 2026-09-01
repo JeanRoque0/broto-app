@@ -31,9 +31,11 @@
   "thinkingC": "Almost there…",
   "thinkingD": "Writing…",
   "menu": "More options",
-  "menuTitle": "Your messages",
+  "menuTitle": "Brotinho options",
   "gaugeMonth": "This month",
   "gaugeDay": "Today",
-  "gaugeOf": "{{left}} of {{total}}",
-  "gaugeRenews": "The month resets on {{date}}."
+  "gaugeRenews": "The month resets on {{date}}.",
+  "menuUsage": "Brotinho usage",
+  "menuHistory": "History",
+  "usageDescription": "How much talking is left before it resets."
 }

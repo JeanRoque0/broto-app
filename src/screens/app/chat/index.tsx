@@ -13,7 +13,9 @@ import { CHAT_DAILY_CAP, CHAT_MONTH_CAP } from "@/constants";
 import { Button } from "@/components/ui/Button";
 import { CircleButton } from "@/components/ui/CircleButton";
 import { Container } from "@/components/ui/Container";
+import { Card } from "@/components/ui/Card";
 import { ContainerModal } from "@/components/ui/ContainerModal";
+import { MenuRow } from "@/components/ui/Row";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { FlashListContainer } from "@/components/ui/FlashListContainer";
 import { Header } from "@/components/ui/Header";
@@ -31,6 +33,45 @@ import { styles } from "./style";
 import { useChat } from "./useChat";
 
 const TAIL_RESERVE = 260;
+const LOW = 0.25;
+
+function Quota({
+  label,
+  left,
+  total,
+}: {
+  label: string;
+  left: number;
+  total: number;
+}) {
+  const ratio = total > 0 ? Math.max(0, Math.min(1, left / total)) : 0;
+
+  const tone =
+    ratio === 0
+      ? theme.functional.danger
+      : ratio <= LOW
+        ? theme.secondary.ochre
+        : theme.secondary.moss;
+
+  return (
+    <View style={styles.quotaRow}>
+      <Text style={styles.quotaLabel}>{label}</Text>
+
+      <View style={styles.track}>
+        <View
+          style={[
+            styles.fill,
+            { width: `${ratio * 100}%`, backgroundColor: tone },
+          ]}
+        />
+      </View>
+
+      <Text family="mono" style={styles.quotaValue}>
+        {Math.round(ratio * 100)}%
+      </Text>
+    </View>
+  );
+}
 
 const THINKING = [
   "thinkingA",
@@ -74,6 +115,9 @@ export default function ChatScreen() {
     menuVisible,
     openMenu,
     closeMenu,
+    usageVisible,
+    openUsage,
+    closeUsage,
     remainingToday,
   } = useChat();
 
@@ -258,66 +302,57 @@ export default function ChatScreen() {
         onClose={closeMenu}
         title={t("menuTitle")}
       >
-        <View style={styles.gauge}>
-          <View style={styles.gaugeHead}>
-            <Text style={styles.gaugeLabel}>{t("gaugeMonth")}</Text>
-            <Text family="mono" style={styles.gaugeValue}>
-              {t("gaugeOf", { left: remaining, total: CHAT_MONTH_CAP })}
-            </Text>
-          </View>
+        <Card style={styles.menuCard}>
+          <MenuRow
+            label={t("menuUsage")}
+            icon="bar-chart-2"
+            onPress={() => {
+              closeMenu();
+              openUsage();
+            }}
+          />
+          <MenuRow
+            label={t("newThread")}
+            icon="plus"
+            onPress={() => {
+              closeMenu();
+              startNew();
+            }}
+          />
+          <MenuRow
+            label={t("menuHistory")}
+            icon="clock"
+            onPress={() => {
+              closeMenu();
+              openThreads();
+            }}
+            last
+          />
+        </Card>
+      </ContainerModal>
 
-          <View style={styles.track}>
-            <View
-              style={[
-                styles.fill,
-                { width: `${(remaining / CHAT_MONTH_CAP) * 100}%` },
-              ]}
-            />
-          </View>
-        </View>
-
-        <View style={styles.gauge}>
-          <View style={styles.gaugeHead}>
-            <Text style={styles.gaugeLabel}>{t("gaugeDay")}</Text>
-            <Text family="mono" style={styles.gaugeValue}>
-              {t("gaugeOf", {
-                left: remainingToday,
-                total: CHAT_DAILY_CAP,
-              })}
-            </Text>
-          </View>
-
-          <View style={styles.track}>
-            <View
-              style={[
-                styles.fill,
-                { width: `${(remainingToday / CHAT_DAILY_CAP) * 100}%` },
-              ]}
-            />
-          </View>
+      <ContainerModal
+        visible={usageVisible}
+        onClose={closeUsage}
+        title={t("menuUsage")}
+        description={t("usageDescription")}
+      >
+        <View style={styles.gauges}>
+          <Quota
+            label={t("gaugeDay")}
+            left={remainingToday}
+            total={CHAT_DAILY_CAP}
+          />
+          <Quota
+            label={t("gaugeMonth")}
+            left={remaining}
+            total={CHAT_MONTH_CAP}
+          />
         </View>
 
         <Text style={styles.gaugeHint}>
           {t("gaugeRenews", { date: renewsLabel })}
         </Text>
-
-        <Button
-          label={t("newThread")}
-          onPress={() => {
-            closeMenu();
-            startNew();
-          }}
-          style={styles.menuAction}
-        />
-
-        <Button
-          label={t("threads")}
-          onPress={() => {
-            closeMenu();
-            openThreads();
-          }}
-          variant="outline"
-        />
       </ContainerModal>
 
       <ContainerModalCenter

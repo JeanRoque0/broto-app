@@ -48,6 +48,7 @@ export function useChat() {
   );
   const [thinking, setThinking] = useState(0);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [usageVisible, setUsageVisible] = useState(false);
 
   const autoSent = useRef(false);
 
@@ -235,6 +236,12 @@ export function useChat() {
     menuVisible,
     openMenu: () => setMenuVisible(true),
     closeMenu: () => setMenuVisible(false),
+    usageVisible,
+    openUsage: () => setUsageVisible(true),
+    closeUsage: () => {
+      setUsageVisible(false);
+      setMenuVisible(true);
+    },
     failed: send.isError,
     draft,
     setDraft,
@@ -245,7 +252,10 @@ export function useChat() {
     removing: remove.isPending,
     threadsVisible,
     openThreads: () => setThreadsVisible(true),
-    closeThreads: () => setThreadsVisible(false),
+    closeThreads: () => {
+      setThreadsVisible(false);
+      setMenuVisible(true);
+    },
     cap,
     closeCap: () => setCap(null),
     openPaywall: (plan: "pro" | "chat" = "chat") =>
