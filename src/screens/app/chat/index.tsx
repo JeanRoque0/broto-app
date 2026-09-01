@@ -83,6 +83,7 @@ const THINKING = [
 
 export default function ChatScreen() {
   const router = useRouter();
+  const [introSeed] = useState(() => Math.floor(Math.random() * 1000));
   const { t } = useTranslation("chat");
   const insets = useSafeAreaInsets();
   const list = useRef<FlashListRef<ChatMessage>>(null);
@@ -123,6 +124,9 @@ export default function ChatScreen() {
     closeUsage,
     remainingToday,
   } = useChat();
+
+  const intros = t("intros", { returnObjects: true }) as unknown as string[];
+  const intro = intros[introSeed % intros.length];
 
   const tail = Math.max(0, viewport - TAIL_RESERVE);
 
@@ -222,7 +226,7 @@ export default function ChatScreen() {
                 <BrotinhoArt size={132} />
 
                 <Text family="display" style={styles.introTitle}>
-                  {t("introTitle")}
+                  {intro}
                 </Text>
               </View>
             }
