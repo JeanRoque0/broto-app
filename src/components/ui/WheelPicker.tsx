@@ -100,7 +100,7 @@ export function WheelPicker<T extends string | number>({
       y: index * WHEEL_ITEM_HEIGHT,
       animated: false,
     });
-  }, [index]);
+  }, [index, scroll]);
 
   const onScroll = useAnimatedScrollHandler((event) => {
     offset.value = event.contentOffset.y;

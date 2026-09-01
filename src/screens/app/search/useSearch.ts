@@ -14,6 +14,7 @@ const MIN_LENGTH = 3;
 export function useSearch() {
   const router = useRouter();
   const history = useSearchHistory();
+  const { remember } = history;
   const selectSpecies = useSpeciesStore((state) => state.select);
   const { ref: inputRef, onShow, cancelAutoFocus } = useModalAutoFocus();
   const dismissed = useRef("");
@@ -37,13 +38,13 @@ export function useSearch() {
   useEffect(() => {
     if (!results.isSuccess || (results.data?.length ?? 0) === 0) return;
 
-    history.remember(query);
+    remember(query);
 
     if (dismissed.current !== query) {
       dismissed.current = query;
       Keyboard.dismiss();
     }
-  }, [results.isSuccess, results.data, query]);
+  }, [results.isSuccess, results.data, query, remember]);
 
   useFocusEffect(
     useCallback(() => {

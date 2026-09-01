@@ -7,8 +7,8 @@ import { useTranslation } from "react-i18next";
 import { Linking } from "react-native";
 
 import { Toast } from "@/components/ui/Toast";
-import { FREE_QUOTA, MONTH_CAP } from "@/constants";
-import { MAX_ANALYSIS_PHOTOS } from "@/constants";
+import { FREE_QUOTA, MONTH_CAP , MAX_ANALYSIS_PHOTOS } from "@/constants";
+
 import { formatOrdinalDate } from "@/utils/format";
 import {
   profileKeys,

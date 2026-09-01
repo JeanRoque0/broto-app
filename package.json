@@ -73,7 +73,7 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "lint": "eslint src --quiet",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "icons": "node ./scripts/generate-icons.js",
     "test": "vitest run"

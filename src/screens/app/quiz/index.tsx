@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 
@@ -9,6 +9,7 @@ import { Container } from "@/components/ui/Container";
 import { Header } from "@/components/ui/Header";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
+import { LanguageCode } from "@/constants/languages";
 import { QUIZ, QUIZ_ROUND } from "@/constants/quiz";
 import { useBestScore } from "@/hooks/useBestScore";
 import { useLanguageStore } from "@/store";
@@ -16,22 +17,22 @@ import { theme } from "@/style/theme";
 
 import { styles } from "./style";
 
+function buildDeck(language: LanguageCode) {
+  const list = [...(QUIZ[language] ?? QUIZ["pt-BR"])];
+
+  for (let index = list.length - 1; index > 0; index -= 1) {
+    const swap = Math.floor(Math.random() * (index + 1));
+    [list[index], list[swap]] = [list[swap], list[index]];
+  }
+
+  return list.slice(0, QUIZ_ROUND);
+}
+
 export default function QuizScreen() {
   const { t } = useTranslation("games");
   const language = useLanguageStore((state) => state.current);
 
-  const [round, setRound] = useState(0);
-
-  const deck = useMemo(() => {
-    const list = [...(QUIZ[language] ?? QUIZ["pt-BR"])];
-
-    for (let index = list.length - 1; index > 0; index -= 1) {
-      const swap = Math.floor(Math.random() * (index + 1));
-      [list[index], list[swap]] = [list[swap], list[index]];
-    }
-
-    return list.slice(0, QUIZ_ROUND);
-  }, [language, round]);
+  const [deck, setDeck] = useState(() => buildDeck(language));
 
   const { best, submit } = useBestScore("quiz");
 
@@ -70,7 +71,7 @@ export default function QuizScreen() {
   }
 
   function restart() {
-    setRound((current) => current + 1);
+    setDeck(buildDeck(language));
     setStep(0);
     setPicked(null);
     setHits(0);

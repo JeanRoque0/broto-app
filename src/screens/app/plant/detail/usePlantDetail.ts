@@ -17,7 +17,7 @@ import {
   useUpdatePlantTask,
 } from "@/hooks/usePlantTasks";
 import { Identification } from "@/types/identification";
-import { PlantTask } from "@/types/plant";
+import { PlantTask , CareEventKind } from "@/types/plant";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { blockedOffline } from "@/utils/offline";
@@ -29,7 +29,7 @@ import {
   isTaskKind,
   parseDay,
 } from "@/utils/tasks";
-import { CareEventKind } from "@/types/plant";
+
 import {
   useArchivePlant,
   useCareEvents,

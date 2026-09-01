@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   BackHandler,
@@ -74,7 +74,7 @@ function ZoomStage({
   const savedX = useSharedValue(0);
   const savedY = useSharedValue(0);
 
-  function reset() {
+  const reset = useCallback(() => {
     scale.value = withTiming(MIN_SCALE);
     saved.value = MIN_SCALE;
     x.value = withTiming(0);
@@ -82,11 +82,11 @@ function ZoomStage({
     savedX.value = 0;
     savedY.value = 0;
     onZoomChange(false);
-  }
+  }, [scale, saved, x, y, savedX, savedY, onZoomChange]);
 
   useEffect(() => {
     if (!active && saved.value > MIN_SCALE) reset();
-  }, [active]);
+  }, [active, reset, saved]);
 
   const gesture = useMemo(() => {
     const pinch = Gesture.Pinch()
@@ -140,7 +140,7 @@ function ZoomStage({
       });
 
     return Gesture.Simultaneous(pinch, pan, doubleTap);
-  }, [zoomed, onZoomChange]);
+  }, [zoomed, onZoomChange, saved, savedX, savedY, scale, x, y]);
 
   const stageStyle = useAnimatedStyle(() => ({
     transform: [

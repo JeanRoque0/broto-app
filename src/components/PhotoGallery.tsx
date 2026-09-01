@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { setStatusBarStyle } from "expo-status-bar";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BackHandler,
   Modal,
@@ -56,7 +56,7 @@ function GalleryPage({
   const savedX = useSharedValue(0);
   const savedY = useSharedValue(0);
 
-  function reset() {
+  const reset = useCallback(() => {
     scale.value = withTiming(1);
     saved.value = 1;
     x.value = withTiming(0);
@@ -64,11 +64,11 @@ function GalleryPage({
     savedX.value = 0;
     savedY.value = 0;
     onZoomChange(false);
-  }
+  }, [scale, saved, x, y, savedX, savedY, onZoomChange]);
 
   useEffect(() => {
     if (!active && saved.value > MIN_SCALE) reset();
-  }, [active]);
+  }, [active, reset, saved]);
 
   const gesture = useMemo(() => {
     const pinch = Gesture.Pinch()
@@ -122,7 +122,7 @@ function GalleryPage({
       });
 
     return Gesture.Simultaneous(pinch, pan, doubleTap);
-  }, [zoomed, onZoomChange]);
+  }, [zoomed, onZoomChange, saved, savedX, savedY, scale, x, y]);
 
   const style = useAnimatedStyle(() => ({
     transform: [

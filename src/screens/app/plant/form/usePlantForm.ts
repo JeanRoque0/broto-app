@@ -153,7 +153,14 @@ export function usePlantForm() {
 
     setPhotoPath(plant.photo_path);
     setReady(true);
-  }, [isEditing, plant, ready, reset]);
+  }, [
+    isEditing,
+    plant,
+    ready,
+    reset,
+    facts?.temperatura?.min_c,
+    facts?.temperatura?.max_c,
+  ]);
 
   const step = PLANT_FORM_STEPS[stepIndex];
   const isLastStep = stepIndex === PLANT_FORM_STEPS.length - 1;

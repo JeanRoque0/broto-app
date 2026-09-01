@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { isAxiosError, isCancel } from "axios";
 
 import { Toast } from "@/components/ui/Toast";
 import i18n from "@/i18n";
@@ -27,11 +27,11 @@ api.interceptors.request.use(async (config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (axios.isCancel(error)) {
+    if (isCancel(error)) {
       return Promise.reject(error);
     }
 
-    if (axios.isAxiosError(error)) {
+    if (isAxiosError(error)) {
       if (!error.response) {
         return Promise.reject(error);
       }
