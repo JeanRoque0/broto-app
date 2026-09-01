@@ -96,5 +96,11 @@
   "groupAccount": "Conta",
   "groupPreferences": "Preferências",
   "groupHelp": "Ajuda e privacidade",
-  "groupSubscription": "Assinatura"
+  "groupSubscription": "Assinatura",
+  "exportData": "Exportar meus dados",
+  "exportPreparing": "Preparando…",
+  "exportTitle": "Meus dados no Broto",
+  "exportUnavailable": "Este aparelho não sabe compartilhar arquivo",
+  "exportFailed": "Não deu para exportar",
+  "exportFailedSubtitle": "Tente de novo em alguns segundos."
 }

@@ -17,6 +17,7 @@ import Animated, {
 import { Toast } from "@/components/ui/Toast";
 import { MONTH_CAP } from "@/constants";
 import { useAuth } from "@/hooks/useAuth";
+import { useExportData } from "@/hooks/useExportData";
 import { useCredits, useProfile } from "@/hooks/useProfile";
 import { signOut } from "@/services/supabase/auth";
 import { revokeTerms } from "@/services/supabase/profile";
@@ -30,6 +31,7 @@ export function useProfileScreen() {
   const { user, userId } = useAuth();
   const { data: profile, isLoading } = useProfile();
   const credits = useCredits();
+  const { exportData, exporting } = useExportData();
   const queryClient = useQueryClient();
   const [signingOut, setSigningOut] = useState(false);
   const [languageVisible, setLanguageVisible] = useState(false);
@@ -229,6 +231,8 @@ export function useProfileScreen() {
     openRevoke: () => setRevokeVisible(true),
     closeRevoke: () => setRevokeVisible(false),
     handleRevoke,
+    exportData,
+    exporting,
     openTerms,
     openPrivacy,
     openRefund,

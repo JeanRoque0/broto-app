@@ -77,6 +77,8 @@ export default function ProfileScreen() {
     openRevoke,
     closeRevoke,
     handleRevoke,
+    exportData,
+    exporting,
     openTerms,
     openPrivacy,
     openRefund,
@@ -257,6 +259,12 @@ export default function ProfileScreen() {
             />
             <MenuRow label={t("terms")} icon="file-text" onPress={openTerms} />
             <MenuRow label={t("privacy")} icon="shield" onPress={openPrivacy} />
+            <MenuRow
+              label={t("exportData")}
+              icon="download"
+              hint={exporting ? t("exportPreparing") : undefined}
+              onPress={exportData}
+            />
             <MenuRow
               label={t("revoke")}
               icon="rotate-ccw"

@@ -96,5 +96,11 @@
   "groupAccount": "Account",
   "groupPreferences": "Preferences",
   "groupHelp": "Help and privacy",
-  "groupSubscription": "Subscription"
+  "groupSubscription": "Subscription",
+  "exportData": "Export my data",
+  "exportPreparing": "Preparing…",
+  "exportTitle": "My Broto data",
+  "exportUnavailable": "This device cannot share files",
+  "exportFailed": "Could not export",
+  "exportFailedSubtitle": "Try again in a few seconds."
 }
