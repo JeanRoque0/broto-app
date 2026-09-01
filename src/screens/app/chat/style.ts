@@ -266,6 +266,9 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: theme.surface.container,
   },
+  threadIconTrash: {
+    backgroundColor: theme.functional.dangerSoft,
+  },
   threadIconDanger: {
     backgroundColor: theme.functional.danger,
   },

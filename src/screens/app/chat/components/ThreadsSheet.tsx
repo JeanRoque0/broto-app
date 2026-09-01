@@ -121,7 +121,7 @@ export function ThreadsSheet({
                 ) : (
                   <RipplePressable
                     onPress={() => setConfirmId(item.id)}
-                    style={styles.threadIcon}
+                    style={[styles.threadIcon, styles.threadIconTrash]}
                     hitSlop={6}
                     accessibilityRole="button"
                     accessibilityLabel={t("removeThread")}
@@ -129,7 +129,7 @@ export function ThreadsSheet({
                     <Feather
                       name="trash-2"
                       size={17}
-                      color={theme.text.secondary}
+                      color={theme.functional.danger}
                     />
                   </RipplePressable>
                 )}
