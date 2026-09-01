@@ -19,44 +19,24 @@ export const styles = StyleSheet.create({
     paddingTop: theme.spacing.s2,
     paddingBottom: theme.spacing.s4,
   },
-  screenTitle: {
-    ...type.display,
+  editButton: {
+    marginTop: theme.spacing.s4,
   },
   identity: {
     alignItems: "center",
     marginTop: theme.spacing.s5,
   },
-  avatar: {
+  avatarSlot: {
     width: 88,
     height: 88,
-    borderRadius: 44,
-    backgroundColor: theme.primary.claySoft,
-    alignItems: "center",
-    justifyContent: "center",
   },
-  avatarBadge: {
-    position: "absolute",
-    right: 0,
-    bottom: 2,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: theme.primary.clay,
-    borderWidth: 2.5,
-    borderColor: theme.surface.base,
-  },
-  avatarLetter: {
-    fontSize: fontSize.s13,
-    fontWeight: "600",
-    color: theme.primary.clay,
+  nameWrap: {
+    marginTop: theme.spacing.s2,
   },
   name: {
     fontSize: fontSize.s9,
     fontWeight: "700",
     color: theme.text.primary,
-    marginTop: theme.spacing.s3,
   },
   email: {
     ...type.bodySm,

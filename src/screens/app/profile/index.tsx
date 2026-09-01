@@ -1,12 +1,11 @@
-import { Feather } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import Animated from "react-native-reanimated";
 
 import { AvatarSheet } from "@/components/AvatarSheet";
 import { LanguageSheet } from "@/components/LanguageSheet";
-import { PlantPhoto } from "@/components/PlantPhoto";
 import { useTabBarSpace } from "@/hooks/useTabBarSpace";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
@@ -25,6 +24,8 @@ import { useTemperatureUnit } from "@/hooks/useTemperatureUnit";
 import { useLanguageStore } from "@/store";
 import { theme } from "@/style/theme";
 
+import { IdentityFlyer } from "./components/IdentityFlyer";
+import { ProfileHeader } from "./components/ProfileHeader";
 import { styles } from "./style";
 import { useProfileScreen } from "./useProfileScreen";
 
@@ -42,6 +43,24 @@ export default function ProfileScreen() {
     usedLabel,
     renewsLabel,
     signingOut,
+    scrollRef,
+    scrollY,
+    collapseAt,
+    scrollToTop,
+    onScroll,
+    onIdentityLayout,
+    onNameLayout,
+    onAvatarLayout,
+    onLayerLayout,
+    onHeaderLayout,
+    layerRef,
+    headerRef,
+    avatarRef,
+    nameRef,
+    origin,
+    avatarAt,
+    nameAt,
+    headerAt,
     languageVisible,
     openLanguage,
     closeLanguage,
@@ -75,37 +94,50 @@ export default function ProfileScreen() {
 
   return (
     <Container>
-      <View style={styles.header}>
-        <Text family="display" style={styles.screenTitle}>
-          {t("title")}
-        </Text>
-      </View>
+      <Pressable
+        ref={headerRef}
+        style={styles.header}
+        onLayout={onHeaderLayout}
+        onPress={scrollToTop}
+      >
+        <ProfileHeader
+          title={t("title")}
+          editLabel={t("editProfile")}
+          onEdit={openEditProfile}
+          scrollY={scrollY}
+          collapseAt={collapseAt}
+        />
+      </Pressable>
 
-      <ScrollView
+      <Animated.ScrollView
+        ref={scrollRef}
         contentContainerStyle={[styles.content, { paddingBottom: tabBarSpace }]}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
       >
-        <View style={styles.identity}>
+        <View style={styles.identity} onLayout={onIdentityLayout}>
           <Pressable
+            ref={avatarRef}
+            style={styles.avatarSlot}
+            onLayout={onAvatarLayout}
             onPress={openPhotoSheet}
             accessibilityRole="button"
             accessibilityLabel={t("editPhoto")}
-          >
-            <PlantPhoto
-              path={profile?.avatar_path ?? null}
-              style={styles.avatar}
-              fallback={
-                <Text family="display" style={styles.avatarLetter}>
-                  {initial}
-                </Text>
-              }
-            />
-            <View style={styles.avatarBadge}>
-              <Feather name="edit-2" size={13} color={theme.text.onPrimary} />
-            </View>
-          </Pressable>
-          <Text style={styles.name}>{name}</Text>
+          />
+          <View ref={nameRef} style={styles.nameWrap} onLayout={onNameLayout}>
+            <Text style={styles.name}>{name}</Text>
+          </View>
           <Text style={styles.email}>{email}</Text>
+
+          <Button
+            label={t("editProfile")}
+            onPress={openEditProfile}
+            variant="outline"
+            size="md"
+            fullWidth={false}
+            style={styles.editButton}
+          />
         </View>
 
         <View style={styles.section}>
@@ -239,11 +271,6 @@ export default function ProfileScreen() {
 
           <Card style={styles.menuCard}>
             <MenuRow
-              label={t("editProfile")}
-              icon="user"
-              onPress={openEditProfile}
-            />
-            <MenuRow
               label={signingOut ? t("signingOut") : t("signOut")}
               icon="log-out"
               onPress={handleSignOut}
@@ -261,7 +288,26 @@ export default function ProfileScreen() {
             {t("version", { version })}
           </Text>
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
+
+      <View
+        ref={layerRef}
+        style={StyleSheet.absoluteFill}
+        onLayout={onLayerLayout}
+        pointerEvents="none"
+      >
+        <IdentityFlyer
+          path={profile?.avatar_path ?? null}
+          initial={initial}
+          name={name}
+          scrollY={scrollY}
+          collapseAt={collapseAt}
+          origin={origin}
+          avatarAt={avatarAt}
+          nameAt={nameAt}
+          headerAt={headerAt}
+        />
+      </View>
 
       <AvatarSheet visible={photoVisible} onClose={closePhotoSheet} />
 

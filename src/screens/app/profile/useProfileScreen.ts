@@ -1,7 +1,18 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import {
+  LayoutChangeEvent,
+  MeasureInWindowOnSuccessCallback,
+  View,
+} from "react-native";
+import Animated, {
+  SharedValue,
+  useAnimatedRef,
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from "react-native-reanimated";
 
 import { Toast } from "@/components/ui/Toast";
 import { MONTH_CAP } from "@/constants";
@@ -25,6 +36,94 @@ export function useProfileScreen() {
   const [photoVisible, setPhotoVisible] = useState(false);
   const [revokeVisible, setRevokeVisible] = useState(false);
   const [revoking, setRevoking] = useState(false);
+
+  const scrollRef = useAnimatedRef<Animated.ScrollView>();
+  const scrollY = useSharedValue(0);
+  const collapseAt = useSharedValue(0);
+
+  const onScroll = useAnimatedScrollHandler((event) => {
+    scrollY.value = event.contentOffset.y;
+  });
+
+  const scrollToTop = useCallback(() => {
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+  }, [scrollRef]);
+
+  const layerRef = useRef<View>(null);
+  const headerRef = useRef<View>(null);
+  const avatarRef = useRef<View>(null);
+  const nameRef = useRef<View>(null);
+
+  const originX = useSharedValue(0);
+  const originY = useSharedValue(0);
+  const avatarX = useSharedValue(0);
+  const avatarY = useSharedValue(0);
+  const avatarH = useSharedValue(0);
+  const headerX = useSharedValue(0);
+  const headerY = useSharedValue(0);
+  const headerH = useSharedValue(0);
+  const nameX = useSharedValue(0);
+  const nameY = useSharedValue(0);
+  const nameH = useSharedValue(0);
+
+  const origin = useMemo(
+    () => ({ x: originX, y: originY }),
+    [originX, originY],
+  );
+  const avatarAt = useMemo(
+    () => ({ x: avatarX, y: avatarY, height: avatarH }),
+    [avatarX, avatarY, avatarH],
+  );
+  const nameAt = useMemo(
+    () => ({ x: nameX, y: nameY, height: nameH }),
+    [nameX, nameY, nameH],
+  );
+  const headerAt = useMemo(
+    () => ({ x: headerX, y: headerY, height: headerH }),
+    [headerX, headerY, headerH],
+  );
+
+  const anchor = useCallback(
+    (
+      node: {
+        measureInWindow: (callback: MeasureInWindowOnSuccessCallback) => void;
+      } | null,
+      target: { x: SharedValue<number>; y: SharedValue<number> },
+      height?: SharedValue<number>,
+      scrolls = true,
+    ) => {
+      node?.measureInWindow((x, y, _width, measured) => {
+        target.x.value = x;
+        target.y.value = scrolls ? y + scrollY.value : y;
+        if (height) height.value = measured;
+      });
+    },
+    [scrollY],
+  );
+
+  const onLayerLayout = useCallback(() => {
+    anchor(layerRef.current, origin, undefined, false);
+  }, [anchor, origin]);
+
+  const onHeaderLayout = useCallback(() => {
+    anchor(headerRef.current, headerAt, headerAt.height, false);
+  }, [anchor, headerAt]);
+
+  const onIdentityLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      const { y, height } = event.nativeEvent.layout;
+      collapseAt.value = y + height;
+    },
+    [collapseAt],
+  );
+
+  const onAvatarLayout = useCallback(() => {
+    anchor(avatarRef.current, avatarAt, avatarAt.height);
+  }, [anchor, avatarAt]);
+
+  const onNameLayout = useCallback(() => {
+    anchor(nameRef.current, nameAt, nameAt.height);
+  }, [anchor, nameAt]);
 
   const name =
     profile?.display_name ?? user?.user_metadata?.name ?? t("fallbackName");
@@ -96,6 +195,24 @@ export function useProfileScreen() {
     renewsLabel: t("renews", { date: formatOrdinalDate(credits.renewsAt) }),
     isLoading,
     signingOut,
+    scrollRef,
+    scrollY,
+    collapseAt,
+    scrollToTop,
+    onScroll,
+    onIdentityLayout,
+    onNameLayout,
+    onAvatarLayout,
+    onLayerLayout,
+    onHeaderLayout,
+    layerRef,
+    headerRef,
+    avatarRef,
+    nameRef,
+    origin,
+    avatarAt,
+    nameAt,
+    headerAt,
     languageVisible,
     openLanguage: () => setLanguageVisible(true),
     closeLanguage: () => setLanguageVisible(false),
