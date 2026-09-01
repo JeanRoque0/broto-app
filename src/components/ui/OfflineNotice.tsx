@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, View } from "react-native";
+import { Easing, StyleSheet, View } from "react-native";
 import Animated, {
   FadeIn,
   FadeOut,
@@ -16,7 +16,9 @@ import { useOnline } from "@/hooks/useOnline";
 import { theme } from "@/style/theme";
 import { fontSize, type } from "@/style/typography";
 
-const MOTION = 260;
+const ENTER = 420;
+const LEAVE = 320;
+const EASE = Easing.bezier(0.22, 1, 0.36, 1);
 
 export function OfflineNotice() {
   const { t } = useTranslation();
@@ -25,26 +27,26 @@ export function OfflineNotice() {
 
   return (
     <Animated.View
-      layout={LinearTransition.duration(MOTION).reduceMotion(
-        ReduceMotion.System,
-      )}
+      layout={LinearTransition.duration(ENTER)
+        .easing(EASE)
+        .reduceMotion(ReduceMotion.System)}
     >
       {!online && (
         <Animated.View
-          entering={SlideInUp.duration(MOTION).reduceMotion(
-            ReduceMotion.System,
-          )}
-          exiting={SlideOutUp.duration(MOTION).reduceMotion(
-            ReduceMotion.System,
-          )}
-          style={[styles.bar, { paddingTop: insets.top + theme.spacing.s2 }]}
+          entering={SlideInUp.duration(ENTER)
+            .easing(EASE)
+            .reduceMotion(ReduceMotion.System)}
+          exiting={SlideOutUp.duration(LEAVE)
+            .easing(EASE)
+            .reduceMotion(ReduceMotion.System)}
+          style={[styles.bar, { paddingTop: insets.top + theme.spacing.s3 }]}
           accessibilityRole="alert"
         >
           <Animated.View
-            entering={FadeIn.delay(80)
-              .duration(MOTION)
+            entering={FadeIn.delay(140)
+              .duration(ENTER)
               .reduceMotion(ReduceMotion.System)}
-            exiting={FadeOut.duration(120).reduceMotion(ReduceMotion.System)}
+            exiting={FadeOut.duration(140).reduceMotion(ReduceMotion.System)}
             style={styles.content}
           >
             <Feather name="cloud-off" size={16} color={theme.text.onPrimary} />
@@ -63,7 +65,7 @@ export function OfflineNotice() {
 const styles = StyleSheet.create({
   bar: {
     paddingHorizontal: theme.screenPadding,
-    paddingBottom: theme.spacing.s3,
+    paddingBottom: theme.spacing.s4,
     backgroundColor: theme.primary.clay,
   },
   content: {
