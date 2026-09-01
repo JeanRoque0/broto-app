@@ -17,6 +17,7 @@ export function useSearch() {
   const selectSpecies = useSpeciesStore((state) => state.select);
   const { ref: inputRef, onShow, cancelAutoFocus } = useModalAutoFocus();
   const dismissed = useRef("");
+  const returning = useRef(false);
 
   const [term, setTerm] = useState("");
   const [query, setQuery] = useState("");
@@ -46,12 +47,18 @@ export function useSearch() {
 
   useFocusEffect(
     useCallback(() => {
+      if (returning.current) {
+        returning.current = false;
+        return;
+      }
+
       onShow();
       return cancelAutoFocus;
     }, [onShow, cancelAutoFocus]),
   );
 
   function open(species: Species) {
+    returning.current = true;
     selectSpecies(species);
     router.push("/(app)/species");
   }
