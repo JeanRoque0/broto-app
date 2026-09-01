@@ -1,14 +1,12 @@
 import { Feather } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Animated, {
   Easing,
-  FadeIn,
-  FadeOut,
-  LinearTransition,
-  ReduceMotion,
-  SlideInUp,
-  SlideOutUp,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -18,7 +16,7 @@ import { theme } from "@/style/theme";
 import { fontSize, type } from "@/style/typography";
 
 const ENTER = 420;
-const LEAVE = 320;
+const LEAVE = 340;
 const EASE = Easing.bezier(0.22, 1, 0.36, 1);
 
 export function OfflineNotice() {
@@ -26,53 +24,63 @@ export function OfflineNotice() {
   const online = useOnline();
   const insets = useSafeAreaInsets();
 
-  return (
-    <Animated.View
-      layout={LinearTransition.duration(ENTER)
-        .easing(EASE)
-        .reduceMotion(ReduceMotion.System)}
-    >
-      {!online && (
-        <Animated.View
-          entering={SlideInUp.duration(ENTER)
-            .easing(EASE)
-            .reduceMotion(ReduceMotion.System)}
-          exiting={SlideOutUp.duration(LEAVE)
-            .easing(EASE)
-            .reduceMotion(ReduceMotion.System)}
-          style={[styles.bar, { paddingTop: insets.top + theme.spacing.s3 }]}
-          accessibilityRole="alert"
-        >
-          <Animated.View
-            entering={FadeIn.delay(140)
-              .duration(ENTER)
-              .reduceMotion(ReduceMotion.System)}
-            exiting={FadeOut.duration(140).reduceMotion(ReduceMotion.System)}
-            style={styles.content}
-          >
-            <Feather name="cloud-off" size={16} color={theme.text.onPrimary} />
+  const [height, setHeight] = useState(0);
+  const progress = useSharedValue(0);
 
-            <View style={styles.texts}>
-              <Text style={styles.title}>{t("offlineTitle")}</Text>
-              <Text style={styles.body}>{t("offlineText")}</Text>
-            </View>
-          </Animated.View>
-        </Animated.View>
-      )}
+  useEffect(() => {
+    progress.value = withTiming(online ? 0 : 1, {
+      duration: online ? LEAVE : ENTER,
+      easing: EASE,
+    });
+  }, [online, progress]);
+
+  const shell = useAnimatedStyle(() => ({
+    height: height * progress.value,
+  }));
+
+  const content = useAnimatedStyle(() => ({
+    opacity: progress.value,
+    transform: [{ translateY: (progress.value - 1) * 12 }],
+  }));
+
+  return (
+    <Animated.View style={[styles.shell, shell]} pointerEvents="none">
+      <Animated.View
+        onLayout={(event) => setHeight(event.nativeEvent.layout.height)}
+        style={[
+          styles.bar,
+          { paddingTop: insets.top + theme.spacing.s3 },
+          content,
+        ]}
+        accessibilityRole="alert"
+        accessibilityElementsHidden={online}
+      >
+        <Feather name="cloud-off" size={16} color={theme.text.onPrimary} />
+
+        <View style={styles.texts}>
+          <Text style={styles.title}>{t("offlineTitle")}</Text>
+          <Text style={styles.body}>{t("offlineText")}</Text>
+        </View>
+      </Animated.View>
     </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  bar: {
-    paddingHorizontal: theme.screenPadding,
-    paddingBottom: theme.spacing.s4,
-    backgroundColor: theme.primary.clay,
+  shell: {
+    overflow: "hidden",
   },
-  content: {
+  bar: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
     flexDirection: "row",
     alignItems: "flex-start",
     gap: theme.spacing.s3,
+    paddingHorizontal: theme.screenPadding,
+    paddingBottom: theme.spacing.s4,
+    backgroundColor: theme.primary.clay,
   },
   texts: {
     flex: 1,
