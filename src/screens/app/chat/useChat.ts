@@ -49,6 +49,7 @@ export function useChat() {
   const [thinking, setThinking] = useState(0);
   const [menuVisible, setMenuVisible] = useState(false);
   const [usageVisible, setUsageVisible] = useState(false);
+  const [stack, setStack] = useState<(string | null)[]>([]);
 
   const autoSent = useRef(false);
 
@@ -207,6 +208,7 @@ export function useChat() {
     setTyping(null);
     setPending(null);
     setMenuVisible(false);
+    setStack([]);
     setThreadId(null);
     setPlantId(null);
     setDraft("");
@@ -215,8 +217,38 @@ export function useChat() {
   }
 
   function pickThread(id: string) {
+    setStack((current) => [...current, threadId]);
+    setTyping(null);
+    setPending(null);
     setThreadId(id);
     setThreadsVisible(false);
+  }
+
+  function goBack() {
+    if (usageVisible) {
+      setUsageVisible(false);
+      setMenuVisible(true);
+      return true;
+    }
+
+    if (threadsVisible) {
+      setThreadsVisible(false);
+      setMenuVisible(true);
+      return true;
+    }
+
+    if (menuVisible) {
+      setMenuVisible(false);
+      return true;
+    }
+
+    if (stack.length === 0) return false;
+
+    setTyping(null);
+    setPending(null);
+    setThreadId(stack[stack.length - 1]);
+    setStack((current) => current.slice(0, -1));
+    return true;
   }
 
   return {
@@ -237,6 +269,7 @@ export function useChat() {
     openMenu: () => setMenuVisible(true),
     closeMenu: () => setMenuVisible(false),
     usageVisible,
+    goBack,
     openUsage: () => setUsageVisible(true),
     closeUsage: () => {
       setUsageVisible(false);

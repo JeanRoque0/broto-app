@@ -2,7 +2,8 @@ import { Feather } from "@expo/vector-icons";
 import type { FlashListRef } from "@shopify/flash-list";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TextInput, View } from "react-native";
+import { useRouter } from "expo-router";
+import { BackHandler, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
@@ -81,6 +82,7 @@ const THINKING = [
 ] as const;
 
 export default function ChatScreen() {
+  const router = useRouter();
   const { t } = useTranslation("chat");
   const insets = useSafeAreaInsets();
   const list = useRef<FlashListRef<ChatMessage>>(null);
@@ -116,12 +118,22 @@ export default function ChatScreen() {
     openMenu,
     closeMenu,
     usageVisible,
+    goBack,
     openUsage,
     closeUsage,
     remainingToday,
   } = useChat();
 
   const tail = Math.max(0, viewport - TAIL_RESERVE);
+
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      goBack,
+    );
+
+    return () => subscription.remove();
+  }, [goBack]);
 
   useEffect(() => {
     if (items.length === 0) return;
@@ -168,6 +180,9 @@ export default function ChatScreen() {
     <Container>
       <Header
         showBack
+        onBack={() => {
+          if (!goBack()) router.back();
+        }}
         title={t("title")}
         rightAction={
           <CircleButton onPress={openMenu} accessibilityLabel={t("menu")}>

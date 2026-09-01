@@ -6,20 +6,18 @@ import {
 } from "@/constants";
 import { Credits, Profile } from "@/types/profile";
 
+function utcDay(now: Date) {
+  return now.toISOString().slice(0, 10);
+}
+
 function isPastMonth(periodStart: string, now: Date) {
-  const [year, month] = periodStart.split("-").map(Number);
-  if (!year || !month) return false;
-  return (
-    year < now.getFullYear() ||
-    (year === now.getFullYear() && month < now.getMonth() + 1)
-  );
+  if (!periodStart) return false;
+  return periodStart.slice(0, 7) < utcDay(now).slice(0, 7);
 }
 
 function isPastDay(day: string | null, now: Date) {
   if (!day) return true;
-  const [year, month, date] = day.split("-").map(Number);
-  if (!year || !month || !date) return true;
-  return new Date(year, month - 1, date).toDateString() !== now.toDateString();
+  return day.slice(0, 10) < utcDay(now);
 }
 
 function nextPeriodStart(now: Date) {
