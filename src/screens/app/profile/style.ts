@@ -102,9 +102,23 @@ export const styles = StyleSheet.create({
   planAction: {
     marginTop: theme.spacing.s4,
   },
+  groupLabel: {
+    fontSize: fontSize.s1,
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    color: theme.text.tertiary,
+    marginTop: theme.spacing.s5,
+    marginBottom: theme.spacing.s2,
+    marginLeft: theme.spacing.s1,
+  },
+  groupFirst: {
+    marginTop: theme.spacing.s4,
+  },
   menuCard: {
     padding: 0,
     overflow: "hidden",
-    marginTop: theme.spacing.s3,
+  },
+  exitCard: {
+    marginTop: theme.spacing.s5,
   },
 });

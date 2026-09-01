@@ -163,12 +163,34 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.menuSection}>
+          <Text family="mono" style={[styles.groupLabel, styles.groupFirst]}>
+            {t("groupAccount")}
+          </Text>
+
           <Card style={styles.menuCard}>
             <MenuRow
               label={t("editProfile")}
               icon="user"
               onPress={openEditProfile}
             />
+            <MenuRow
+              label={t("refund")}
+              icon="credit-card"
+              onPress={openRefund}
+            />
+            <MenuRow
+              label={t("restorePurchase")}
+              icon="refresh-ccw"
+              onPress={handleRestorePurchase}
+              last
+            />
+          </Card>
+
+          <Text family="mono" style={styles.groupLabel}>
+            {t("groupPreferences")}
+          </Text>
+
+          <Card style={styles.menuCard}>
             <MenuRow
               label={t("notifications")}
               icon="bell"
@@ -192,28 +214,22 @@ export default function ProfileScreen() {
                 unit === "celsius" ? t("celsiusLabel") : t("fahrenheitLabel")
               }
               onPress={() => setUnitsVisible(true)}
-            />
-            <MenuRow
-              label={t("restorePurchase")}
-              icon="refresh-ccw"
-              onPress={handleRestorePurchase}
               last
             />
           </Card>
 
+          <Text family="mono" style={styles.groupLabel}>
+            {t("groupHelp")}
+          </Text>
+
           <Card style={styles.menuCard}>
-            <MenuRow label={t("terms")} icon="file-text" onPress={openTerms} />
-            <MenuRow label={t("privacy")} icon="shield" onPress={openPrivacy} />
-            <MenuRow
-              label={t("refund")}
-              icon="credit-card"
-              onPress={openRefund}
-            />
             <MenuRow
               label={t("support")}
               icon="help-circle"
               onPress={openSupport}
             />
+            <MenuRow label={t("terms")} icon="file-text" onPress={openTerms} />
+            <MenuRow label={t("privacy")} icon="shield" onPress={openPrivacy} />
             <MenuRow
               label={t("revoke")}
               icon="rotate-ccw"
@@ -222,7 +238,7 @@ export default function ProfileScreen() {
             />
           </Card>
 
-          <Card style={styles.menuCard}>
+          <Card style={[styles.menuCard, styles.exitCard]}>
             <MenuRow
               label={signingOut ? t("signingOut") : t("signOut")}
               icon="log-out"

@@ -92,5 +92,8 @@
   "revokeFailed": "Could not withdraw",
   "revokeFailedSubtitle": "Try again in a few seconds.",
   "usageAnalyses": "Analyses",
-  "usageChat": "Brotinho"
+  "usageChat": "Brotinho",
+  "groupAccount": "Account",
+  "groupPreferences": "Preferences",
+  "groupHelp": "Help and privacy"
 }

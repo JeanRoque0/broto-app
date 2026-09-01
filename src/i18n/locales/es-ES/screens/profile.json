@@ -92,5 +92,8 @@
   "revokeFailed": "No se pudo revocar",
   "revokeFailedSubtitle": "Inténtalo de nuevo en unos segundos.",
   "usageAnalyses": "Análisis",
-  "usageChat": "Brotinho"
+  "usageChat": "Brotinho",
+  "groupAccount": "Cuenta",
+  "groupPreferences": "Preferencias",
+  "groupHelp": "Ayuda y privacidad"
 }
