@@ -1,10 +1,19 @@
+import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
+import Animated, {
+  Easing,
+  ReduceMotion,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
 import { fontSize } from "@/style/typography";
 
 const LOW = 0.25;
+const FILL = 720;
 
 type QuotaBarProps = {
   label: string;
@@ -14,6 +23,7 @@ type QuotaBarProps = {
 
 export function QuotaBar({ label, left, total }: QuotaBarProps) {
   const ratio = total > 0 ? Math.max(0, Math.min(1, left / total)) : 0;
+  const progress = useSharedValue(0);
 
   const tone =
     ratio === 0
@@ -22,17 +32,24 @@ export function QuotaBar({ label, left, total }: QuotaBarProps) {
         ? theme.secondary.ochre
         : theme.secondary.moss;
 
+  useEffect(() => {
+    progress.value = withTiming(ratio, {
+      duration: FILL,
+      easing: Easing.bezier(0.22, 1, 0.36, 1),
+      reduceMotion: ReduceMotion.System,
+    });
+  }, [ratio, progress]);
+
+  const fill = useAnimatedStyle(() => ({
+    width: `${progress.value * 100}%`,
+  }));
+
   return (
     <View style={styles.row}>
       <Text style={styles.label}>{label}</Text>
 
       <View style={styles.track}>
-        <View
-          style={[
-            styles.fill,
-            { width: `${ratio * 100}%`, backgroundColor: tone },
-          ]}
-        />
+        <Animated.View style={[styles.fill, { backgroundColor: tone }, fill]} />
       </View>
 
       <Text family="mono" style={styles.value}>
