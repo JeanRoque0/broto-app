@@ -11,7 +11,9 @@ import { useTabBarSpace } from "@/hooks/useTabBarSpace";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
+import { CHAT_MONTH_CAP, MONTH_CAP } from "@/constants";
 import { Card } from "@/components/ui/Card";
+import { QuotaBar } from "@/components/ui/QuotaBar";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { Chip } from "@/components/ui/Chip";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -37,7 +39,6 @@ export default function ProfileScreen() {
     profile,
     credits,
     usedLabel,
-    chatLabel,
     renewsLabel,
     signingOut,
     languageVisible,
@@ -104,15 +105,6 @@ export default function ProfileScreen() {
           </Pressable>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.email}>{email}</Text>
-
-          <Button
-            label={t("editProfile")}
-            onPress={openEditProfile}
-            variant="outline"
-            size="md"
-            fullWidth={false}
-            style={styles.editButton}
-          />
         </View>
 
         <View style={styles.section}>
@@ -120,13 +112,13 @@ export default function ProfileScreen() {
 
           <Card style={styles.planCard}>
             <View style={styles.planHead}>
-              <View>
+              <View style={styles.planTexts}>
                 <Eyebrow color={theme.primary.clay}>
                   {credits.isPro ? t("planPro") : t("planFree")}
                 </Eyebrow>
-                <Text style={styles.planUsage}>{usedLabel}</Text>
-                {chatLabel && <Text style={styles.planUsage}>{chatLabel}</Text>}
-                <Text style={styles.planRenews}>{renewsLabel}</Text>
+                {!credits.isPro && (
+                  <Text style={styles.planUsage}>{usedLabel}</Text>
+                )}
               </View>
 
               {credits.paidCredits > 0 && (
@@ -137,6 +129,27 @@ export default function ProfileScreen() {
                 />
               )}
             </View>
+
+            {(credits.isPro || credits.hasChat) && (
+              <View style={styles.planBars}>
+                {credits.isPro && (
+                  <QuotaBar
+                    label={t("usageAnalyses")}
+                    left={credits.monthRemaining}
+                    total={MONTH_CAP}
+                  />
+                )}
+                {credits.hasChat && (
+                  <QuotaBar
+                    label={t("usageChat")}
+                    left={credits.chatRemaining}
+                    total={CHAT_MONTH_CAP}
+                  />
+                )}
+              </View>
+            )}
+
+            <Text style={styles.planRenews}>{renewsLabel}</Text>
 
             {!credits.isPro && (
               <Button
@@ -150,6 +163,11 @@ export default function ProfileScreen() {
 
         <View style={styles.section}>
           <Card style={styles.menuCard}>
+            <MenuRow
+              label={t("editProfile")}
+              icon="user"
+              onPress={openEditProfile}
+            />
             <MenuRow
               label={t("notifications")}
               icon="bell"

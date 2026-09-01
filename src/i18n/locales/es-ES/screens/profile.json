@@ -85,5 +85,7 @@
   "revokeConfirm": "Revocar y salir",
   "revokeCancel": "Seguir usando",
   "revokeFailed": "No se pudo revocar",
-  "revokeFailedSubtitle": "Inténtalo de nuevo en unos segundos."
+  "revokeFailedSubtitle": "Inténtalo de nuevo en unos segundos.",
+  "usageAnalyses": "Análisis",
+  "usageChat": "Brotinho"
 }

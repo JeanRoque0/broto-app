@@ -16,6 +16,7 @@ import { CircleButton } from "@/components/ui/CircleButton";
 import { Container } from "@/components/ui/Container";
 import { Card } from "@/components/ui/Card";
 import { ContainerModal } from "@/components/ui/ContainerModal";
+import { QuotaBar } from "@/components/ui/QuotaBar";
 import { MenuRow } from "@/components/ui/Row";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { FlashListContainer } from "@/components/ui/FlashListContainer";
@@ -35,46 +36,6 @@ import { useChat } from "./useChat";
 
 const TAIL_RESERVE = 260;
 const FOCUS_DELAY = 420;
-const LOW = 0.25;
-
-function Quota({
-  label,
-  left,
-  total,
-}: {
-  label: string;
-  left: number;
-  total: number;
-}) {
-  const ratio = total > 0 ? Math.max(0, Math.min(1, left / total)) : 0;
-
-  const tone =
-    ratio === 0
-      ? theme.functional.danger
-      : ratio <= LOW
-        ? theme.secondary.ochre
-        : theme.secondary.moss;
-
-  return (
-    <View style={styles.quotaRow}>
-      <Text style={styles.quotaLabel}>{label}</Text>
-
-      <View style={styles.track}>
-        <View
-          style={[
-            styles.fill,
-            { width: `${ratio * 100}%`, backgroundColor: tone },
-          ]}
-        />
-      </View>
-
-      <Text family="mono" style={styles.quotaValue}>
-        {Math.round(ratio * 100)}%
-      </Text>
-    </View>
-  );
-}
-
 const THINKING = [
   "thinkingA",
   "thinkingB",
@@ -367,12 +328,12 @@ export default function ChatScreen() {
         description={t("usageDescription")}
       >
         <View style={styles.gauges}>
-          <Quota
+          <QuotaBar
             label={t("gaugeDay")}
             left={remainingToday}
             total={CHAT_DAILY_CAP}
           />
-          <Quota
+          <QuotaBar
             label={t("gaugeMonth")}
             left={remaining}
             total={CHAT_MONTH_CAP}

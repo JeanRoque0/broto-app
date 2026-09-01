@@ -85,5 +85,7 @@
   "revokeConfirm": "Withdraw and sign out",
   "revokeCancel": "Keep using",
   "revokeFailed": "Could not withdraw",
-  "revokeFailedSubtitle": "Try again in a few seconds."
+  "revokeFailedSubtitle": "Try again in a few seconds.",
+  "usageAnalyses": "Analyses",
+  "usageChat": "Brotinho"
 }

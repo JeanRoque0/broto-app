@@ -62,9 +62,6 @@ export const styles = StyleSheet.create({
     ...type.bodySm,
     marginTop: theme.spacing.s1,
   },
-  editButton: {
-    marginTop: theme.spacing.s4,
-  },
   banner: {
     marginBottom: theme.spacing.s4,
   },
@@ -87,6 +84,13 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
     color: theme.text.primary,
     marginTop: theme.spacing.s2,
+  },
+  planTexts: {
+    flex: 1,
+  },
+  planBars: {
+    gap: theme.spacing.s3,
+    marginTop: theme.spacing.s4,
   },
   planRenews: {
     ...type.bodySm,

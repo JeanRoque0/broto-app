@@ -35,10 +35,6 @@ export function useProfileScreen() {
     ? t("usedMonth", { used: credits.monthUsed, total: MONTH_CAP })
     : t("creditsLeft", { count: credits.total });
 
-  const chatLabel = credits.hasChat
-    ? t("chatLeft", { count: credits.chatRemaining })
-    : null;
-
   const handleRevoke = useCallback(async () => {
     if (!userId) return;
 
@@ -82,7 +78,6 @@ export function useProfileScreen() {
     profile,
     credits,
     usedLabel,
-    chatLabel,
     renewsLabel: t("renews", { date: formatOrdinalDate(credits.renewsAt) }),
     isLoading,
     signingOut,

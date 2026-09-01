@@ -105,35 +105,6 @@ export const styles = StyleSheet.create({
     gap: theme.spacing.s4,
     marginTop: theme.spacing.s6,
   },
-  quotaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.spacing.s3,
-  },
-  quotaLabel: {
-    fontSize: fontSize.s4,
-    fontWeight: "700",
-    color: theme.text.primary,
-    width: 68,
-  },
-  quotaValue: {
-    fontSize: fontSize.s3,
-    color: theme.text.secondary,
-    width: 44,
-    textAlign: "right",
-  },
-  track: {
-    flex: 1,
-    height: 8,
-    borderRadius: 999,
-    overflow: "hidden",
-    backgroundColor: theme.functional.line,
-  },
-  fill: {
-    height: "100%",
-    borderRadius: 999,
-    backgroundColor: theme.secondary.moss,
-  },
   gaugeHint: {
     ...type.bodySm,
     marginTop: theme.spacing.s3,
