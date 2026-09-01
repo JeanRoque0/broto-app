@@ -161,7 +161,7 @@ export default function ProfileScreen() {
           </Card>
         </View>
 
-        <View style={styles.section}>
+        <View style={styles.menuSection}>
           <Card style={styles.menuCard}>
             <MenuRow
               label={t("editProfile")}

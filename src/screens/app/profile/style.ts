@@ -69,6 +69,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: theme.screenPadding,
     marginTop: theme.spacing.s6,
   },
+  menuSection: {
+    paddingHorizontal: theme.screenPadding,
+  },
   planCard: {
     backgroundColor: theme.primary.claySoft,
     borderColor: theme.primary.clayBorder,
