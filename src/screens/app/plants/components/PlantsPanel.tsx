@@ -72,15 +72,24 @@ export function PlantsPanel({
       extraData={plantsByGroup}
       keyExtractor={(row) => row.key}
       getItemType={(row) => row.kind}
-      contentContainerStyle={{ paddingBottom: bottomSpace }}
+      contentContainerStyle={{
+        paddingTop: theme.spacing.s3,
+        paddingBottom: bottomSpace,
+      }}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
-      renderItem={({ item }) => {
+      renderItem={({ item, index }) => {
+        const head = [
+          styles.padded,
+          styles.sectionHead,
+          index === 0 && styles.sectionHeadFirst,
+        ];
+
         if (item.kind === "groupsHead") {
           return (
-            <View style={[styles.padded, styles.sectionHead]}>
+            <View style={head}>
               <Text family="display" style={styles.sectionTitle}>
                 {t("groupsTitle")}
               </Text>
@@ -99,7 +108,7 @@ export function PlantsPanel({
 
         if (item.kind === "plantsHead") {
           return (
-            <View style={[styles.padded, styles.sectionHead]}>
+            <View style={head}>
               <Text family="display" style={styles.sectionTitle}>
                 {t("allPlants")}
               </Text>
@@ -157,6 +166,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: theme.spacing.s6,
     marginBottom: theme.spacing.s3,
+  },
+  sectionHeadFirst: {
+    marginTop: 0,
   },
   newGroup: {
     flexDirection: "row",

@@ -47,7 +47,10 @@ export function AnalysesPanel({ bottomSpace }: AnalysesPanelProps) {
           {isLoading && <Loader />}
 
           {!isLoading && failed && (
-            <ErrorState description={t("historyLoadFailed")} onRetry={refetch} />
+            <ErrorState
+              description={t("historyLoadFailed")}
+              onRetry={refetch}
+            />
           )}
 
           {!isLoading && !failed && (
@@ -67,7 +70,10 @@ export function AnalysesPanel({ bottomSpace }: AnalysesPanelProps) {
     <FlashListContainer
       data={items}
       keyExtractor={(item) => item.id}
-      contentContainerStyle={{ paddingBottom: bottomSpace }}
+      contentContainerStyle={{
+        paddingTop: theme.spacing.s3,
+        paddingBottom: bottomSpace,
+      }}
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
         const health = HEALTH[item.result?.saude ?? "saudavel"];

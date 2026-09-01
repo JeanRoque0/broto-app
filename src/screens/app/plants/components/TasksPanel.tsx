@@ -46,7 +46,7 @@ export function TasksPanel({ bottomSpace }: TasksPanelProps) {
 
   const listHeader = (
     <>
-      <View style={styles.panel}>
+      <View>
         <DayStrip
           days={days}
           selected={selected}
@@ -117,7 +117,10 @@ export function TasksPanel({ bottomSpace }: TasksPanelProps) {
             </View>
           ) : null
         }
-        contentContainerStyle={{ paddingBottom: bottomSpace }}
+        contentContainerStyle={{
+          paddingTop: theme.spacing.s3,
+          paddingBottom: bottomSpace,
+        }}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <View style={styles.padded}>
@@ -144,9 +147,6 @@ export function TasksPanel({ bottomSpace }: TasksPanelProps) {
 }
 
 const styles = StyleSheet.create({
-  panel: {
-    marginTop: theme.spacing.s5,
-  },
   list: {
     paddingHorizontal: theme.screenPadding,
     marginTop: theme.spacing.s5,
