@@ -26,10 +26,10 @@ export const styles = StyleSheet.create({
   galleryRow: {
     marginTop: theme.spacing.s3,
     marginBottom: theme.spacing.s5,
+    marginHorizontal: theme.screenPadding,
   },
   gallery: {
     gap: theme.spacing.s2,
-    paddingHorizontal: theme.screenPadding,
   },
   photoTouch: {
     width: 190,
