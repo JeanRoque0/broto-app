@@ -19,7 +19,7 @@
   "emptyTitle": "Nada programado",
   "emptyText": "Agrega una planta con rutina de riego para empezar a recibir.",
   "inboxTitle": "Recordatorios",
-  "inboxKeep": "Últimos 30 días",
+  "inboxKeep": "Últimos 14 días",
   "inboxRemove": "Quitar recordatorio",
   "inboxClear": "Borrar todo",
   "inboxEmptyTitle": "Todavía no hay recordatorios",

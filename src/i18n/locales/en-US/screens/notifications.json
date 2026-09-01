@@ -19,7 +19,7 @@
   "emptyTitle": "Nothing scheduled",
   "emptyText": "Add a plant with a watering routine to start receiving reminders.",
   "inboxTitle": "Reminders",
-  "inboxKeep": "Last 30 days",
+  "inboxKeep": "Last 14 days",
   "inboxRemove": "Remove reminder",
   "inboxClear": "Clear all",
   "inboxEmptyTitle": "No reminders yet",

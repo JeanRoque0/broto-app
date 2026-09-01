@@ -19,7 +19,7 @@
   "emptyTitle": "Nada agendado",
   "emptyText": "Cadastre uma planta com rotina de cuidado pra começar a receber.",
   "inboxTitle": "Lembretes",
-  "inboxKeep": "Últimos 30 dias",
+  "inboxKeep": "Últimos 14 dias",
   "inboxRemove": "Remover lembrete",
   "inboxClear": "Limpar tudo",
   "inboxEmptyTitle": "Nenhum lembrete ainda",
