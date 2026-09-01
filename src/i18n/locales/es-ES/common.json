@@ -30,5 +30,8 @@
   "dismissNotice": "Cerrar aviso",
   "noticePlans": "Ver planes",
   "noticeClose": "Cerrar",
-  "noticeOk": "Entendido"
+  "noticeOk": "Entendido",
+  "offlineTitle": "Estás sin conexión",
+  "offlineText": "Puedes ver tus plantas y la rutina, pero editar y analizar esperan a que vuelva internet.",
+  "offlineAction": "Sin conexión"
 }

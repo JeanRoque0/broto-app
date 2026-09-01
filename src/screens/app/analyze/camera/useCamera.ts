@@ -17,6 +17,7 @@ import {
   useRefreshProfileOnFocus,
 } from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
+import { useOnline } from "@/hooks/useOnline";
 import { purchaseProduct, SINGLE_ANALYSIS } from "@/services/purchases";
 import { useAnalysisStore, useOnboardingStore } from "@/store";
 
@@ -30,6 +31,7 @@ export function useCamera() {
   const [blockedVisible, setBlockedVisible] = useState(false);
   const [buying, setBuying] = useState(false);
   const { userId } = useAuth();
+  const online = useOnline();
   const queryClient = useQueryClient();
 
   useRefreshProfileOnFocus();
@@ -113,7 +115,8 @@ export function useCamera() {
     handleCapture,
     handlePickFromGallery,
     handleRemovePhoto: removePhoto,
-    blocked: outOfCredits,
+    blocked: outOfCredits || !online,
+    online,
     blockedVisible,
     closeBlocked: () => setBlockedVisible(false),
     freeQuota: FREE_QUOTA,

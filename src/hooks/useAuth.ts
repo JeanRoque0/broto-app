@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 import { unregisterPushToken } from "@/services/push";
+import { clearPersistedCache } from "@/services/queryPersist";
 import { supabase } from "@/services/supabase/client";
 import { useAnalysisStore, useAuthStore } from "@/store";
 
@@ -20,6 +21,7 @@ export function useAuthListener() {
           useAnalysisStore.getState().reset();
 
           unregisterPushToken().catch(() => undefined);
+          clearPersistedCache().catch(() => undefined);
         } else {
           setSession(session);
         }

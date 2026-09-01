@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Toast } from "@/components/ui/Toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useCredits, useProfile } from "@/hooks/useProfile";
+import { useOnline } from "@/hooks/useOnline";
 import { formatOrdinalDate } from "@/utils/format";
 import { sendMessage } from "@/services/api/chat";
 import {
@@ -32,6 +33,7 @@ export function useChat() {
   const { userId } = useAuth();
   const queryClient = useQueryClient();
   const credits = useCredits();
+  const online = useOnline();
   const { refetch: refetchProfile } = useProfile();
 
   const params = useLocalSearchParams<{ q?: string; plantId?: string }>();
@@ -121,14 +123,15 @@ export function useChat() {
     if (!typing) return;
 
     if (typing.shown >= typing.full.length) {
-      const timer = setTimeout(() => {
-        setPending(null);
-        setTyping(null);
+      const timer = setTimeout(async () => {
         if (threadId) {
-          queryClient.invalidateQueries({
+          await queryClient.refetchQueries({
             queryKey: chatKeys.messages(threadId),
           });
         }
+
+        setPending(null);
+        setTyping(null);
       }, TYPING_SETTLE_MS);
 
       return () => clearTimeout(timer);
@@ -196,12 +199,13 @@ export function useChat() {
       });
     }
 
-    return extra.length ? [...stored, ...extra] : stored;
+    const all = extra.length ? [...stored, ...extra] : stored;
+    return all.filter((message) => message.content.trim().length > 0);
   }, [messages.data, pending, typing, threadId]);
 
   function submit() {
     const text = draft.trim();
-    if (!text || send.isPending) return;
+    if (!text || send.isPending || !online) return;
 
     setDraft("");
     setEditing(null);
@@ -268,6 +272,7 @@ export function useChat() {
     isLoading: !!threadId && messages.isLoading,
     isSending: send.isPending,
     isTyping: !!typing,
+    online,
     editing,
     cancelEdit,
     busy: send.isPending || !!typing,

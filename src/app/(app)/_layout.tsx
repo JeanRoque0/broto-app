@@ -1,6 +1,7 @@
 import { Redirect, Stack } from "expo-router";
 
 import { CareReminders } from "@/components/CareReminders";
+import { OfflineNotice } from "@/components/ui/OfflineNotice";
 import { ProfileGate } from "@/components/ProfileGate";
 import { useAuth } from "@/hooks/useAuth";
 import { theme } from "@/style/theme";
@@ -23,6 +24,8 @@ export default function AppLayout() {
         return (
           <>
             <CareReminders />
+
+            <OfflineNotice />
 
             <Stack
               screenOptions={{

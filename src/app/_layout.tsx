@@ -6,7 +6,8 @@ import { DMSans_700Bold } from "@expo-google-fonts/dm-sans/700Bold";
 import { Fraunces_400Regular } from "@expo-google-fonts/fraunces/400Regular";
 import { Fraunces_600SemiBold } from "@expo-google-fonts/fraunces/600SemiBold";
 import { useFonts } from "@expo-google-fonts/fraunces/useFonts";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { isAxiosError } from "axios";
 import { Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -22,6 +23,7 @@ import { useAuthDeepLink } from "@/hooks/useAuthDeepLink";
 import { useNotificationNavigation } from "@/hooks/useNotificationNavigation";
 import { useSystemLanguage } from "@/hooks/useSystemLanguage";
 import "@/i18n";
+import { CACHE_MAX_AGE, persistOptions } from "@/services/queryPersist";
 import { theme } from "@/style/theme";
 
 SplashScreen.preventAutoHideAsync();
@@ -35,6 +37,7 @@ export const queryClient = new QueryClient({
         return failureCount < 2;
       },
       staleTime: 30_000,
+      gcTime: CACHE_MAX_AGE,
     },
   },
 });
@@ -67,12 +70,15 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: theme.surface.base }}>
       <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
+        <PersistQueryClientProvider
+          client={queryClient}
+          persistOptions={persistOptions}
+        >
           <StatusBar style="dark" />
           <AppErrorBoundary onReset={() => queryClient.clear()}>
             <AppContent />
           </AppErrorBoundary>
-        </QueryClientProvider>
+        </PersistQueryClientProvider>
 
         <ToastContainer />
       </SafeAreaProvider>
