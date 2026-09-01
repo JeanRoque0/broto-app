@@ -4,6 +4,9 @@ import { theme } from "@/style/theme";
 import { fontSize, type } from "@/style/typography";
 
 export const styles = StyleSheet.create({
+  tabs: {
+    marginBottom: theme.spacing.s3,
+  },
   banner: {
     marginHorizontal: theme.screenPadding,
     marginBottom: theme.spacing.s4,

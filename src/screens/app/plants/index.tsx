@@ -172,6 +172,7 @@ export default function PlantsScreen() {
         ]}
         value={tab}
         onChange={setTab}
+        style={styles.tabs}
       />
     </>
   );
