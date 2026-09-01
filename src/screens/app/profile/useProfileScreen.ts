@@ -31,6 +31,20 @@ export function useProfileScreen() {
   const email = user?.email ?? "";
   const initial = name.trim().charAt(0).toUpperCase();
 
+  const planLabel = credits.isPro
+    ? credits.period === "annual"
+      ? t("planProAnnual")
+      : credits.period === "monthly"
+        ? t("planProMonthly")
+        : t("planPro")
+    : credits.hasChat
+      ? credits.period === "annual"
+        ? t("planChatAnnual")
+        : credits.period === "monthly"
+          ? t("planChatMonthly")
+          : t("planChat")
+      : t("planFree");
+
   const usedLabel = credits.isPro
     ? t("usedMonth", { used: credits.monthUsed, total: MONTH_CAP })
     : t("creditsLeft", { count: credits.total });
@@ -77,6 +91,7 @@ export function useProfileScreen() {
     initial,
     profile,
     credits,
+    planLabel,
     usedLabel,
     renewsLabel: t("renews", { date: formatOrdinalDate(credits.renewsAt) }),
     isLoading,

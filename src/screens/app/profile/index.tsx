@@ -38,6 +38,7 @@ export default function ProfileScreen() {
     initial,
     profile,
     credits,
+    planLabel,
     usedLabel,
     renewsLabel,
     signingOut,
@@ -114,7 +115,7 @@ export default function ProfileScreen() {
             <View style={styles.planHead}>
               <View style={styles.planTexts}>
                 <Eyebrow color={theme.primary.clay}>
-                  {credits.isPro ? t("planPro") : t("planFree")}
+                  {planLabel}
                 </Eyebrow>
                 {!credits.isPro && (
                   <Text style={styles.planUsage}>{usedLabel}</Text>

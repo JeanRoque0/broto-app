@@ -97,7 +97,7 @@ export const styles = StyleSheet.create({
   },
   planRenews: {
     ...type.bodySm,
-    marginTop: theme.spacing.s1,
+    marginTop: theme.spacing.s3,
   },
   planAction: {
     marginTop: theme.spacing.s4,

@@ -1,10 +1,13 @@
 export type PlanTier = "free" | "pro";
 
+export type PlanPeriod = "monthly" | "annual";
+
 export interface Profile {
   id: string;
   display_name: string | null;
   avatar_path: string | null;
   plan: PlanTier;
+  plan_period: PlanPeriod | null;
   plan_expires_at: string | null;
 
   free_used: number;
@@ -15,6 +18,7 @@ export interface Profile {
   analyses_today: number;
   analyses_day: string;
 
+  chat_period: PlanPeriod | null;
   chat_expires_at: string | null;
   chat_month: number;
   chat_today: number;
@@ -46,6 +50,7 @@ export interface Credits {
   plan: PlanTier;
   isPro: boolean;
   hasChat: boolean;
+  period: PlanPeriod | null;
   freeRemaining: number;
   welcomeCredits: number;
   adCredits: number;
