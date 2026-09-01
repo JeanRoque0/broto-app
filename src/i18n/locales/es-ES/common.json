@@ -32,5 +32,6 @@
   "noticeClose": "Cerrar",
   "noticeOk": "Entendido",
   "offlineTitle": "Estás sin conexión",
-  "offlineText": "Puedes ver tus plantas y la rutina, pero editar y analizar esperan a que vuelva internet."
+  "offlineText": "Puedes ver tus plantas y la rutina, pero editar y analizar esperan a que vuelva internet.",
+  "offlineBlocked": "Sin internet no se puede guardar. Inténtalo cuando vuelva la conexión."
 }

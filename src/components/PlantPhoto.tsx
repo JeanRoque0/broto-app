@@ -20,9 +20,11 @@ export function PlantPhoto({ path, uri, fallback, style }: PlantPhotoProps) {
     <View style={[styles.container, style]}>
       {url ? (
         <Image
-          source={{ uri: url }}
+          source={{ uri: url, cacheKey: path ?? url }}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
+          cachePolicy="memory-disk"
+          recyclingKey={path ?? url}
           transition={200}
         />
       ) : (

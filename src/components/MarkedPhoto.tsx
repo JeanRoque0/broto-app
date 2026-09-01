@@ -90,9 +90,11 @@ export function MarkedPhoto({
     >
       {source && (
       <Image
-        source={{ uri: source }}
+        source={{ uri: source, cacheKey: path ?? source }}
         style={StyleSheet.absoluteFill}
         contentFit="cover"
+        cachePolicy="memory-disk"
+        recyclingKey={path ?? source}
         onLoad={(event) => {
           const { width: w, height: h } = event.source;
           if (w && h) setRatio(w / h);

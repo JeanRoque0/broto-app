@@ -49,6 +49,10 @@ function subscribe(listener: () => void) {
   };
 }
 
+export function isOnline() {
+  return online;
+}
+
 export function useOnline() {
   return useSyncExternalStore(
     subscribe,

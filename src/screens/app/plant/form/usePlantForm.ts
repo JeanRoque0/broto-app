@@ -12,6 +12,7 @@ import { taskKeys, usePlantTasks, useUpdatePlantTask } from "@/hooks/usePlantTas
 import { useProfile } from "@/hooks/useProfile";
 import { useSpeciesFacts } from "@/hooks/useSpeciesFacts";
 import { useTemperatureUnit } from "@/hooks/useTemperatureUnit";
+import { blockedOffline } from "@/utils/offline";
 import { getCredits } from "@/utils/credits";
 import { FREE_TASK_KINDS, TASK_KINDS } from "@/utils/tasks";
 import {
@@ -319,6 +320,8 @@ export function usePlantForm() {
   );
 
   const submit = useCallback(() => {
+    if (blockedOffline()) return;
+
     if (isEditing && photoChanged && hasOpenDiagnosis) {
       setPhotoWarning(true);
       return;
@@ -476,6 +479,7 @@ export function usePlantForm() {
     },
     confirmPhotoChange: () => {
       setPhotoWarning(false);
+      if (blockedOffline()) return;
       handleSubmit(persist)();
     },
     cancelPhotoChange: () => setPhotoWarning(false),

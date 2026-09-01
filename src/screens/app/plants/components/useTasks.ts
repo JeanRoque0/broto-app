@@ -7,6 +7,7 @@ import { toDateString } from "@/services/supabase/plantTasks";
 import { usePlantTasks, useUpdatePlantTask } from "@/hooks/usePlantTasks";
 import { usePlants, useLogTask, useUserCareEvents } from "@/hooks/usePlants";
 import { useProfile } from "@/hooks/useProfile";
+import { blockedOffline } from "@/utils/offline";
 import { getCredits } from "@/utils/credits";
 import {
   FREE_TASK_KINDS,
@@ -76,6 +77,8 @@ export function useTasks() {
   );
 
   async function complete(plantId: string, kind: TaskKind) {
+    if (blockedOffline()) return;
+
     if (pending) return;
     setPending(`${plantId}:${kind}`);
 
@@ -94,6 +97,8 @@ export function useTasks() {
     remind_at: string;
     enabled?: boolean;
   }) {
+    if (blockedOffline()) return;
+
     if (!editing) return;
 
     try {
@@ -114,6 +119,8 @@ export function useTasks() {
   }
 
   async function toggleTask(enabled: boolean) {
+    if (blockedOffline()) return;
+
     if (!editing) return;
 
     try {
