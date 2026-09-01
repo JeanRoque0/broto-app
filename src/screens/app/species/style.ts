@@ -23,11 +23,13 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
     color: theme.primary.clay,
   },
+  galleryRow: {
+    marginTop: theme.spacing.s3,
+    marginBottom: theme.spacing.s5,
+  },
   gallery: {
     gap: theme.spacing.s2,
     paddingHorizontal: theme.screenPadding,
-    paddingTop: theme.spacing.s3,
-    paddingBottom: theme.spacing.s5,
   },
   photoTouch: {
     width: 190,
@@ -71,6 +73,5 @@ export const styles = StyleSheet.create({
   },
   action: {
     marginTop: theme.spacing.s6,
-    marginHorizontal: theme.screenPadding,
   },
 });

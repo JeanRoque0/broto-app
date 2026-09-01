@@ -63,6 +63,7 @@ export default function SpeciesScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
+            style={styles.galleryRow}
             contentContainerStyle={styles.gallery}
           >
             {images.map((source, index) => (
@@ -132,12 +133,9 @@ export default function SpeciesScreen() {
           </View>
         </View>
 
-        <Button
-          label={t("add")}
-          onPress={add}
-          loading={adding}
-          style={styles.action}
-        />
+        <View style={[styles.block, styles.action]}>
+          <Button label={t("add")} onPress={add} loading={adding} />
+        </View>
       </ScrollView>
 
       <SpeciesShareCard
