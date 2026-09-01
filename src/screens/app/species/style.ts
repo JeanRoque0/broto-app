@@ -7,9 +7,26 @@ export const styles = StyleSheet.create({
   content: {
     paddingBottom: theme.spacing.s6,
   },
+  copy: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: theme.spacing.s2,
+    marginTop: theme.spacing.s4,
+    marginLeft: -theme.spacing.s2,
+    paddingVertical: theme.spacing.s2,
+    paddingHorizontal: theme.spacing.s2,
+    borderRadius: theme.radius.sm,
+  },
+  copyLabel: {
+    fontSize: fontSize.s4,
+    fontWeight: "700",
+    color: theme.primary.clay,
+  },
   gallery: {
     gap: theme.spacing.s2,
     paddingHorizontal: theme.screenPadding,
+    paddingTop: theme.spacing.s3,
     paddingBottom: theme.spacing.s5,
   },
   photoTouch: {

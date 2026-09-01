@@ -15,7 +15,11 @@
   "recent": "Buscas recentes",
   "removeRecent": "Remover da lista",
   "share": "Compartilhar",
-  "shareSignature": "Descoberto no Broto.",
   "gone": "Espécie não carregada",
-  "goneDescription": "Volte à busca e toque nela de novo."
+  "goneDescription": "Volte à busca e toque nela de novo.",
+  "copyAction": "Copiar",
+  "copyCommon": "Nome",
+  "copyScientific": "Espécie",
+  "copied": "Copiado",
+  "shareCredit": "Fotos e texto da Wikipédia · Broto"
 }

@@ -1,11 +1,17 @@
+import * as Clipboard from "expo-clipboard";
 import { useRouter } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Share } from "react-native";
 
 import { Toast } from "@/components/ui/Toast";
 import { useCreatePlant } from "@/hooks/usePlants";
+import { useShareCard } from "@/hooks/useShareCard";
 import { useSpeciesStore } from "@/store/speciesStore";
+
+function fileName(url: string) {
+  const last = url.split("/").pop() ?? url;
+  return last.replace(/^\d+px-/, "").toLowerCase();
+}
 
 export function useSpecies() {
   const { t } = useTranslation("search");
@@ -13,28 +19,36 @@ export function useSpecies() {
   const router = useRouter();
   const createPlant = useCreatePlant();
   const species = useSpeciesStore((state) => state.selected);
+  const { shot, share, sharing } = useShareCard();
 
   const [photoIndex, setPhotoIndex] = useState<number | null>(null);
 
   const title = species?.common ?? species?.scientific ?? "";
 
-  const share = useCallback(async () => {
+  const images = useMemo(() => {
+    const seen = new Set<string>();
+
+    return (species?.images ?? []).filter((image) => {
+      const key = fileName(image);
+      if (seen.has(key)) return false;
+
+      seen.add(key);
+      return true;
+    });
+  }, [species?.images]);
+
+  const copy = useCallback(async () => {
     if (!species) return;
 
     const lines = [
-      species.common
-        ? `${species.common} (${species.scientific})`
-        : species.scientific,
+      species.common && `${t("copyCommon")}: ${species.common}`,
+      `${t("copyScientific")}: ${species.scientific}`,
       species.extract,
-      t("shareSignature"),
     ].filter(Boolean);
 
-    try {
-      await Share.share({ message: lines.join("\n\n") });
-    } catch {
-      Toast.show({ text: tCommon("requestFailed") });
-    }
-  }, [species, t, tCommon]);
+    await Clipboard.setStringAsync(lines.join("\n"));
+    Toast.show({ text: t("copied") });
+  }, [species, t]);
 
   const add = useCallback(async () => {
     if (!species) return;
@@ -59,9 +73,13 @@ export function useSpecies() {
   return {
     species,
     title,
+    images,
     adding: createPlant.isPending,
     add,
+    copy,
+    shot,
     share,
+    sharing,
     photoIndex,
     openPhoto: (index: number) => setPhotoIndex(index),
     closePhoto: () => setPhotoIndex(null),

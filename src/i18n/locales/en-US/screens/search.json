@@ -15,7 +15,11 @@
   "recent": "Recent searches",
   "removeRecent": "Remove from list",
   "share": "Share",
-  "shareSignature": "Found on Broto.",
   "gone": "Species not loaded",
-  "goneDescription": "Go back to search and tap it again."
+  "goneDescription": "Go back to search and tap it again.",
+  "copyAction": "Copy",
+  "copyCommon": "Name",
+  "copyScientific": "Species",
+  "copied": "Copied",
+  "shareCredit": "Photos and text from Wikipedia · Broto"
 }

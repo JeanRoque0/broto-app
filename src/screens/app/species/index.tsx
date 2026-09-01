@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 
 import { ChatSuggestions } from "@/components/ChatSuggestions";
-import { CopyableName } from "@/components/CopyableName";
 import { PhotoGallery } from "@/components/PhotoGallery";
+import { SpeciesShareCard } from "@/components/SpeciesShareCard";
 import { Button } from "@/components/ui/Button";
 import { CircleButton } from "@/components/ui/CircleButton";
 import { Container } from "@/components/ui/Container";
@@ -23,8 +23,11 @@ export default function SpeciesScreen() {
   const {
     species,
     title,
+    images,
     adding,
     add,
+    copy,
+    shot,
     share,
     photoIndex,
     openPhoto,
@@ -56,13 +59,13 @@ export default function SpeciesScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {species.images.length > 0 && (
+        {images.length > 0 && (
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.gallery}
           >
-            {species.images.map((source, index) => (
+            {images.map((source, index) => (
               <RipplePressable
                 key={source}
                 onPress={() => openPhoto(index)}
@@ -89,12 +92,9 @@ export default function SpeciesScreen() {
         )}
 
         <View style={styles.block}>
-          <CopyableName
-            label={title}
-            common={species.common}
-            scientific={species.scientific}
-            textStyle={styles.title}
-          />
+          <Text family="display" style={styles.title}>
+            {title}
+          </Text>
 
           {species.common && (
             <Text style={styles.scientific}>{species.scientific}</Text>
@@ -105,6 +105,16 @@ export default function SpeciesScreen() {
               {species.extract}
             </Text>
           )}
+
+          <RipplePressable
+            onPress={copy}
+            style={styles.copy}
+            accessibilityRole="button"
+            accessibilityLabel={t("copyAction")}
+          >
+            <Feather name="copy" size={14} color={theme.primary.clay} />
+            <Text style={styles.copyLabel}>{t("copyAction")}</Text>
+          </RipplePressable>
 
           <Text family="mono" style={styles.credit}>
             {t("photoCredit")}
@@ -130,9 +140,19 @@ export default function SpeciesScreen() {
         />
       </ScrollView>
 
+      <SpeciesShareCard
+        ref={shot}
+        data={{
+          title,
+          scientific: species.scientific,
+          description: species.extract,
+          images,
+        }}
+      />
+
       <PhotoGallery
         visible={photoIndex !== null}
-        images={species.images}
+        images={images}
         initialIndex={photoIndex ?? 0}
         onClose={closePhoto}
         closeLabel={t("closePhoto")}
