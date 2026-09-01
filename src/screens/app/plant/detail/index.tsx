@@ -113,7 +113,6 @@ export default function PlantDetailScreen() {
     resolving,
     startNewAnalysis,
     isLoading,
-    isError,
     refetch,
     removing,
     removeVisible,
@@ -266,7 +265,7 @@ export default function PlantDetailScreen() {
     );
   }
 
-  if (isError || !plant) {
+  if (!plant) {
     return (
       <View style={[styles.flex, styles.centered]}>
         <ErrorState

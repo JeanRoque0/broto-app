@@ -72,7 +72,7 @@ export function usePlantsScreen() {
     groups,
     plantsByGroup,
     isLoading,
-    isError,
+    isError: isError && plants.length === 0,
     isRefetching,
     refetch,
     openPlant: useCallback(

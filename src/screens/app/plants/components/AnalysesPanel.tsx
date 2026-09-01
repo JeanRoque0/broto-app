@@ -40,7 +40,9 @@ export function AnalysesPanel({ header, bottomSpace }: AnalysesPanelProps) {
   const { items, isLoading, isError, refetch, open, startAnalysis } =
     useAnalyses();
 
-  if (isLoading || isError || items.length === 0) {
+  const failed = isError && items.length === 0;
+
+  if (isLoading || failed || items.length === 0) {
     return (
       <View>
         {header}
@@ -48,11 +50,11 @@ export function AnalysesPanel({ header, bottomSpace }: AnalysesPanelProps) {
         <View style={styles.panel}>
           {isLoading && <Loader />}
 
-          {!isLoading && isError && (
+          {!isLoading && failed && (
             <ErrorState description={t("historyLoadFailed")} onRetry={refetch} />
           )}
 
-          {!isLoading && !isError && (
+          {!isLoading && !failed && (
             <EmptyState
               title={t("historyEmptyTitle")}
               description={t("historyEmptyDescription")}

@@ -19,7 +19,7 @@ export function ProfileGate({ children }: ProfileGateProps) {
   const { t } = useTranslation("profile");
   const { data: profile, isLoading, isError, refetch } = useProfile();
 
-  if (isError) {
+  if (isError && !profile) {
     return (
       <View style={styles.container}>
         <ErrorState onRetry={refetch} />
