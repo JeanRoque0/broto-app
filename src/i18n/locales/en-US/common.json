@@ -32,6 +32,5 @@
   "noticeClose": "Close",
   "noticeOk": "Got it",
   "offlineTitle": "You are offline",
-  "offlineText": "You can see your plants and routine, but editing and analysing wait for the connection to come back.",
-  "offlineAction": "No connection"
+  "offlineText": "You can see your plants and routine, but editing and analysing wait for the connection to come back."
 }
