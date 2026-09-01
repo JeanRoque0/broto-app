@@ -2,30 +2,24 @@ import { useQuery } from "@tanstack/react-query";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Keyboard } from "react-native";
-import { useTranslation } from "react-i18next";
 
 import { useModalAutoFocus } from "@/hooks/useModalAutoFocus";
 import { useSearchHistory } from "@/hooks/useSearchHistory";
-import { Toast } from "@/components/ui/Toast";
-import { useCreatePlant } from "@/hooks/usePlants";
 import { Species, searchSpecies } from "@/services/api/search";
+import { useSpeciesStore } from "@/store/speciesStore";
 
 const DEBOUNCE = 500;
 const MIN_LENGTH = 3;
 
 export function useSearch() {
-  const { t } = useTranslation("search");
-  const { t: tCommon } = useTranslation();
   const router = useRouter();
-  const createPlant = useCreatePlant();
   const history = useSearchHistory();
+  const selectSpecies = useSpeciesStore((state) => state.select);
   const { ref: inputRef, onShow, cancelAutoFocus } = useModalAutoFocus();
   const dismissed = useRef("");
 
   const [term, setTerm] = useState("");
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState<Species | null>(null);
-  const [photoIndex, setPhotoIndex] = useState<number | null>(null);
   const [focused, setFocused] = useState(false);
 
   useEffect(() => {
@@ -57,23 +51,9 @@ export function useSearch() {
     }, [onShow, cancelAutoFocus]),
   );
 
-  async function add(species: Species) {
-    try {
-      const plant = await createPlant.mutateAsync({
-        nickname: species.common ?? species.scientific,
-        species_common: species.common,
-        species_scientific: species.scientific,
-      });
-
-      setSelected(null);
-      Toast.show({ text: t("added") });
-      router.push(`/(app)/plant/${plant.id}`);
-    } catch {
-      Toast.show({
-        text: tCommon("requestFailed"),
-        subtitle: tCommon("requestFailedSubtitle"),
-      });
-    }
+  function open(species: Species) {
+    selectSpecies(species);
+    router.push("/(app)/species");
   }
 
   return {
@@ -90,13 +70,6 @@ export function useSearch() {
     isLoading: results.isFetching,
     isError: results.isError,
     hasQuery: query.trim().length >= MIN_LENGTH,
-    selected,
-    open: (species: Species) => setSelected(species),
-    close: () => setSelected(null),
-    photoIndex,
-    openPhoto: (index: number) => setPhotoIndex(index),
-    closePhoto: () => setPhotoIndex(null),
-    adding: createPlant.isPending,
-    add,
+    open,
   };
 }

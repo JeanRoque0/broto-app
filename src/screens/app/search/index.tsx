@@ -1,16 +1,9 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 
-import { ChatSuggestions } from "@/components/ChatSuggestions";
-import { PhotoGallery } from "@/components/PhotoGallery";
-import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import {
-  ContainerModal,
-  ModalScrollView,
-} from "@/components/ui/ContainerModal";
 import { FlashListContainer } from "@/components/ui/FlashListContainer";
 import { Input } from "@/components/ui/Input";
 import { Loader } from "@/components/ui/Loader";
@@ -33,19 +26,12 @@ export default function SearchScreen() {
     isLoading,
     isError,
     hasQuery,
-    selected,
     open,
-    close,
-    adding,
-    add,
-    photoIndex,
     history,
     forgetTerm,
     showHistory,
     onFocus,
     onBlur,
-    openPhoto,
-    closePhoto,
   } = useSearch();
 
   return (
@@ -196,84 +182,6 @@ export default function SearchScreen() {
             </RipplePressable>
           </View>
         )}
-      />
-
-      <ContainerModal
-        visible={selected !== null}
-        onClose={close}
-        title={selected?.common ?? selected?.scientific ?? ""}
-        description={selected?.scientific}
-      >
-        <ModalScrollView showsVerticalScrollIndicator={false}>
-          {selected && selected.images.length > 0 && (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.gallery}
-            >
-              {selected.images.map((source, index) => (
-                <RipplePressable
-                  key={source}
-                  onPress={() => openPhoto(index)}
-                  style={styles.photoTouch}
-                  accessibilityRole="imagebutton"
-                  accessibilityLabel={t("expandPhoto")}
-                >
-                  <MaterialCommunityIcons
-                    name="sprout-outline"
-                    size={34}
-                    color={theme.illustration.leaf}
-                  />
-
-                  <Image
-                    source={{ uri: source }}
-                    style={styles.photo}
-                    contentFit="cover"
-                    transition={200}
-                    cachePolicy="memory-disk"
-                  />
-                </RipplePressable>
-              ))}
-            </ScrollView>
-          )}
-
-          {selected?.extract && (
-            <Text style={styles.extract}>{selected.extract}</Text>
-          )}
-
-          <Text family="mono" style={styles.credit}>
-            {t("photoCredit")}
-          </Text>
-
-          <Text style={styles.careHint}>{t("careHint")}</Text>
-
-          {selected && (
-            <View style={styles.suggestions}>
-              <ChatSuggestions
-                seed={selected.scientific}
-                scopes={["species"]}
-                count={3}
-                speciesName={selected.common ?? selected.scientific}
-                beforeNavigate={close}
-              />
-            </View>
-          )}
-        </ModalScrollView>
-
-        <Button
-          label={t("add")}
-          onPress={() => selected && add(selected)}
-          loading={adding}
-          style={styles.action}
-        />
-      </ContainerModal>
-
-      <PhotoGallery
-        visible={photoIndex !== null}
-        images={selected?.images ?? []}
-        initialIndex={photoIndex ?? 0}
-        onClose={closePhoto}
-        closeLabel={t("closePhoto")}
       />
     </Container>
   );

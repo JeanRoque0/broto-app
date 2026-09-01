@@ -65,9 +65,6 @@ export const styles = StyleSheet.create({
   field: {
     marginBottom: theme.spacing.s2,
   },
-  suggestions: {
-    marginTop: theme.spacing.s5,
-  },
   content: {
     paddingHorizontal: theme.screenPadding,
   },
@@ -120,37 +117,5 @@ export const styles = StyleSheet.create({
   scientific: {
     ...type.bodySm,
     fontStyle: "italic",
-  },
-  gallery: {
-    gap: theme.spacing.s2,
-    paddingVertical: theme.spacing.s4,
-  },
-  photoTouch: {
-    width: 190,
-    height: 190,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: theme.radius.md,
-    overflow: "hidden",
-    backgroundColor: theme.surface.photo,
-  },
-  photo: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  extract: {
-    ...type.bodySm,
-    color: theme.text.primary,
-  },
-  credit: {
-    fontSize: fontSize.s1,
-    color: theme.text.tertiary,
-    marginTop: theme.spacing.s3,
-  },
-  careHint: {
-    ...type.bodySm,
-    marginTop: theme.spacing.s4,
-  },
-  action: {
-    marginTop: theme.spacing.s4,
   },
 });

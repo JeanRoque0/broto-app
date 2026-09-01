@@ -13,5 +13,9 @@
   "closePhoto": "Fechar foto",
   "clear": "Limpar busca",
   "recent": "Buscas recentes",
-  "removeRecent": "Remover da lista"
+  "removeRecent": "Remover da lista",
+  "share": "Compartilhar",
+  "shareSignature": "Descoberto no Broto.",
+  "gone": "Espécie não carregada",
+  "goneDescription": "Volte à busca e toque nela de novo."
 }
