@@ -163,16 +163,11 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.menuSection}>
-          <Text family="mono" style={[styles.groupLabel, styles.groupFirst]}>
-            {t("groupAccount")}
+          <Text family="mono" style={styles.groupLabel}>
+            {t("groupSubscription")}
           </Text>
 
           <Card style={styles.menuCard}>
-            <MenuRow
-              label={t("editProfile")}
-              icon="user"
-              onPress={openEditProfile}
-            />
             <MenuRow
               label={t("refund")}
               icon="credit-card"
@@ -238,7 +233,16 @@ export default function ProfileScreen() {
             />
           </Card>
 
-          <Card style={[styles.menuCard, styles.exitCard]}>
+          <Text family="mono" style={styles.groupLabel}>
+            {t("groupAccount")}
+          </Text>
+
+          <Card style={styles.menuCard}>
+            <MenuRow
+              label={t("editProfile")}
+              icon="user"
+              onPress={openEditProfile}
+            />
             <MenuRow
               label={signingOut ? t("signingOut") : t("signOut")}
               icon="log-out"

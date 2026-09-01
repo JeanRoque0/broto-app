@@ -103,22 +103,17 @@ export const styles = StyleSheet.create({
     marginTop: theme.spacing.s4,
   },
   groupLabel: {
-    fontSize: fontSize.s1,
+    fontSize: fontSize.s4,
+    fontWeight: "500",
     letterSpacing: 0.8,
     textTransform: "uppercase",
-    color: theme.text.tertiary,
+    color: theme.text.primary,
     marginTop: theme.spacing.s5,
     marginBottom: theme.spacing.s2,
     marginLeft: theme.spacing.s1,
   },
-  groupFirst: {
-    marginTop: theme.spacing.s4,
-  },
   menuCard: {
     padding: 0,
     overflow: "hidden",
-  },
-  exitCard: {
-    marginTop: theme.spacing.s5,
   },
 });
