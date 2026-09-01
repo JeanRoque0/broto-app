@@ -193,5 +193,8 @@
   "followText_zero": "Acabas de ver este problema. En unos días, analiza de nuevo para saber si el tratamiento funcionó.",
   "followText_one": "Hace 1 día que viste este problema. Analiza de nuevo para saber si el tratamiento funcionó.",
   "followText_other": "Hace {{count}} días que viste este problema. Analiza de nuevo para saber si el tratamiento funcionó.",
-  "followAction": "Analizar de nuevo"
+  "followAction": "Analizar de nuevo",
+  "taskRecheck": "Reanalizar",
+  "followRemind": "Recordarme en 7 días",
+  "followReminded": "Te recordaremos en 7 días"
 }

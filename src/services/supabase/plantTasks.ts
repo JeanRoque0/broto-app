@@ -50,6 +50,41 @@ export async function advancePlantTask(params: {
     .eq("id", data.id);
 }
 
+export async function scheduleRecheck(params: {
+  plantId: string;
+  userId: string;
+  days: number;
+  remindAt: string;
+}) {
+  const next = new Date();
+  next.setDate(next.getDate() + params.days);
+
+  const { error } = await supabase.from("plant_tasks").upsert(
+    {
+      plant_id: params.plantId,
+      user_id: params.userId,
+      kind: "recheck",
+      interval_days: params.days,
+      next_at: toDateString(next),
+      remind_at: params.remindAt,
+      enabled: true,
+    },
+    { onConflict: "plant_id,kind" },
+  );
+
+  if (error) throw error;
+}
+
+export async function cancelRecheck(plantId: string) {
+  const { error } = await supabase
+    .from("plant_tasks")
+    .delete()
+    .eq("plant_id", plantId)
+    .eq("kind", "recheck");
+
+  if (error) throw error;
+}
+
 export function toDateString(date: Date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");

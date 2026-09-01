@@ -193,5 +193,8 @@
   "followText_zero": "You just spotted this. In a few days, analyse again to see if the treatment worked.",
   "followText_one": "It has been 1 day since you spotted this. Analyse again to see if the treatment worked.",
   "followText_other": "It has been {{count}} days since you spotted this. Analyse again to see if the treatment worked.",
-  "followAction": "Analyse again"
+  "followAction": "Analyse again",
+  "taskRecheck": "Analyse again",
+  "followRemind": "Remind me in 7 days",
+  "followReminded": "You will be reminded in 7 days"
 }

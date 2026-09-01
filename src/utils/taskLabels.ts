@@ -10,6 +10,7 @@ export const TASK_LABELS = {
   rotate: "taskRotate",
   repot: "taskRepot",
   prune: "taskPrune",
+  recheck: "taskRecheck",
 } as const satisfies Record<TaskKind, string>;
 
 export const TASK_ICONS: Record<
@@ -22,4 +23,5 @@ export const TASK_ICONS: Record<
   rotate: "rotate-3d-variant",
   repot: "flower-tulip-outline",
   prune: "content-cut",
+  recheck: "camera-outline",
 };

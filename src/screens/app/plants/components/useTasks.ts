@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { Toast } from "@/components/ui/Toast";
 import { toDateString } from "@/services/supabase/plantTasks";
+import { useAnalysisStore } from "@/store";
 import { usePlantTasks, useUpdatePlantTask } from "@/hooks/usePlantTasks";
 import { usePlants, useLogTask, useUserCareEvents } from "@/hooks/usePlants";
 import { useProfile } from "@/hooks/useProfile";
@@ -27,6 +28,8 @@ const FUTURE_DAYS = 365;
 export function useTasks() {
   const { t } = useTranslation("plants");
   const router = useRouter();
+  const resetAnalysis = useAnalysisStore((state) => state.reset);
+  const setAnalysisPlant = useAnalysisStore((state) => state.setPlantId);
   const { plants } = usePlants();
   const { data: events } = useUserCareEvents();
   const { tasks: plantTasks } = usePlantTasks();
@@ -77,6 +80,13 @@ export function useTasks() {
   );
 
   async function complete(plantId: string, kind: TaskKind) {
+    if (kind === "recheck") {
+      resetAnalysis();
+      setAnalysisPlant(plantId);
+      router.push("/(app)/analyze/camera");
+      return;
+    }
+
     if (blockedOffline()) return;
 
     if (pending) return;

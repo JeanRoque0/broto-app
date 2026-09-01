@@ -256,6 +256,12 @@ export const styles = StyleSheet.create({
   followText: {
     ...type.bodySm,
   },
+  followDone: {
+    ...type.bodySm,
+    textAlign: "center",
+    color: theme.secondary.moss,
+    marginTop: theme.spacing.s2,
+  },
   followButton: {
     marginTop: theme.spacing.s2,
   },

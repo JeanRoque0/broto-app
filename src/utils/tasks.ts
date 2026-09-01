@@ -9,11 +9,12 @@ export const TASK_KINDS = [
   "rotate",
   "repot",
   "prune",
+  "recheck",
 ] as const;
 
 export type TaskKind = (typeof TASK_KINDS)[number];
 
-export const FREE_TASK_KINDS: TaskKind[] = ["water"];
+export const FREE_TASK_KINDS: TaskKind[] = ["water", "recheck"];
 
 const TASK_ORDER: Record<TaskKind, number> = {
   water: 0,
@@ -22,6 +23,7 @@ const TASK_ORDER: Record<TaskKind, number> = {
   rotate: 3,
   repot: 4,
   prune: 5,
+  recheck: 6,
 };
 
 export interface Task {

@@ -1,13 +1,24 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Toast } from "@/components/ui/Toast";
+import { DEFAULT_REMINDER_TIME } from "@/constants";
 import { useAnalysisStore } from "@/store";
-import { toDateString } from "@/services/supabase/plantTasks";
-import { usePlantTasks, useUpdatePlantTask } from "@/hooks/usePlantTasks";
+import {
+  cancelRecheck,
+  scheduleRecheck,
+  toDateString,
+} from "@/services/supabase/plantTasks";
+import {
+  taskKeys,
+  usePlantTasks,
+  useUpdatePlantTask,
+} from "@/hooks/usePlantTasks";
 import { Identification } from "@/types/identification";
 import { PlantTask } from "@/types/plant";
+import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { blockedOffline } from "@/utils/offline";
 import { getCredits } from "@/utils/credits";
@@ -39,6 +50,14 @@ export function usePlantDetail() {
   const { data: events } = useCareEvents(plantId);
   const { data: identifications } = usePlantIdentifications(plantId);
   const resolveMutation = useResolveIdentification(plantId);
+  const queryClient = useQueryClient();
+
+  const recheckMutation = useMutation({
+    mutationFn: scheduleRecheck,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: taskKeys.list(userId ?? "") });
+    },
+  });
   const resetAnalysis = useAnalysisStore((state) => state.reset);
   const setAnalysisPlant = useAnalysisStore((state) => state.setPlantId);
   const setPhotoPaths = useAnalysisStore((state) => state.setPhotoPaths);
@@ -56,9 +75,11 @@ export function usePlantDetail() {
   const [editingTask, setEditingTask] = useState<PlantTask | null>(null);
 
   const { tasks: allTasks } = usePlantTasks();
+  const plantTasks = allTasks.filter((task) => task.plant_id === plantId);
   const updateTask = useUpdatePlantTask();
 
   const careTasks = allTasks.filter((task) => task.plant_id === plantId);
+  const { userId } = useAuth();
   const { data: profile } = useProfile();
   const isPro = getCredits(profile ?? null).isPro;
   const kinds = isPro ? TASK_KINDS : FREE_TASK_KINDS;
@@ -186,7 +207,22 @@ export function usePlantDetail() {
       setFromHistory(true);
       router.push("/(app)/analyze/result");
     },
-    resolve: (id: string) => resolveMutation.mutate({ id, resolved: true }),
+    recheckTask: plantTasks.find((task) => task.kind === "recheck"),
+    schedulingRecheck: recheckMutation.isPending,
+    scheduleRecheckIn: (days: number) => {
+      if (blockedOffline() || !userId) return;
+
+      recheckMutation.mutate({
+        plantId,
+        userId,
+        days,
+        remindAt: profile?.reminder_time ?? DEFAULT_REMINDER_TIME,
+      });
+    },
+    resolve: (id: string) => {
+      cancelRecheck(plantId).catch(() => undefined);
+      resolveMutation.mutate({ id, resolved: true });
+    },
     resolving: resolveMutation.isPending,
     startNewAnalysis: () => {
       resetAnalysis();

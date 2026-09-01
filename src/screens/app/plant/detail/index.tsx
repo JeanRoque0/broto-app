@@ -65,6 +65,7 @@ const SNAP = DIAGNOSIS_CARD_WIDTH + theme.spacing.s3;
 type SectionLayout = { y: number; parent?: string; chip: boolean };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+const RECHECK_DAYS = 7;
 
 function daysSince(iso: string) {
   return Math.max(0, Math.floor((Date.now() - +new Date(iso)) / DAY_MS));
@@ -117,6 +118,9 @@ export default function PlantDetailScreen() {
     toggleTask,
     diagnoses,
     timeline,
+    recheckTask,
+    scheduleRecheckIn,
+    schedulingRecheck,
     openAnalysis,
     resolve,
     resolving,
@@ -690,6 +694,20 @@ export default function PlantDetailScreen() {
                             size="md"
                             style={styles.followButton}
                           />
+
+                          {recheckTask ? (
+                            <Text style={styles.followDone}>
+                              {t("followReminded")}
+                            </Text>
+                          ) : (
+                            <Button
+                              label={t("followRemind")}
+                              onPress={() => scheduleRecheckIn(RECHECK_DAYS)}
+                              loading={schedulingRecheck}
+                              variant="ghost"
+                              size="md"
+                            />
+                          )}
                         </Card>
                       </View>
                     )}
