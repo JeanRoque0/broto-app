@@ -171,6 +171,19 @@ dados de verdade, aviso de que a assinatura não é cancelada junto, restauraç�
 compra visível, política de privacidade em URL pública e strings de permissão
 explicando o uso real.
 
+## Testes
+
+```bash
+npm test          # jest
+npm run verify    # typecheck + lint + testes, o mesmo que roda no commit
+```
+
+Jest com o preset `jest-expo`, então o mesmo runner cobre função pura e
+componente renderizado. Os testes ficam em `__tests__/` ao lado do que testam.
+
+Um gancho de pre-commit roda `npm run verify` e recusa o commit se algo falhar.
+Para pular num caso pontual, `git commit --no-verify`.
+
 ## Repositórios
 
 O app é público. O schema do banco, as migrations, as Edge Functions e os prompts

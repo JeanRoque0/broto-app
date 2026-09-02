@@ -1,5 +1,3 @@
-import { describe, expect, it } from "vitest";
-
 import { CareEvent, Plant, PlantTask } from "@/types/plant";
 import {
   buildTasks,

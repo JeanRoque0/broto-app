@@ -9,4 +9,10 @@ module.exports = defineConfig([
       "import/no-named-as-default-member": "off",
     },
   },
+  {
+    files: ["jest.setup.js"],
+    languageOptions: {
+      globals: { jest: "readonly", require: "readonly" },
+    },
+  },
 ]);
