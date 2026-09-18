@@ -111,9 +111,11 @@ guardado no perfil.
 
 ## Monetização
 
-Três análises no primeiro mês, uma por mês depois. Acabou, dá para comprar
-análise avulsa. O plano **Pro** libera 40 análises e 150 mensagens do assistente
-por mês, mais as tarefas de rotina completas. O assistente só existe dentro
+Quem cria conta tem **três dias com tudo o que o Pro tem**. Depois disso, sem
+assinatura, só a rega continua: a planta cadastrada, o registro de rega e o
+lembrete dela. Análise e assistente pedem o Pro ou a análise avulsa. O plano
+**Pro** libera 40 análises e 150 mensagens do assistente por mês, mais as
+tarefas de rotina completas. O assistente só existe dentro
 desse plano: não há assinatura dele sozinho.
 
 Assinatura é StoreKit e Google Play Billing, via RevenueCat. Nunca pagamento

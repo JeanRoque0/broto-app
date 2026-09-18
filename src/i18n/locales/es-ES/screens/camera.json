@@ -3,8 +3,8 @@
   "permissionDescription": "Es con ella que fotografías la hoja para que Broto identifique la especie o el problema.",
   "permissionAllow": "Permitir",
   "permissionLater": "Ahora no",
-  "credits_one": "Te queda {{count}} análisis este mes",
-  "credits_other": "Te quedan {{count}} análisis este mes",
+  "credits_one": "{{count}} análisis suelto",
+  "credits_other": "{{count}} análisis sueltos",
   "close": "Cerrar",
   "flash": "Flash",
   "shutter": "Hacer foto",
@@ -21,7 +21,7 @@
   "plantText": "Maceta y hojas en la foto.\nEs lo que muestra la especie.",
   "retake": "Repetir foto",
   "analyze": "Analizar",
-  "blockedTitle": "Se acabaron tus análisis del mes",
+  "blockedTitle": "Tu prueba gratis terminó",
   "blockedPro": "Ver planes",
   "blockedLater": "Ahora no",
   "tipsTitle": "Cómo hacer la foto",
@@ -38,8 +38,8 @@
   "blockedSingle": "Comprar 1 análisis · {{price}}",
   "purchaseFailedTitle": "Compra no disponible",
   "purchaseFailedText": "La compra todavía no está activada en esta versión.",
-  "blockedText_one": "Usaste tu análisis gratis del mes. La cuota vuelve el {{date}}.",
-  "blockedText_other": "Usaste los {{count}} análisis gratis del mes. La cuota vuelve el {{date}}.",
   "capTitle": "Hasta aquí este mes",
-  "capText": "Usaste los {{cap}} análisis de tu plan. La cuota vuelve el {{date}}, y los sueltos no tienen límite."
+  "capText": "Usaste los {{cap}} análisis de tu plan. La cuota vuelve el {{date}}, y los sueltos no tienen límite.",
+  "trialChip": "Prueba gratis hasta {{date}}",
+  "blockedText": "Los 3 días con todo desbloqueado terminaron. Para seguir analizando, suscríbete al plan completo o compra un análisis suelto."
 }

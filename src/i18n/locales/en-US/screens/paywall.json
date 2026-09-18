@@ -29,7 +29,9 @@
   "usageFreeTitle": "Your balance",
   "usageCredits": "{{count}} analysis available",
   "usageCredits_other": "{{count}} analyses available",
-  "usageFreeHint": "The free plan gives 1 analysis a month.",
+  "usageFreeHint": "Without a subscription, watering and its reminder stay free.",
   "singleTitle": "Just one analysis?",
-  "singleText": "Buy a single one, no subscription. It does not expire."
+  "singleText": "Buy a single one, no subscription. It does not expire.",
+  "usageTrialTitle": "Your free trial",
+  "usageTrialEnds": "Everything unlocked until {{date}}"
 }

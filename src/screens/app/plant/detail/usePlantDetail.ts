@@ -81,9 +81,9 @@ export function usePlantDetail() {
   const careTasks = allTasks.filter((task) => task.plant_id === plantId);
   const { userId } = useAuth();
   const { data: profile } = useProfile();
-  const isPro = getCredits(profile ?? null).isPro;
-  const kinds = isPro ? TASK_KINDS : FREE_TASK_KINDS;
-  const lockedKinds = isPro
+  const fullAccess = getCredits(profile ?? null).fullAccess;
+  const kinds = fullAccess ? TASK_KINDS : FREE_TASK_KINDS;
+  const lockedKinds = fullAccess
     ? []
     : TASK_KINDS.filter((kind) => !FREE_TASK_KINDS.includes(kind));
 
@@ -176,7 +176,7 @@ export function usePlantDetail() {
 
   return {
     plant,
-    isPro,
+    fullAccess,
     lockedKinds,
     openPaywall: () => router.push("/(app)/paywall"),
     events: events ?? [],

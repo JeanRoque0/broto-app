@@ -165,26 +165,24 @@ export default function ProfileScreen() {
               )}
             </View>
 
-            {(credits.isPro || credits.hasChat) && (
+            {credits.fullAccess && (
               <View style={styles.planBars}>
-                {credits.isPro && (
-                  <QuotaBar
-                    label={t("usageAnalyses")}
-                    left={credits.monthRemaining}
-                    total={MONTH_CAP}
-                  />
-                )}
-                {credits.hasChat && (
-                  <QuotaBar
-                    label={t("usageChat")}
-                    left={credits.chatRemaining}
-                    total={CHAT_MONTH_CAP}
-                  />
-                )}
+                <QuotaBar
+                  label={t("usageAnalyses")}
+                  left={credits.monthRemaining}
+                  total={MONTH_CAP}
+                />
+                <QuotaBar
+                  label={t("usageChat")}
+                  left={credits.chatRemaining}
+                  total={CHAT_MONTH_CAP}
+                />
               </View>
             )}
 
-            <Text style={styles.planRenews}>{renewsLabel}</Text>
+            {credits.isPro && (
+              <Text style={styles.planRenews}>{renewsLabel}</Text>
+            )}
 
             {!credits.isPro && (
               <Button

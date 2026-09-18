@@ -14,7 +14,7 @@ export const TASK_KINDS = [
 
 export type TaskKind = (typeof TASK_KINDS)[number];
 
-export const FREE_TASK_KINDS: TaskKind[] = ["water", "recheck"];
+export const FREE_TASK_KINDS: TaskKind[] = ["water"];
 
 const TASK_ORDER: Record<TaskKind, number> = {
   water: 0,

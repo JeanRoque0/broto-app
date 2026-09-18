@@ -138,11 +138,15 @@ export function useProfileScreen() {
       : credits.period === "monthly"
         ? t("planProMonthly")
         : t("planPro")
-    : t("planFree");
+    : credits.inTrial
+      ? t("planTrial")
+      : t("planFree");
 
   const usedLabel = credits.isPro
     ? t("usedMonth", { used: credits.monthUsed, total: MONTH_CAP })
-    : t("creditsLeft", { count: credits.total });
+    : credits.inTrial && credits.trialEndsAt
+      ? t("trialUntil", { date: formatOrdinalDate(credits.trialEndsAt) })
+      : t("freeOnlyWater");
 
   const handleRevoke = useCallback(async () => {
     if (!userId) return;

@@ -103,7 +103,7 @@ export default function PlantDetailScreen() {
     plant,
     events,
     careTasks,
-    isPro,
+    fullAccess,
     lockedKinds,
     openPaywall,
     todayTasks,
@@ -519,7 +519,7 @@ export default function PlantDetailScreen() {
                 />
               </View>
 
-              {!isPro && (
+              {!fullAccess && (
                 <RipplePressable
                   onPress={openPaywall}
                   style={styles.routineUpsell}

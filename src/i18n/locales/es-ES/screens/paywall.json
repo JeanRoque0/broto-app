@@ -29,7 +29,9 @@
   "usageFreeTitle": "Tu saldo",
   "usageCredits": "{{count}} análisis disponible",
   "usageCredits_other": "{{count}} análisis disponibles",
-  "usageFreeHint": "El plan gratis da 1 análisis al mes.",
+  "usageFreeHint": "Sin suscripción, el riego y su recordatorio siguen gratis.",
   "singleTitle": "¿Solo un análisis?",
-  "singleText": "Compra uno suelto, sin suscribirte. No caduca."
+  "singleText": "Compra uno suelto, sin suscribirte. No caduca.",
+  "usageTrialTitle": "Tu prueba gratis",
+  "usageTrialEnds": "Todo desbloqueado hasta {{date}}"
 }

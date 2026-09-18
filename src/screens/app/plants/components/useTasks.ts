@@ -41,8 +41,8 @@ export function useTasks() {
   const [pending, setPending] = useState<string | null>(null);
   const [editing, setEditing] = useState<Task | null>(null);
 
-  const isPro = getCredits(profile ?? null).isPro;
-  const kinds = isPro ? TASK_KINDS : FREE_TASK_KINDS;
+  const fullAccess = getCredits(profile ?? null).fullAccess;
+  const kinds = fullAccess ? TASK_KINDS : FREE_TASK_KINDS;
 
   const days = useMemo(
     () => dayRange(startOfDay(new Date()), PAST_DAYS, FUTURE_DAYS),
@@ -153,7 +153,7 @@ export function useTasks() {
     tasks,
     nextDay,
     hasPlants: plants.length > 0,
-    isPro,
+    fullAccess,
     pending,
     complete,
     editing,

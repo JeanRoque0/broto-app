@@ -29,7 +29,9 @@
   "usageFreeTitle": "Seu saldo",
   "usageCredits": "{{count}} análise disponível",
   "usageCredits_other": "{{count}} análises disponíveis",
-  "usageFreeHint": "O plano grátis dá 1 análise por mês.",
+  "usageFreeHint": "Sem assinatura, a rega e o lembrete dela continuam de graça.",
   "singleTitle": "Só uma análise?",
-  "singleText": "Compre avulsa, sem assinar nada. Ela não expira."
+  "singleText": "Compre avulsa, sem assinar nada. Ela não expira.",
+  "usageTrialTitle": "Seu teste grátis",
+  "usageTrialEnds": "Tudo liberado até {{date}}"
 }

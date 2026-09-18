@@ -3,8 +3,8 @@
   "permissionDescription": "É com ela que você fotografa a folha para o Broto identificar a espécie ou o problema.",
   "permissionAllow": "Permitir",
   "permissionLater": "Agora não",
-  "credits_one": "{{count}} análise restante este mês",
-  "credits_other": "{{count}} análises restantes este mês",
+  "credits_one": "{{count}} análise avulsa",
+  "credits_other": "{{count}} análises avulsas",
   "close": "Fechar",
   "flash": "Flash",
   "shutter": "Tirar foto",
@@ -21,7 +21,7 @@
   "plantText": "Vaso e folhas no quadro.\nÉ o que mostra a espécie.",
   "retake": "Tirar de novo",
   "analyze": "Analisar",
-  "blockedTitle": "Suas análises deste mês acabaram",
+  "blockedTitle": "Seu teste grátis terminou",
   "blockedPro": "Ver planos",
   "blockedLater": "Agora não",
   "tipsTitle": "Como tirar a foto",
@@ -38,8 +38,8 @@
   "blockedSingle": "Comprar 1 análise · {{price}}",
   "purchaseFailedTitle": "Compra indisponível",
   "purchaseFailedText": "A compra ainda não está ligada nesta versão.",
-  "blockedText_one": "Você usou sua análise grátis do mês. A cota volta em {{date}}.",
-  "blockedText_other": "Você usou as {{count}} análises grátis do mês. A cota volta em {{date}}.",
   "capTitle": "Chega por este mês",
-  "capText": "Você fez as {{cap}} análises do seu plano. A cota volta em {{date}}, e a avulsa não tem limite."
+  "capText": "Você fez as {{cap}} análises do seu plano. A cota volta em {{date}}, e a avulsa não tem limite.",
+  "trialChip": "Teste grátis até {{date}}",
+  "blockedText": "Os 3 dias com tudo liberado acabaram. Para seguir analisando, assine o completo ou compre uma análise avulsa."
 }

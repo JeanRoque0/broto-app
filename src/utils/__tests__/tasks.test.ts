@@ -203,14 +203,14 @@ describe("dayRange", () => {
 describe("remindableTasks", () => {
   const todas = TASK_KINDS.map((kind) => task({ plant_id: "p1", kind }));
 
-  it("o assinante recebe todos os tipos", () => {
+  it("com acesso completo, todos os tipos lembram", () => {
     expect(remindableTasks(todas, true)).toHaveLength(TASK_KINDS.length);
   });
 
-  it("o grátis só recebe rega e reanálise", () => {
+  it("sem acesso completo, só a rega lembra", () => {
     const kinds = remindableTasks(todas, false).map((item) => item.kind);
 
-    expect(kinds).toEqual([...FREE_TASK_KINDS]);
+    expect(kinds).toEqual(["water"]);
   });
 
   it("desligada não lembra ninguém", () => {

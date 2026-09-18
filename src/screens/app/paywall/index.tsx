@@ -63,6 +63,9 @@ export default function PaywallScreen() {
     setSelected,
     busy,
     isPro,
+    inTrial,
+    fullAccess,
+    trialEndsAt,
     hasChat,
     usage,
     buy,
@@ -85,9 +88,15 @@ export default function PaywallScreen() {
         <Text style={styles.subtitle}>{t("subtitle")}</Text>
 
         <View style={styles.usage}>
-          <Eyebrow>{isPro ? t("usageEyebrow") : t("usageFreeTitle")}</Eyebrow>
+          <Eyebrow>
+            {isPro
+              ? t("usageEyebrow")
+              : inTrial
+                ? t("usageTrialTitle")
+                : t("usageFreeTitle")}
+          </Eyebrow>
 
-          {isPro ? (
+          {fullAccess ? (
             <Meter
               label={t("usageAnalyses")}
               used={usage.analysesUsed}
@@ -111,7 +120,9 @@ export default function PaywallScreen() {
           )}
 
           <Text family="mono" style={styles.renews}>
-            {t("usageRenews", { date: formatShortDate(usage.renewsAt) })}
+            {inTrial && trialEndsAt
+              ? t("usageTrialEnds", { date: formatShortDate(trialEndsAt) })
+              : t("usageRenews", { date: formatShortDate(usage.renewsAt) })}
           </Text>
         </View>
 

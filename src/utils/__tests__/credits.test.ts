@@ -1,9 +1,4 @@
-import {
-  CHAT_DAILY_CAP,
-  CHAT_MONTH_CAP,
-  FREE_QUOTA,
-  MONTH_CAP,
-} from "@/constants";
+import { CHAT_DAILY_CAP, CHAT_MONTH_CAP, MONTH_CAP } from "@/constants";
 import { Profile } from "@/types/profile";
 import { getCredits } from "@/utils/credits";
 
@@ -20,6 +15,7 @@ function profile(overrides: Partial<Profile> = {}): Profile {
     free_used: 0,
     period_start: "2026-09-01",
     welcome_credits: 0,
+    trial_ends_at: "2026-09-04T00:00:00.000Z",
     analyses_month: 0,
     analyses_today: 0,
     analyses_day: "2026-09-15",
@@ -54,52 +50,75 @@ const pro = (extra: Partial<Profile> = {}) =>
     ...extra,
   });
 
-describe("plano grátis", () => {
-  it("dá a cota do mês para quem nunca usou", () => {
-    expect(getCredits(profile(), NOW).total).toBe(FREE_QUOTA);
+const emTeste = (extra: Partial<Profile> = {}) =>
+  profile({ trial_ends_at: "2026-09-17T00:00:00.000Z", ...extra });
+
+describe("teste de três dias", () => {
+  it("libera tudo o que o assinante tem", () => {
+    const credits = getCredits(emTeste(), NOW);
+
+    expect(credits.inTrial).toBe(true);
+    expect(credits.fullAccess).toBe(true);
+    expect(credits.hasChat).toBe(true);
+    expect(credits.total).toBe(MONTH_CAP);
+    expect(credits.chatRemaining).toBe(CHAT_MONTH_CAP);
   });
 
-  it("soma as boas-vindas depois da cota, sem passar do teto do mês", () => {
-    const credits = getCredits(
-      profile({ free_used: FREE_QUOTA, welcome_credits: 2 }),
-      NOW,
-    );
+  it("não se chama de assinatura", () => {
+    const credits = getCredits(emTeste(), NOW);
 
-    expect(credits.freeRemaining).toBe(0);
-    expect(credits.total).toBe(2);
+    expect(credits.isPro).toBe(false);
+    expect(credits.period).toBeNull();
   });
 
-  it("zera quando acabou tudo", () => {
-    expect(getCredits(profile({ free_used: FREE_QUOTA }), NOW).total).toBe(0);
+  it("gasta do mesmo teto do assinante", () => {
+    const credits = getCredits(emTeste({ analyses_month: 12 }), NOW);
+
+    expect(credits.monthRemaining).toBe(MONTH_CAP - 12);
   });
 
-  it("não libera o chat", () => {
+  it("expõe quando termina", () => {
+    const credits = getCredits(emTeste(), NOW);
+
+    expect(credits.trialEndsAt?.toISOString()).toBe("2026-09-17T00:00:00.000Z");
+  });
+
+  it("termina no instante marcado, não no fim do dia", () => {
+    const umMinutoDepois = new Date("2026-09-17T00:01:00.000Z");
+
+    expect(getCredits(emTeste(), umMinutoDepois).fullAccess).toBe(false);
+  });
+});
+
+describe("depois do teste, sem assinatura", () => {
+  it("fecha análise e Brotinho", () => {
     const credits = getCredits(profile(), NOW);
 
+    expect(credits.inTrial).toBe(false);
+    expect(credits.fullAccess).toBe(false);
     expect(credits.hasChat).toBe(false);
+    expect(credits.total).toBe(0);
     expect(credits.chatRemaining).toBe(0);
+  });
+
+  it("a avulsa comprada continua valendo", () => {
+    expect(getCredits(profile({ paid_credits: 2 }), NOW).total).toBe(2);
+  });
+
+  it("não ressuscita crédito antigo de boas-vindas nem de anúncio", () => {
+    const antigo = profile({ welcome_credits: 2, ad_credits: 1, free_used: 0 });
+
+    expect(getCredits(antigo, NOW).total).toBe(0);
+  });
+
+  it("sem data de teste é tratado como fora do teste", () => {
+    expect(getCredits(profile({ trial_ends_at: null }), NOW).fullAccess).toBe(
+      false,
+    );
   });
 });
 
 describe("virada de mês", () => {
-  it("devolve a cota quando o period_start é de um mês anterior", () => {
-    const stale = profile({
-      free_used: FREE_QUOTA,
-      period_start: "2026-08-01",
-    });
-
-    expect(getCredits(stale, NOW).total).toBe(FREE_QUOTA);
-  });
-
-  it("mantém o consumo dentro do mesmo mês", () => {
-    const current = profile({
-      free_used: FREE_QUOTA,
-      period_start: "2026-09-01",
-    });
-
-    expect(getCredits(current, NOW).total).toBe(0);
-  });
-
   it("zera o gasto do mês do assinante na virada", () => {
     const rolled = pro({ analyses_month: 30, period_start: "2026-08-01" });
 
@@ -110,7 +129,10 @@ describe("virada de mês", () => {
 
 describe("assinante", () => {
   it("desconta o mês do teto e soma as avulsas", () => {
-    const credits = getCredits(pro({ analyses_month: 10, paid_credits: 3 }), NOW);
+    const credits = getCredits(
+      pro({ analyses_month: 10, paid_credits: 3 }),
+      NOW,
+    );
 
     expect(credits.monthRemaining).toBe(MONTH_CAP - 10);
     expect(credits.total).toBe(MONTH_CAP - 10 + 3);

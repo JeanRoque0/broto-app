@@ -14,6 +14,7 @@ export interface Profile {
   period_start: string;
 
   welcome_credits: number;
+  trial_ends_at: string | null;
   analyses_month: number;
   analyses_today: number;
   analyses_day: string;
@@ -47,11 +48,11 @@ export interface Profile {
 export interface Credits {
   plan: PlanTier;
   isPro: boolean;
+  inTrial: boolean;
+  fullAccess: boolean;
+  trialEndsAt: Date | null;
   hasChat: boolean;
   period: PlanPeriod | null;
-  freeRemaining: number;
-  welcomeCredits: number;
-  adCredits: number;
   paidCredits: number;
   monthUsed: number;
   monthRemaining: number;

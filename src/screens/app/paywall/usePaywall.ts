@@ -46,11 +46,16 @@ export function usePaywall() {
     busy,
     available: purchasesAvailable,
     isPro: credits.isPro,
+    inTrial: credits.inTrial,
+    fullAccess: credits.fullAccess,
+    trialEndsAt: credits.trialEndsAt,
     hasChat: credits.hasChat,
     usage: {
       analysesUsed: credits.monthUsed,
       analysesCap: MONTH_CAP,
-      analysesLeft: credits.isPro ? credits.monthRemaining : credits.total,
+      analysesLeft: credits.fullAccess
+        ? credits.monthRemaining
+        : credits.paidCredits,
       chatUsed: credits.chatUsed,
       chatCap: CHAT_MONTH_CAP,
       chatLeft: credits.chatRemaining,

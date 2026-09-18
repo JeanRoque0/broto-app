@@ -168,8 +168,8 @@ export function usePlantForm() {
   const interval = watch("interval");
   const fertilizer = watch("fertilizer");
   const photoChanged = !!photoUri;
-  const isPro = getCredits(profile ?? null).isPro;
-  const lockedKinds = isPro
+  const fullAccess = getCredits(profile ?? null).fullAccess;
+  const lockedKinds = fullAccess
     ? []
     : TASK_KINDS.filter((kind) => !FREE_TASK_KINDS.includes(kind));
   const hasOpenDiagnosis = (identifications ?? []).some(
@@ -459,7 +459,7 @@ export function usePlantForm() {
     control,
     errors,
     groups,
-    isPro,
+    fullAccess,
     isEditing,
     unit,
     saving,

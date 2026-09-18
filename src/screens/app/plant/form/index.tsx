@@ -54,7 +54,7 @@ export default function PlantFormScreen() {
     control,
     errors,
     groups,
-    isPro,
+    fullAccess,
     isEditing,
     unit,
     saving,
@@ -434,7 +434,7 @@ export default function PlantFormScreen() {
                   onLocked={openPaywall}
                 />
 
-                {!isPro && (
+                {!fullAccess && (
                   <Card style={styles.upsell}>
                     <MaterialCommunityIcons
                       name="bag-personal-outline"

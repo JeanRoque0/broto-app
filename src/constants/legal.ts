@@ -1,6 +1,6 @@
 import { LanguageCode } from "@/constants/languages";
 
-export const TERMS_VERSION = "2026-08-22";
+export const TERMS_VERSION = "2026-09-18";
 
 export const SUPPORT_EMAIL = "falecombroto@gmail.com";
 

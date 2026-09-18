@@ -45,9 +45,9 @@ export default function CameraScreen() {
     blocked,
     blockedVisible,
     closeBlocked,
-    freeQuota,
     monthCap,
     atMonthCap,
+    trialLabel,
     renewsLabel,
     openPaywall,
     singlePrice,
@@ -175,7 +175,9 @@ export default function CameraScreen() {
         {!credits.isPro && (
           <View style={[styles.credits, { top: insets.top + CREDITS_TOP }]}>
             <Text family="mono" style={styles.creditsLabel}>
-              {t("credits", { count: credits.total })}
+              {credits.inTrial && trialLabel
+                ? t("trialChip", { date: trialLabel })
+                : t("credits", { count: credits.total })}
             </Text>
           </View>
         )}
@@ -235,7 +237,7 @@ export default function CameraScreen() {
         description={
           atMonthCap
             ? t("capText", { cap: monthCap, date: renewsLabel })
-            : t("blockedText", { count: freeQuota, date: renewsLabel })
+            : t("blockedText")
         }
       >
         <Button

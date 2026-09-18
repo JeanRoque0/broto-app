@@ -3,8 +3,8 @@
   "permissionDescription": "It is how you photograph the leaf so Broto can identify the species or the problem.",
   "permissionAllow": "Allow",
   "permissionLater": "Not now",
-  "credits_one": "{{count}} analysis left this month",
-  "credits_other": "{{count}} analyses left this month",
+  "credits_one": "{{count}} one-off analysis",
+  "credits_other": "{{count}} one-off analyses",
   "close": "Close",
   "flash": "Flash",
   "shutter": "Take photo",
@@ -21,7 +21,7 @@
   "plantText": "Pot and leaves in the shot.\nThat is what shows the species.",
   "retake": "Retake",
   "analyze": "Analyze",
-  "blockedTitle": "You are out of analyses this month",
+  "blockedTitle": "Your free trial is over",
   "blockedPro": "See plans",
   "blockedLater": "Not now",
   "tipsTitle": "How to take the photo",
@@ -38,8 +38,8 @@
   "blockedSingle": "Buy 1 analysis · {{price}}",
   "purchaseFailedTitle": "Purchase unavailable",
   "purchaseFailedText": "Purchases are not switched on in this version yet.",
-  "blockedText_one": "You used your free analysis for the month. Your quota returns on {{date}}.",
-  "blockedText_other": "You used your {{count}} free analyses for the month. Your quota returns on {{date}}.",
   "capTitle": "That is it for this month",
-  "capText": "You used the {{cap}} analyses in your plan. Your quota returns on {{date}}, and single ones have no limit."
+  "capText": "You used the {{cap}} analyses in your plan. Your quota returns on {{date}}, and single ones have no limit.",
+  "trialChip": "Free trial until {{date}}",
+  "blockedText": "The 3 days with everything unlocked are over. To keep analysing, subscribe to the complete plan or buy a one-off analysis."
 }

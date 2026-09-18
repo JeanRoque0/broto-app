@@ -1,9 +1,4 @@
-import {
-  CHAT_DAILY_CAP,
-  CHAT_MONTH_CAP,
-  FREE_QUOTA,
-  MONTH_CAP,
-} from "@/constants";
+import { CHAT_DAILY_CAP, CHAT_MONTH_CAP, MONTH_CAP } from "@/constants";
 import { Credits, Profile } from "@/types/profile";
 
 function utcDay(now: Date) {
@@ -27,11 +22,11 @@ function nextPeriodStart(now: Date) {
 const EMPTY: Credits = {
   plan: "free",
   isPro: false,
+  inTrial: false,
+  fullAccess: false,
+  trialEndsAt: null,
   hasChat: false,
   period: null,
-  freeRemaining: 0,
-  welcomeCredits: 0,
-  adCredits: 0,
   paidCredits: 0,
   monthUsed: 0,
   monthRemaining: 0,
@@ -50,43 +45,40 @@ export function getCredits(profile: Profile | null, now = new Date()): Credits {
     !!profile.plan_expires_at &&
     new Date(profile.plan_expires_at) > now;
 
-  const hasChat = isPro;
+  const trialEndsAt = profile.trial_ends_at
+    ? new Date(profile.trial_ends_at)
+    : null;
+  const inTrial = !isPro && !!trialEndsAt && trialEndsAt > now;
+  const fullAccess = isPro || inTrial;
 
   const rolled = isPastMonth(profile.period_start, now);
 
-  const freeUsed = rolled ? 0 : profile.free_used;
   const monthUsed = rolled ? 0 : (profile.analyses_month ?? 0);
   const chatUsed = rolled ? 0 : (profile.chat_month ?? 0);
   const chatToday = isPastDay(profile.chat_day, now)
     ? 0
     : (profile.chat_today ?? 0);
 
-  const freeRemaining = Math.max(0, FREE_QUOTA - freeUsed);
-  const welcomeCredits = profile.welcome_credits ?? 0;
-  const adCredits = profile.ad_credits ?? 0;
   const paidCredits = profile.paid_credits ?? 0;
   const monthRemaining = Math.max(0, MONTH_CAP - monthUsed);
 
   return {
     plan: profile.plan,
     isPro,
-    hasChat,
+    inTrial,
+    fullAccess,
+    trialEndsAt,
+    hasChat: fullAccess,
     period: isPro ? profile.plan_period : null,
-    freeRemaining,
-    welcomeCredits,
-    adCredits,
     paidCredits,
     monthUsed,
     monthRemaining,
     chatUsed,
-    chatRemaining: hasChat ? Math.max(0, CHAT_MONTH_CAP - chatUsed) : 0,
-    chatRemainingToday: hasChat ? Math.max(0, CHAT_DAILY_CAP - chatToday) : 0,
-    total: isPro
-      ? monthRemaining + paidCredits
-      : Math.min(
-          monthRemaining,
-          freeRemaining + welcomeCredits + adCredits,
-        ) + paidCredits,
+    chatRemaining: fullAccess ? Math.max(0, CHAT_MONTH_CAP - chatUsed) : 0,
+    chatRemainingToday: fullAccess
+      ? Math.max(0, CHAT_DAILY_CAP - chatToday)
+      : 0,
+    total: fullAccess ? monthRemaining + paidCredits : paidCredits,
     renewsAt: nextPeriodStart(now),
   };
 }

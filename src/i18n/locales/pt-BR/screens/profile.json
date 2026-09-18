@@ -75,8 +75,6 @@
   "deleteFailed": "Não deu para excluir",
   "deleteFailedSubtitle": "Tente de novo em alguns segundos.",
   "usedMonth": "{{used}} de {{total}} análises no mês",
-  "creditsLeft": "{{count}} análise disponível",
-  "creditsLeft_other": "{{count}} análises disponíveis",
   "chatLeft": "{{count}} mensagem com o Brotinho",
   "chatLeft_other": "{{count}} mensagens com o Brotinho",
   "openMenu": "Abrir menu",
@@ -99,5 +97,8 @@
   "exportTitle": "Meus dados no Broto",
   "exportUnavailable": "Este aparelho não sabe compartilhar arquivo",
   "exportFailed": "Não deu para exportar",
-  "exportFailedSubtitle": "Tente de novo em alguns segundos."
+  "exportFailedSubtitle": "Tente de novo em alguns segundos.",
+  "planTrial": "Teste grátis",
+  "trialUntil": "Tudo liberado até {{date}}.",
+  "freeOnlyWater": "Só a rega continua liberada."
 }

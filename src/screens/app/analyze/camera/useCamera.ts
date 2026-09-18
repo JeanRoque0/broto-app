@@ -7,9 +7,9 @@ import { useTranslation } from "react-i18next";
 import { Linking } from "react-native";
 
 import { Toast } from "@/components/ui/Toast";
-import { FREE_QUOTA, MONTH_CAP , MAX_ANALYSIS_PHOTOS } from "@/constants";
+import { MAX_ANALYSIS_PHOTOS, MONTH_CAP } from "@/constants";
 
-import { formatOrdinalDate } from "@/utils/format";
+import { formatOrdinalDate, formatShortDate } from "@/utils/format";
 import {
   profileKeys,
   useCredits,
@@ -37,9 +37,9 @@ export function useCamera() {
   useRefreshProfileOnFocus();
   const { data: profile } = useProfile();
   const credits = useCredits();
-  const noFreeCredits = !!profile && !credits.isPro && credits.total <= 0;
-  const atMonthCap = !!profile && credits.isPro && credits.monthRemaining <= 0;
-  const outOfCredits = noFreeCredits || atMonthCap;
+  const trialOver = !!profile && !credits.fullAccess && credits.total <= 0;
+  const atMonthCap = !!profile && credits.fullAccess && credits.total <= 0;
+  const outOfCredits = trialOver || atMonthCap;
 
   useFocusEffect(
     useCallback(() => {
@@ -119,9 +119,11 @@ export function useCamera() {
     online,
     blockedVisible,
     closeBlocked: () => setBlockedVisible(false),
-    freeQuota: FREE_QUOTA,
     monthCap: MONTH_CAP,
     atMonthCap,
+    trialLabel: credits.trialEndsAt
+      ? formatShortDate(credits.trialEndsAt)
+      : null,
     renewsLabel: formatOrdinalDate(credits.renewsAt),
     openPaywall: () => {
       setBlockedVisible(false);

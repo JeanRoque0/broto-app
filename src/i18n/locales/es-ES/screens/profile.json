@@ -75,8 +75,6 @@
   "deleteFailed": "No se pudo eliminar",
   "deleteFailedSubtitle": "Inténtalo de nuevo en unos segundos.",
   "usedMonth": "{{used}} de {{total}} análisis en el mes",
-  "creditsLeft": "{{count}} análisis disponible",
-  "creditsLeft_other": "{{count}} análisis disponibles",
   "chatLeft": "{{count}} mensaje con Brotinho",
   "chatLeft_other": "{{count}} mensajes con Brotinho",
   "openMenu": "Abrir menú",
@@ -99,5 +97,8 @@
   "exportTitle": "Mis datos en Broto",
   "exportUnavailable": "Este dispositivo no comparte archivos",
   "exportFailed": "No se pudo exportar",
-  "exportFailedSubtitle": "Inténtalo de nuevo en unos segundos."
+  "exportFailedSubtitle": "Inténtalo de nuevo en unos segundos.",
+  "planTrial": "Prueba gratis",
+  "trialUntil": "Todo desbloqueado hasta {{date}}.",
+  "freeOnlyWater": "Solo el riego sigue desbloqueado."
 }

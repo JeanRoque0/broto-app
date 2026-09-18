@@ -33,7 +33,7 @@ export function TasksPanel({ bottomSpace, onSwipeLock }: TasksPanelProps) {
     tasks,
     nextDay,
     hasPlants,
-    isPro,
+    fullAccess,
     pending,
     complete,
     editing,
@@ -97,7 +97,7 @@ export function TasksPanel({ bottomSpace, onSwipeLock }: TasksPanelProps) {
           tasks.length > 0 ? styles.headSpace : undefined
         }
         ListFooterComponent={
-          !isPro && hasPlants ? (
+          !fullAccess && hasPlants ? (
             <View style={styles.padded}>
               <Card style={styles.upsell}>
                 <MaterialCommunityIcons

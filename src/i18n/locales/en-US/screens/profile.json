@@ -75,8 +75,6 @@
   "deleteFailed": "Could not delete",
   "deleteFailedSubtitle": "Try again in a few seconds.",
   "usedMonth": "{{used}} of {{total}} analyses this month",
-  "creditsLeft": "{{count}} analysis available",
-  "creditsLeft_other": "{{count}} analyses available",
   "chatLeft": "{{count}} message with Brotinho",
   "chatLeft_other": "{{count}} messages with Brotinho",
   "openMenu": "Open menu",
@@ -99,5 +97,8 @@
   "exportTitle": "My Broto data",
   "exportUnavailable": "This device cannot share files",
   "exportFailed": "Could not export",
-  "exportFailedSubtitle": "Try again in a few seconds."
+  "exportFailedSubtitle": "Try again in a few seconds.",
+  "planTrial": "Free trial",
+  "trialUntil": "Everything unlocked until {{date}}.",
+  "freeOnlyWater": "Only watering is still unlocked."
 }

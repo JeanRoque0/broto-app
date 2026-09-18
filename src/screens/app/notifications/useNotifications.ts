@@ -28,7 +28,7 @@ export function useNotificationSettings() {
   const { data: profile } = useProfile();
   const { data: plants } = usePlants();
   const { tasks: allTasks } = usePlantTasks();
-  const tasks = remindableTasks(allTasks, getCredits(profile ?? null).isPro);
+  const tasks = remindableTasks(allTasks, getCredits(profile ?? null).fullAccess);
   const { mutate: updateProfile, isPending: saving } = useUpdateProfile();
 
   const [blocked, setBlocked] = useState(false);
