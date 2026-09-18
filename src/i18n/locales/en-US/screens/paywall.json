@@ -1,8 +1,6 @@
 {
   "title": "Broto plans",
   "subtitle": "No catch: every number is here.",
-  "tabPro": "Complete",
-  "tabChat": "Brotinho only",
   "usageEyebrow": "Your month",
   "usageAnalyses": "Analyses",
   "usageChat": "Brotinho",
@@ -14,9 +12,6 @@
   "proFeature2": "150 messages with Brotinho",
   "proFeature3": "Fertilize, mist, rotate, repot and prune",
   "proFeature4": "A reminder for every task at the time you choose",
-  "chatFeature1": "150 messages with Brotinho per month",
-  "chatFeature2": "He sees your plants routine and diagnosis",
-  "chatFeature3": "Keeps the free plan analyses",
   "capsTitle": "About the limits",
   "capsText": "That is {{analyses}} analyses and {{chat}} messages a month, and the counter resets on the 1st. If they run out early you can buy a one-off analysis. No Broto plan is unlimited — the number is here, in the Terms and on the store listing.",
   "subscribe": "Subscribe",
@@ -35,7 +30,6 @@
   "usageCredits": "{{count}} analysis available",
   "usageCredits_other": "{{count}} analyses available",
   "usageFreeHint": "The free plan gives 1 analysis a month.",
-  "capsTextChat": "That is {{chat}} messages a month with Brotinho, and the counter resets on the 1st. This plan keeps the free plan analyses. No Broto plan is unlimited — the number is here, in the Terms and on the store listing.",
   "singleTitle": "Just one analysis?",
   "singleText": "Buy a single one, no subscription. It does not expire."
 }

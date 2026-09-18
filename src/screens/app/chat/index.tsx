@@ -131,16 +131,7 @@ export default function ChatScreen() {
           <Text style={styles.introText}>{t("lockedDescription")}</Text>
 
           <View style={styles.lockedActions}>
-            <Button
-              label={t("lockedChatAction")}
-              onPress={() => openPaywall("chat")}
-            />
-
-            <Button
-              label={t("lockedProAction")}
-              onPress={() => openPaywall("pro")}
-              variant="outline"
-            />
+            <Button label={t("lockedProAction")} onPress={openPaywall} />
           </View>
         </View>
       </Container>
@@ -367,7 +358,7 @@ export default function ChatScreen() {
             label={t("capPlans")}
             onPress={() => {
               closeCap();
-              openPaywall("chat");
+              openPaywall();
             }}
           />
         )}

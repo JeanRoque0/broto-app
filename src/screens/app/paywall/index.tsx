@@ -3,13 +3,11 @@ import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 
 import { CHAT_MONTH_CAP, MONTH_CAP } from "@/constants";
-import { BrotinhoFace } from "@/components/illustrations/BrotinhoArt";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Header } from "@/components/ui/Header";
 import { RipplePressable } from "@/components/ui/RipplePressable";
-import { SegmentedTabs } from "@/components/ui/SegmentedTabs";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
 import { formatShortDate } from "@/utils/format";
@@ -24,8 +22,6 @@ const PRO_FEATURES = [
   "proFeature3",
   "proFeature4",
 ] as const;
-
-const CHAT_FEATURES = ["chatFeature1", "chatFeature2", "chatFeature3"] as const;
 
 type MeterProps = {
   label: string;
@@ -62,8 +58,6 @@ function Meter({ label, used, cap }: MeterProps) {
 export default function PaywallScreen() {
   const { t } = useTranslation("paywall");
   const {
-    kind,
-    pickKind,
     products,
     selected,
     setSelected,
@@ -76,9 +70,6 @@ export default function PaywallScreen() {
     singlePrice,
     buySingle,
   } = usePaywall();
-
-  const features = kind === "pro" ? PRO_FEATURES : CHAT_FEATURES;
-  const owned = kind === "pro" ? isPro : hasChat && !isPro;
 
   return (
     <Container>
@@ -123,20 +114,6 @@ export default function PaywallScreen() {
             {t("usageRenews", { date: formatShortDate(usage.renewsAt) })}
           </Text>
         </View>
-
-        <SegmentedTabs
-          options={[
-            { value: "pro", label: t("tabPro") },
-            {
-              value: "chat",
-              label: t("tabChat"),
-              icon: <BrotinhoFace size={18} />,
-            },
-          ]}
-          value={kind}
-          onChange={pickKind}
-          style={styles.segment}
-        />
 
         <View style={styles.plans}>
           {products.map((product) => (
@@ -192,7 +169,7 @@ export default function PaywallScreen() {
         </View>
 
         <View style={styles.features}>
-          {features.map((key) => (
+          {PRO_FEATURES.map((key) => (
             <View key={key} style={styles.feature}>
               <Feather name="check" size={16} color={theme.secondary.moss} />
               <Text style={styles.featureText}>{t(key)}</Text>
@@ -203,9 +180,7 @@ export default function PaywallScreen() {
         <View style={styles.caps}>
           <Text style={styles.capsTitle}>{t("capsTitle")}</Text>
           <Text style={styles.capsText}>
-            {kind === "chat"
-              ? t("capsTextChat", { chat: CHAT_MONTH_CAP })
-              : t("capsText", { analyses: MONTH_CAP, chat: CHAT_MONTH_CAP })}
+            {t("capsText", { analyses: MONTH_CAP, chat: CHAT_MONTH_CAP })}
           </Text>
         </View>
 
@@ -224,10 +199,10 @@ export default function PaywallScreen() {
         </View>
 
         <Button
-          label={owned ? t("current") : t("subscribe")}
+          label={isPro ? t("current") : t("subscribe")}
           onPress={buy}
           loading={busy}
-          disabled={owned}
+          disabled={isPro}
           style={styles.action}
         />
 

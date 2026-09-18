@@ -317,8 +317,7 @@ export function useChat() {
     },
     cap,
     closeCap: () => setCap(null),
-    openPaywall: (plan: "pro" | "chat" = "chat") =>
-      router.push({ pathname: "/(app)/paywall", params: { kind: plan } }),
+    openPaywall: () => router.push("/(app)/paywall"),
     fromSuggestion: !!params.q,
   };
 }

@@ -50,9 +50,7 @@ export function getCredits(profile: Profile | null, now = new Date()): Credits {
     !!profile.plan_expires_at &&
     new Date(profile.plan_expires_at) > now;
 
-  const hasChat =
-    isPro ||
-    (!!profile.chat_expires_at && new Date(profile.chat_expires_at) > now);
+  const hasChat = isPro;
 
   const rolled = isPastMonth(profile.period_start, now);
 
@@ -73,7 +71,7 @@ export function getCredits(profile: Profile | null, now = new Date()): Credits {
     plan: profile.plan,
     isPro,
     hasChat,
-    period: isPro ? profile.plan_period : hasChat ? profile.chat_period : null,
+    period: isPro ? profile.plan_period : null,
     freeRemaining,
     welcomeCredits,
     adCredits,

@@ -65,10 +65,6 @@ export const styles = StyleSheet.create({
     fontSize: fontSize.s2,
     color: theme.text.tertiary,
   },
-  segment: {
-    marginHorizontal: 0,
-    marginBottom: theme.spacing.s5,
-  },
   plans: {
     gap: theme.spacing.s3,
   },

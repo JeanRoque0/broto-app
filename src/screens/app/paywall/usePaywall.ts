@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -8,35 +8,21 @@ import { useCredits } from "@/hooks/useProfile";
 import {
   CATALOG,
   ProductId,
-  ProductKind,
   purchaseProduct,
   purchasesAvailable,
   restorePurchases,
   SINGLE_ANALYSIS,
 } from "@/services/purchases";
 
-type PlanKind = Exclude<ProductKind, "single">;
-
 export function usePaywall() {
   const router = useRouter();
   const { t } = useTranslation("paywall");
   const credits = useCredits();
 
-  const params = useLocalSearchParams<{ kind?: string }>();
-  const initial: PlanKind = params.kind === "chat" ? "chat" : "pro";
-
-  const [kind, setKind] = useState<PlanKind>(initial);
-  const [selected, setSelected] = useState<ProductId>(
-    initial === "chat" ? "broto_chat_annual" : "broto_pro_annual",
-  );
+  const [selected, setSelected] = useState<ProductId>("broto_pro_annual");
   const [busy, setBusy] = useState(false);
 
-  const products = CATALOG.filter((product) => product.kind === kind);
-
-  function pickKind(next: PlanKind) {
-    setKind(next);
-    setSelected(next === "pro" ? "broto_pro_annual" : "broto_chat_annual");
-  }
+  const products = CATALOG.filter((product) => product.kind === "pro");
 
   async function run(action: () => Promise<void>) {
     setBusy(true);
@@ -54,8 +40,6 @@ export function usePaywall() {
   }
 
   return {
-    kind,
-    pickKind,
     products,
     selected,
     setSelected,

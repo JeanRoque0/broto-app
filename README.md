@@ -113,8 +113,8 @@ guardado no perfil.
 
 Três análises no primeiro mês, uma por mês depois. Acabou, dá para comprar
 análise avulsa. O plano **Pro** libera 40 análises e 150 mensagens do assistente
-por mês, mais as tarefas de rotina completas; o plano **Chat** libera só as
-mensagens.
+por mês, mais as tarefas de rotina completas. O assistente só existe dentro
+desse plano: não há assinatura dele sozinho.
 
 Assinatura é StoreKit e Google Play Billing, via RevenueCat. Nunca pagamento
 externo dentro do app.

@@ -23,8 +23,6 @@ function profile(overrides: Partial<Profile> = {}): Profile {
     analyses_month: 0,
     analyses_today: 0,
     analyses_day: "2026-09-15",
-    chat_period: null,
-    chat_expires_at: null,
     chat_month: 0,
     chat_today: 0,
     chat_day: "2026-09-15",
@@ -137,39 +135,33 @@ describe("assinante", () => {
   });
 });
 
-describe("plano do Brotinho", () => {
-  const chat = profile({ chat_expires_at: "2026-10-01T00:00:00.000Z" });
+describe("o Brotinho vem só no plano completo", () => {
+  it("fica fechado para o grátis", () => {
+    const credits = getCredits(profile({ chat_month: 0 }), NOW);
 
-  it("libera as mensagens sem virar assinatura de análise", () => {
-    const credits = getCredits(chat, NOW);
-
-    expect(credits.isPro).toBe(false);
-    expect(credits.hasChat).toBe(true);
-    expect(credits.total).toBe(FREE_QUOTA);
+    expect(credits.hasChat).toBe(false);
+    expect(credits.chatRemainingToday).toBe(0);
   });
 
   it("conta o teto do dia separado do teto do mês", () => {
-    const credits = getCredits(
-      profile({
-        chat_expires_at: "2026-10-01T00:00:00.000Z",
-        chat_today: 5,
-        chat_month: 40,
-      }),
-      NOW,
-    );
+    const credits = getCredits(pro({ chat_today: 5, chat_month: 40 }), NOW);
 
     expect(credits.chatRemainingToday).toBe(CHAT_DAILY_CAP - 5);
     expect(credits.chatRemaining).toBe(CHAT_MONTH_CAP - 40);
   });
+
+  it("fecha junto quando a assinatura vence", () => {
+    const vencida = pro({ plan_expires_at: "2026-09-01T00:00:00.000Z" });
+
+    expect(getCredits(vencida, NOW).hasChat).toBe(false);
+  });
 });
 
 describe("a virada do dia é em UTC, como no servidor", () => {
-  const chatPlan = { chat_expires_at: "2026-10-01T00:00:00.000Z" };
-
   it("mantém o gasto de hoje quando ainda é o mesmo dia UTC", () => {
     const noite = new Date("2026-09-15T23:30:00.000Z");
     const credits = getCredits(
-      profile({ ...chatPlan, chat_today: 4, chat_day: "2026-09-15" }),
+      pro({ chat_today: 4, chat_day: "2026-09-15" }),
       noite,
     );
 
@@ -179,7 +171,7 @@ describe("a virada do dia é em UTC, como no servidor", () => {
   it("zera depois da meia-noite UTC, mesmo ainda sendo ontem no Brasil", () => {
     const virada = new Date("2026-09-16T00:30:00.000Z");
     const credits = getCredits(
-      profile({ ...chatPlan, chat_today: 4, chat_day: "2026-09-15" }),
+      pro({ chat_today: 4, chat_day: "2026-09-15" }),
       virada,
     );
 

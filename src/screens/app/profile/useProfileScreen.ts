@@ -138,13 +138,7 @@ export function useProfileScreen() {
       : credits.period === "monthly"
         ? t("planProMonthly")
         : t("planPro")
-    : credits.hasChat
-      ? credits.period === "annual"
-        ? t("planChatAnnual")
-        : credits.period === "monthly"
-          ? t("planChatMonthly")
-          : t("planChat")
-      : t("planFree");
+    : t("planFree");
 
   const usedLabel = credits.isPro
     ? t("usedMonth", { used: credits.monthUsed, total: MONTH_CAP })

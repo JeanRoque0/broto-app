@@ -1,8 +1,6 @@
 {
   "title": "Planos do Broto",
   "subtitle": "Sem pegadinha: os números estão todos aqui.",
-  "tabPro": "Completo",
-  "tabChat": "Só o Brotinho",
   "usageEyebrow": "Seu mês",
   "usageAnalyses": "Análises",
   "usageChat": "Brotinho",
@@ -14,9 +12,6 @@
   "proFeature2": "150 mensagens com o Brotinho",
   "proFeature3": "Adubar, vaporizar, girar o vaso, trocar de vaso e podar",
   "proFeature4": "Lembrete de cada cuidado no horário que você escolher",
-  "chatFeature1": "150 mensagens com o Brotinho por mês",
-  "chatFeature2": "Ele enxerga a rotina e o diagnóstico das suas plantas",
-  "chatFeature3": "Continua com as análises do plano grátis",
   "capsTitle": "Sobre os limites",
   "capsText": "São {{analyses}} análises e {{chat}} mensagens por mês, e o contador zera no dia 1º. Acabando antes, dá pra comprar análise avulsa. Nenhum plano do Broto é ilimitado — o número está aqui, nos Termos e na ficha da loja.",
   "subscribe": "Assinar",
@@ -35,7 +30,6 @@
   "usageCredits": "{{count}} análise disponível",
   "usageCredits_other": "{{count}} análises disponíveis",
   "usageFreeHint": "O plano grátis dá 1 análise por mês.",
-  "capsTextChat": "São {{chat}} mensagens por mês com o Brotinho, e o contador zera no dia 1º. Este plano mantém as análises do plano grátis. Nenhum plano do Broto é ilimitado — o número está aqui, nos Termos e na ficha da loja.",
   "singleTitle": "Só uma análise?",
   "singleText": "Compre avulsa, sem assinar nada. Ela não expira."
 }

@@ -18,8 +18,6 @@ export interface Profile {
   analyses_today: number;
   analyses_day: string;
 
-  chat_period: PlanPeriod | null;
-  chat_expires_at: string | null;
   chat_month: number;
   chat_today: number;
   chat_day: string;

@@ -1,8 +1,6 @@
 {
   "title": "Planes de Broto",
   "subtitle": "Sin truco: todos los números están aquí.",
-  "tabPro": "Completo",
-  "tabChat": "Solo Brotinho",
   "usageEyebrow": "Tu mes",
   "usageAnalyses": "Análisis",
   "usageChat": "Brotinho",
@@ -14,9 +12,6 @@
   "proFeature2": "150 mensajes con Brotinho",
   "proFeature3": "Abonar, vaporizar, girar la maceta, trasplantar y podar",
   "proFeature4": "Un recordatorio de cada cuidado a la hora que elijas",
-  "chatFeature1": "150 mensajes con Brotinho al mes",
-  "chatFeature2": "Ve la rutina y el diagnóstico de tus plantas",
-  "chatFeature3": "Mantiene los análisis del plan gratis",
   "capsTitle": "Sobre los límites",
   "capsText": "Son {{analyses}} análisis y {{chat}} mensajes al mes, y el contador se reinicia el día 1. Si se acaban antes, puedes comprar un análisis suelto. Ningún plan de Broto es ilimitado — el número está aquí, en los Términos y en la ficha de la tienda.",
   "subscribe": "Suscribirse",
@@ -35,7 +30,6 @@
   "usageCredits": "{{count}} análisis disponible",
   "usageCredits_other": "{{count}} análisis disponibles",
   "usageFreeHint": "El plan gratis da 1 análisis al mes.",
-  "capsTextChat": "Son {{chat}} mensajes al mes con Brotinho, y el contador se reinicia el día 1. Este plan mantiene los análisis del plan gratis. Ningún plan de Broto es ilimitado — el número está aquí, en los Términos y en la ficha de la tienda.",
   "singleTitle": "¿Solo un análisis?",
   "singleText": "Compra uno suelto, sin suscribirte. No caduca."
 }

@@ -1,11 +1,9 @@
 export type ProductId =
   | "broto_pro_monthly"
   | "broto_pro_annual"
-  | "broto_chat_monthly"
-  | "broto_chat_annual"
   | "broto_analysis_single";
 
-export type ProductKind = "pro" | "chat" | "single";
+export type ProductKind = "pro" | "single";
 export type ProductPeriod = "month" | "year" | "once";
 
 export interface Product {
@@ -33,22 +31,6 @@ export const CATALOG: Product[] = [
     price: "R$ 119,90",
     monthly: "R$ 9,99",
     saves: "R$ 34,90",
-  },
-  {
-    id: "broto_chat_monthly",
-    kind: "chat",
-    period: "month",
-    price: "R$ 4,90",
-    monthly: null,
-    saves: null,
-  },
-  {
-    id: "broto_chat_annual",
-    kind: "chat",
-    period: "year",
-    price: "R$ 49,90",
-    monthly: "R$ 4,16",
-    saves: "R$ 8,90",
   },
   {
     id: "broto_analysis_single",
