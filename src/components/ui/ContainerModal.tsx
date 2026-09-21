@@ -210,7 +210,11 @@ export function ContainerModal({
         )}
 
         {title && (
-          <Text family="display" style={styles.title}>
+          <Text
+            accessibilityRole="header"
+            family="display"
+            style={styles.title}
+          >
             {title}
           </Text>
         )}

@@ -49,7 +49,11 @@ export function Header({
       <View style={styles.center} pointerEvents="box-none">
         {center ??
           (title ? (
-            <Text style={styles.title} numberOfLines={1}>
+            <Text
+              style={styles.title}
+              numberOfLines={1}
+              accessibilityRole="header"
+            >
               {title}
             </Text>
           ) : null)}

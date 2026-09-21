@@ -83,7 +83,7 @@ export default function PaywallScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <Text family="display" style={styles.title}>
+        <Text accessibilityRole="header" family="display" style={styles.title}>
           {t("title")}
         </Text>
         <Text style={styles.subtitle}>{t("subtitle")}</Text>

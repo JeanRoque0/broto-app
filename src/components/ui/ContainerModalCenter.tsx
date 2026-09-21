@@ -72,7 +72,11 @@ export function ContainerModalCenter({
           {icon}
 
           {title ? (
-            <Text family="display" style={styles.title}>
+            <Text
+              accessibilityRole="header"
+              family="display"
+              style={styles.title}
+            >
               {title}
             </Text>
           ) : null}

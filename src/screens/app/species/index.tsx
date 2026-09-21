@@ -100,7 +100,11 @@ export default function SpeciesScreen() {
 
         <Appear index={1}>
           <View style={styles.block}>
-            <Text family="display" style={styles.title}>
+            <Text
+              accessibilityRole="header"
+              family="display"
+              style={styles.title}
+            >
               {title}
             </Text>
 

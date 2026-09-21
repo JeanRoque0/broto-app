@@ -353,10 +353,17 @@ export default function ResultScreen() {
           </View>
 
           {!healthy && diagnostico.length > 0 && (
-            <View style={styles.section} onLayout={registerSection("diagnosis")}>
+            <View
+              style={styles.section}
+              onLayout={registerSection("diagnosis")}
+            >
               <View style={styles.padded}>
                 <TourAnchor id="result.causes" />
-                <Text family="display" style={styles.sectionTitle}>
+                <Text
+                  accessibilityRole="header"
+                  family="display"
+                  style={styles.sectionTitle}
+                >
                   {t("diagnosisTitle")}
                 </Text>
                 {diagnostico.length > 1 && (
@@ -408,7 +415,11 @@ export default function ResultScreen() {
               style={[styles.section, styles.padded]}
               onLayout={registerSection("confirm")}
             >
-              <Text family="display" style={styles.sectionTitle}>
+              <Text
+                accessibilityRole="header"
+                family="display"
+                style={styles.sectionTitle}
+              >
                 {t(healthy ? "confirmTitleHealthy" : "confirmTitle")}
               </Text>
               <Text style={styles.sectionHint}>{t("confirmEyebrow")}</Text>
@@ -446,13 +457,14 @@ export default function ResultScreen() {
               style={[styles.section, styles.padded]}
               onLayout={registerSection("care")}
             >
-              <Text family="display" style={styles.sectionTitle}>
+              <Text
+                accessibilityRole="header"
+                family="display"
+                style={styles.sectionTitle}
+              >
                 {t("careTitle")}
               </Text>
-              <CareTiles
-                cuidados={cuidados}
-                temperatura={result.temperatura}
-              />
+              <CareTiles cuidados={cuidados} temperatura={result.temperatura} />
             </View>
           )}
 
@@ -477,7 +489,11 @@ export default function ResultScreen() {
               style={[styles.section, styles.padded]}
               onLayout={registerSection("grow")}
             >
-              <Text family="display" style={styles.sectionTitle}>
+              <Text
+                accessibilityRole="header"
+                family="display"
+                style={styles.sectionTitle}
+              >
                 {t("growTitle")}
               </Text>
               <Card style={styles.infoCard}>
@@ -491,7 +507,11 @@ export default function ResultScreen() {
               style={[styles.section, styles.padded]}
               onLayout={registerSection("lore")}
             >
-              <Text family="display" style={styles.sectionTitle}>
+              <Text
+                accessibilityRole="header"
+                family="display"
+                style={styles.sectionTitle}
+              >
                 {t("loreTitle")}
               </Text>
               <Card style={styles.infoCard}>

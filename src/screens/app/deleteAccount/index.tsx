@@ -46,7 +46,11 @@ export default function DeleteAccountScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <Text family="display" style={styles.headline}>
+        <Text
+          accessibilityRole="header"
+          family="display"
+          style={styles.headline}
+        >
           {t("deleteHeadline")}
         </Text>
         <Text style={styles.lead}>{t("deleteLead")}</Text>

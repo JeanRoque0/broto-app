@@ -90,7 +90,11 @@ export function PlantsPanel({
         if (item.kind === "groupsHead") {
           return (
             <View style={head}>
-              <Text family="display" style={styles.sectionTitle}>
+              <Text
+                accessibilityRole="header"
+                family="display"
+                style={styles.sectionTitle}
+              >
                 {t("groupsTitle")}
               </Text>
 
@@ -109,7 +113,11 @@ export function PlantsPanel({
         if (item.kind === "plantsHead") {
           return (
             <View style={head}>
-              <Text family="display" style={styles.sectionTitle}>
+              <Text
+                accessibilityRole="header"
+                family="display"
+                style={styles.sectionTitle}
+              >
                 {t("allPlants")}
               </Text>
 

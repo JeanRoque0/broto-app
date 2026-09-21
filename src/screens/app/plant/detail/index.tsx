@@ -458,7 +458,11 @@ export default function PlantDetailScreen() {
             style={[styles.section, styles.padded]}
             onLayout={registerSection("care")}
           >
-            <Text family="display" style={styles.sectionTitle}>
+            <Text
+              accessibilityRole="header"
+              family="display"
+              style={styles.sectionTitle}
+            >
               {t("careEyebrow")}
             </Text>
             <Card style={styles.careCard}>
@@ -512,7 +516,11 @@ export default function PlantDetailScreen() {
               style={[styles.section, styles.padded]}
               onLayout={registerSection("routine")}
             >
-              <Text family="display" style={styles.sectionTitle}>
+              <Text
+                accessibilityRole="header"
+                family="display"
+                style={styles.sectionTitle}
+              >
                 {t("careEyebrowTasks")}
               </Text>
               <Text style={styles.sectionHint}>{t("careTasksHint")}</Text>
@@ -551,13 +559,16 @@ export default function PlantDetailScreen() {
             </View>
           )}
 
-
           {facts?.cultivo ? (
             <View
               style={[styles.section, styles.padded]}
               onLayout={registerSection("grow")}
             >
-              <Text family="display" style={styles.sectionTitle}>
+              <Text
+                accessibilityRole="header"
+                family="display"
+                style={styles.sectionTitle}
+              >
                 {tAnalysis("growTitle")}
               </Text>
               <Card style={styles.infoCard}>
@@ -571,7 +582,11 @@ export default function PlantDetailScreen() {
               style={[styles.section, styles.padded]}
               onLayout={registerSection("lore")}
             >
-              <Text family="display" style={styles.sectionTitle}>
+              <Text
+                accessibilityRole="header"
+                family="display"
+                style={styles.sectionTitle}
+              >
                 {tAnalysis("loreTitle")}
               </Text>
               <Card style={styles.infoCard}>
@@ -581,9 +596,16 @@ export default function PlantDetailScreen() {
           ) : null}
 
           {diagnoses.length > 0 && (
-            <View style={styles.section} onLayout={registerSection("diagnoses")}>
+            <View
+              style={styles.section}
+              onLayout={registerSection("diagnoses")}
+            >
               <View style={styles.padded}>
-                <Text family="display" style={styles.sectionTitle}>
+                <Text
+                  accessibilityRole="header"
+                  family="display"
+                  style={styles.sectionTitle}
+                >
                   {t("diagEyebrow")}
                 </Text>
               </View>
@@ -663,7 +685,11 @@ export default function PlantDetailScreen() {
                             : undefined
                         }
                       >
-                        <Text family="display" style={styles.sectionTitle}>
+                        <Text
+                          accessibilityRole="header"
+                          family="display"
+                          style={styles.sectionTitle}
+                        >
                           {tAnalysis("confirmTitle")}
                         </Text>
                         <Text style={styles.sectionHint}>
@@ -751,7 +777,11 @@ export default function PlantDetailScreen() {
           {timeline.length > 1 && (
             <View style={styles.section} onLayout={registerSection("timeline")}>
               <View style={styles.padded}>
-                <Text family="display" style={styles.sectionTitle}>
+                <Text
+                  accessibilityRole="header"
+                  family="display"
+                  style={styles.sectionTitle}
+                >
                   {t("timelineTitle")}
                 </Text>
                 <Text style={styles.sectionHint}>{t("timelineHint")}</Text>
@@ -766,7 +796,11 @@ export default function PlantDetailScreen() {
               style={[styles.section, styles.padded]}
               onLayout={registerSection("history")}
             >
-              <Text family="display" style={styles.sectionTitle}>
+              <Text
+                accessibilityRole="header"
+                family="display"
+                style={styles.sectionTitle}
+              >
                 {t("historyEyebrow")}
               </Text>
               <Card style={styles.historyCard}>

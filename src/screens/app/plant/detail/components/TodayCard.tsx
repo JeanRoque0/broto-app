@@ -54,7 +54,7 @@ export function TodayCard({
 
   return (
     <Card style={styles.card}>
-      <Text family="display" style={styles.title}>
+      <Text accessibilityRole="header" family="display" style={styles.title}>
         {t("todayTitle")}
       </Text>
 

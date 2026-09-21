@@ -30,7 +30,7 @@ export function ErrorState({
         size={40}
         color={theme.functional.danger}
       />
-      <Text family="display" style={styles.title}>
+      <Text accessibilityRole="header" family="display" style={styles.title}>
         {title ?? t("errorTitle")}
       </Text>
       <Text style={styles.description}>

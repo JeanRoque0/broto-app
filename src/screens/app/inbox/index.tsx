@@ -65,7 +65,11 @@ export default function InboxScreen() {
             size={34}
             color={theme.illustration.leaf}
           />
-          <Text family="display" style={styles.emptyTitle}>
+          <Text
+            accessibilityRole="header"
+            family="display"
+            style={styles.emptyTitle}
+          >
             {t("inboxEmptyTitle")}
           </Text>
           <Text style={styles.hint}>{t("inboxEmptyText")}</Text>

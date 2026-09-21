@@ -53,7 +53,7 @@ export function ProfileHeader({
   return (
     <View style={styles.row}>
       <Animated.View style={[styles.stack, titleStyle]}>
-        <Text family="display" style={styles.title}>
+        <Text accessibilityRole="header" family="display" style={styles.title}>
           {title}
         </Text>
       </Animated.View>

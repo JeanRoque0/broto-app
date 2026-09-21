@@ -87,7 +87,11 @@ export default function CameraScreen() {
             </View>
           )}
 
-          <Text family="display" style={styles.permissionTitle}>
+          <Text
+            accessibilityRole="header"
+            family="display"
+            style={styles.permissionTitle}
+          >
             {t(canAskAgain ? "permissionTitle" : "permissionBlockedTitle")}
           </Text>
           <Text style={styles.permissionText}>

@@ -41,7 +41,7 @@ export default function ConsentScreen() {
               : t("eyebrow")}
         </Eyebrow>
 
-        <Text family="display" style={styles.title}>
+        <Text accessibilityRole="header" family="display" style={styles.title}>
           {revoked
             ? t("revokedTitle")
             : updating
