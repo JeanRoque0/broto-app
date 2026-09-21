@@ -1,7 +1,6 @@
 {
   "sendingPhotos": "Enviando las fotos",
-  "reading": "Analizando...",
-  "wait": "Tarda unos segundos, no cierres la app.",
+  "wait": "Puede tardar hasta medio minuto. No cierres la aplicación.",
   "errorTitle": "No se pudo analizar",
   "errorText": "Inténtalo de nuevo en unos segundos.",
   "illegibleTitle": "No se pudo analizar la foto",
@@ -86,5 +85,14 @@
   "savedPlantTitle": "Ya está en tus plantas",
   "savedPlantAction": "Abrir la planta",
   "monthCapTitle": "Por este mes basta",
-  "monthCapText": "Hiciste los {{cap}} análisis del mes. Vuelven el {{date}}, y los sueltos no tienen límite."
+  "monthCapText": "Hiciste los {{cap}} análisis del mes. Vuelven el {{date}}, y los sueltos no tienen límite.",
+  "readingSteps": [
+    "Mirando las hojas",
+    "Comparando con especies parecidas",
+    "Revisando la forma y las nervaduras",
+    "Buscando señales de plaga u hongo",
+    "Pensando en qué puede ser",
+    "Escribiendo sus cuidados",
+    "Ya casi"
+  ]
 }

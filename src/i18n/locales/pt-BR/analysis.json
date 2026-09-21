@@ -1,7 +1,6 @@
 {
   "sendingPhotos": "Enviando as fotos",
-  "reading": "Analisando...",
-  "wait": "Leva alguns segundos, não feche o aplicativo.",
+  "wait": "Pode levar até meio minuto. Não feche o aplicativo.",
   "errorTitle": "Não deu para analisar",
   "errorText": "Tente de novo em alguns segundos.",
   "illegibleTitle": "Não deu para analisar a foto",
@@ -86,5 +85,14 @@
   "savedPlantTitle": "Já está nas suas plantas",
   "savedPlantAction": "Abrir a planta",
   "monthCapTitle": "Chega por este mês",
-  "monthCapText": "Você fez as {{cap}} análises do mês. Elas voltam em {{date}}, e a avulsa não tem limite."
+  "monthCapText": "Você fez as {{cap}} análises do mês. Elas voltam em {{date}}, e a avulsa não tem limite.",
+  "readingSteps": [
+    "Olhando as folhas",
+    "Comparando com espécies parecidas",
+    "Conferindo o formato e as nervuras",
+    "Procurando sinal de praga ou fungo",
+    "Pensando no que pode ser",
+    "Escrevendo os cuidados dela",
+    "Quase lá"
+  ]
 }

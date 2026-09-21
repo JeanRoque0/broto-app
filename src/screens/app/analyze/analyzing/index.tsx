@@ -9,6 +9,7 @@ import { LayoutChangeEvent, View } from "react-native";
 import Animated, {
   cancelAnimation,
   useAnimatedStyle,
+  useReducedMotion,
   useSharedValue,
   withRepeat,
   withTiming,
@@ -18,6 +19,7 @@ import { Container } from "@/components/ui/Container";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { Text } from "@/components/ui/Text";
 
+import { ReadingStatus } from "./components/ReadingStatus";
 import { SCAN_HEIGHT, styles } from "./style";
 import { useAnalyzing } from "./useAnalyzing";
 
@@ -48,9 +50,10 @@ export default function AnalyzingScreen() {
   const credits = useCredits();
   const [frameHeight, setFrameHeight] = useState(0);
   const offset = useSharedValue(0);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!frameHeight) return;
+    if (!frameHeight || reduceMotion) return;
 
     offset.value = 0;
     offset.value = withRepeat(
@@ -60,7 +63,7 @@ export default function AnalyzingScreen() {
     );
 
     return () => cancelAnimation(offset);
-  }, [offset, frameHeight]);
+  }, [offset, frameHeight, reduceMotion]);
 
   function measureFrame(event: LayoutChangeEvent) {
     setFrameHeight(Math.round(event.nativeEvent.layout.height));
@@ -113,14 +116,18 @@ export default function AnalyzingScreen() {
               contentFit="cover"
             />
           )}
-          {frameHeight > 0 && (
+          {frameHeight > 0 && !reduceMotion && (
             <Animated.View style={[styles.scan, scanStyle]} />
           )}
         </View>
 
-        <Text family="display" style={styles.phase}>
-          {t(phase === "sending" ? "sendingPhotos" : "reading")}
-        </Text>
+        {phase === "sending" ? (
+          <Text family="display" style={styles.phase}>
+            {t("sendingPhotos")}
+          </Text>
+        ) : (
+          <ReadingStatus />
+        )}
 
         <Text style={styles.hint}>{t("wait")}</Text>
 

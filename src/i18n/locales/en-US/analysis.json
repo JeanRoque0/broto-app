@@ -1,7 +1,6 @@
 {
   "sendingPhotos": "Sending the photos",
-  "reading": "Analyzing...",
-  "wait": "Takes a few seconds, do not close the app.",
+  "wait": "It can take up to half a minute. Keep the app open.",
   "errorTitle": "Could not analyze",
   "errorText": "Try again in a few seconds.",
   "illegibleTitle": "Could not analyze the photo",
@@ -86,5 +85,14 @@
   "savedPlantTitle": "Already in your plants",
   "savedPlantAction": "Open the plant",
   "monthCapTitle": "That is it for this month",
-  "monthCapText": "You made the {{cap}} analyses for the month. They come back on {{date}}, and single ones have no limit."
+  "monthCapText": "You made the {{cap}} analyses for the month. They come back on {{date}}, and single ones have no limit.",
+  "readingSteps": [
+    "Looking at the leaves",
+    "Comparing with similar species",
+    "Checking shape and veins",
+    "Looking for pests or fungus",
+    "Working out what it might be",
+    "Writing its care",
+    "Almost there"
+  ]
 }
