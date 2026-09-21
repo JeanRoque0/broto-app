@@ -66,6 +66,31 @@ export const styles = StyleSheet.create({
     gap: theme.spacing.s2,
     paddingHorizontal: theme.screenPadding,
   },
+  lockedCopy: {
+    alignItems: "center",
+    gap: theme.spacing.s2,
+  },
+  suggestions: {
+    alignItems: "flex-start",
+    gap: theme.spacing.s2,
+    paddingLeft: 28 + theme.spacing.s2,
+  },
+  suggestion: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.s2,
+    paddingVertical: 10,
+    paddingHorizontal: theme.spacing.s4,
+    borderRadius: theme.radius.pill,
+    borderWidth: 1,
+    borderColor: theme.primary.clayBorder,
+    backgroundColor: theme.primary.clayTint,
+  },
+  suggestionText: {
+    flexShrink: 1,
+    fontSize: fontSize.s5,
+    color: theme.text.primary,
+  },
   lockedTitle: {
     ...type.displayXs,
     textAlign: "center",

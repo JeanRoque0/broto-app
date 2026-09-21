@@ -11,6 +11,7 @@ import {
   BrotinhoFace,
 } from "@/components/illustrations/BrotinhoArt";
 import { CHAT_DAILY_CAP, CHAT_MONTH_CAP } from "@/constants";
+import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { CircleButton } from "@/components/ui/CircleButton";
 import { Container } from "@/components/ui/Container";
@@ -19,6 +20,7 @@ import { ContainerModal } from "@/components/ui/ContainerModal";
 import { QuotaBar } from "@/components/ui/QuotaBar";
 import { MenuRow } from "@/components/ui/Row";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
+import { Floating } from "@/components/ui/Floating";
 import { FlashListContainer } from "@/components/ui/FlashListContainer";
 import { Header } from "@/components/ui/Header";
 import { KeyboardAwareView } from "@/components/ui/KeyboardAwareView";
@@ -27,6 +29,7 @@ import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import type { ChatMessage } from "@/services/supabase/chat";
 import { theme } from "@/style/theme";
+import { haptic } from "@/utils/haptics";
 
 import { RichText } from "./components/RichText";
 import { ThreadsSheet } from "./components/ThreadsSheet";
@@ -36,12 +39,7 @@ import { useChat } from "./useChat";
 
 const TAIL_RESERVE = 260;
 const FOCUS_DELAY = 420;
-const THINKING = [
-  "thinkingA",
-  "thinkingB",
-  "thinkingC",
-  "thinkingD",
-] as const;
+const THINKING = ["thinkingA", "thinkingB", "thinkingC", "thinkingD"] as const;
 
 export default function ChatScreen() {
   const router = useRouter();
@@ -89,6 +87,9 @@ export default function ChatScreen() {
   } = useChat();
 
   const tail = Math.max(0, viewport - TAIL_RESERVE);
+  const suggestions = t("suggestions", {
+    returnObjects: true,
+  }) as unknown as string[];
 
   useEffect(() => {
     if (!hasChat) return;
@@ -123,16 +124,26 @@ export default function ChatScreen() {
         <Header showBack title={t("title")} />
 
         <View style={styles.locked}>
-          <BrotinhoArt />
+          <Appear index={0}>
+            <Floating>
+              <BrotinhoArt />
+            </Floating>
+          </Appear>
 
-          <Text family="display" style={styles.lockedTitle}>
-            {t("lockedTitle")}
-          </Text>
-          <Text style={styles.introText}>{t("lockedDescription")}</Text>
+          <Appear index={1} style={styles.lockedCopy}>
+            <Text
+              family="display"
+              style={styles.lockedTitle}
+              accessibilityRole="header"
+            >
+              {t("lockedTitle")}
+            </Text>
+            <Text style={styles.introText}>{t("lockedDescription")}</Text>
+          </Appear>
 
-          <View style={styles.lockedActions}>
+          <Appear index={2} style={styles.lockedActions}>
             <Button label={t("lockedProAction")} onPress={openPaywall} />
-          </View>
+          </Appear>
         </View>
       </Container>
     );
@@ -162,69 +173,104 @@ export default function ChatScreen() {
           style={styles.flex}
           onLayout={(event) => setViewport(event.nativeEvent.layout.height)}
         >
-        {isLoading ? (
-          <View style={styles.loading}>
-            <Loader />
-          </View>
-        ) : (
-          <FlashListContainer
-            maintainVisibleContentPosition={{
-              autoscrollToBottomThreshold: 0.2,
-            }}
-            ref={list}
-            data={items}
-            keyExtractor={(item) => item.id}
-            getItemType={(item) => item.role}
-            contentContainerStyle={styles.list}
-            keyboardDismissMode="none"
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
-              <View style={[styles.bubbleRow, styles.botRow]}>
-                <BrotinhoFace size={28} />
-                <View style={[styles.bubble, styles.fromBot]}>
-                  <Text style={styles.bubbleText}>{greeting}</Text>
-                </View>
-              </View>
-            }
-            ListFooterComponent={
-              <>
-                {isSending && (
-                  <View style={styles.typing}>
+          {isLoading ? (
+            <View style={styles.loading}>
+              <Loader />
+            </View>
+          ) : (
+            <FlashListContainer
+              maintainVisibleContentPosition={{
+                autoscrollToBottomThreshold: 0.2,
+              }}
+              ref={list}
+              data={items}
+              keyExtractor={(item) => item.id}
+              getItemType={(item) => item.role}
+              contentContainerStyle={styles.list}
+              keyboardDismissMode="none"
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                <View>
+                  <Appear index={0} style={[styles.bubbleRow, styles.botRow]}>
                     <BrotinhoFace size={28} />
-                    <TypingDots />
-                    <Text style={styles.thinking}>
-                      {t(THINKING[thinkingIndex % THINKING.length])}
-                    </Text>
-                  </View>
-                )}
-                {(isSending || isTyping) && (
-                  <View style={{ height: tail }} />
-                )}
-                {failed && !isSending && (
-                  <Text style={styles.failed}>{t("failed")}</Text>
-                )}
-              </>
-            }
-            renderItem={({ item }) =>
-              item.role === "user" ? (
-                <View style={styles.bubbleRow}>
-                  <View style={[styles.bubble, styles.fromUser]}>
-                    <Text style={styles.bubbleText}>{item.content}</Text>
-                  </View>
-                </View>
-              ) : (
-                <View style={[styles.bubbleRow, styles.botRow]}>
-                  <BrotinhoFace size={28} />
-                  <View style={[styles.bubble, styles.fromBot]}>
-                    <RichText content={item.content} style={styles.bubbleText} />
-                  </View>
-                </View>
-              )
-            }
-          />
-        )}
+                    <View style={[styles.bubble, styles.fromBot]}>
+                      <Text style={styles.bubbleText}>{greeting}</Text>
+                    </View>
+                  </Appear>
 
+                  {!isSending && (
+                    <View
+                      style={styles.suggestions}
+                      accessibilityLabel={t("suggestionsLabel")}
+                    >
+                      {suggestions.map((suggestion, index) => (
+                        <Appear key={suggestion} index={index + 2}>
+                          <RipplePressable
+                            onPress={() => {
+                              haptic.tap();
+                              submit(suggestion);
+                            }}
+                            pressScale={0.97}
+                            style={styles.suggestion}
+                            accessibilityRole="button"
+                          >
+                            <Feather
+                              name="message-circle"
+                              size={14}
+                              color={theme.primary.clay}
+                            />
+                            <Text style={styles.suggestionText}>
+                              {suggestion}
+                            </Text>
+                          </RipplePressable>
+                        </Appear>
+                      ))}
+                    </View>
+                  )}
+                </View>
+              }
+              ListFooterComponent={
+                <>
+                  {isSending && (
+                    <View style={styles.typing}>
+                      <BrotinhoFace size={28} />
+                      <TypingDots />
+                      <Text
+                        style={styles.thinking}
+                        accessibilityLiveRegion="polite"
+                      >
+                        {t(THINKING[thinkingIndex % THINKING.length])}
+                      </Text>
+                    </View>
+                  )}
+                  {(isSending || isTyping) && <View style={{ height: tail }} />}
+                  {failed && !isSending && (
+                    <Text style={styles.failed}>{t("failed")}</Text>
+                  )}
+                </>
+              }
+              renderItem={({ item }) =>
+                item.role === "user" ? (
+                  <View style={styles.bubbleRow}>
+                    <View style={[styles.bubble, styles.fromUser]}>
+                      <Text style={styles.bubbleText}>{item.content}</Text>
+                    </View>
+                  </View>
+                ) : (
+                  <View style={[styles.bubbleRow, styles.botRow]}>
+                    <BrotinhoFace size={28} />
+                    <View style={[styles.bubble, styles.fromBot]}>
+                      <RichText
+                        content={item.content}
+                        style={styles.bubbleText}
+                      />
+                    </View>
+                  </View>
+                )
+              }
+            />
+          )}
         </View>
 
         <View
@@ -242,13 +288,18 @@ export default function ChatScreen() {
             onBlur={() => setFocused(false)}
             placeholder={t("placeholder")}
             placeholderTextColor={theme.text.tertiary}
+            accessibilityLabel={t("messageLabel")}
             multiline
             textAlignVertical="top"
             maxLength={800}
           />
 
           <RipplePressable
-            onPress={submit}
+            onPress={() => {
+              haptic.tap();
+              submit();
+            }}
+            pressScale={0.9}
             disabled={!draft.trim() || isSending}
             style={[
               styles.send,
@@ -256,6 +307,7 @@ export default function ChatScreen() {
             ]}
             accessibilityRole="button"
             accessibilityLabel={t("send")}
+            accessibilityState={{ disabled: !draft.trim() || isSending }}
           >
             <Feather name="arrow-up" size={20} color={theme.text.onDark} />
           </RipplePressable>
@@ -348,9 +400,9 @@ export default function ChatScreen() {
             : cap === "day"
               ? t("capDayText", { day: CHAT_DAILY_CAP })
               : t("capMonthText", {
-                month: CHAT_MONTH_CAP,
-                date: renewsLabel,
-              })
+                  month: CHAT_MONTH_CAP,
+                  date: renewsLabel,
+                })
         }
       >
         {cap === "plan" && (

@@ -41,5 +41,12 @@
   "greetingEvening": "Good evening. How can I help you?",
   "greetingMorningNamed": "Good morning, {{name}}. How can I help you?",
   "greetingAfternoonNamed": "Good afternoon, {{name}}. How can I help you?",
-  "greetingEveningNamed": "Good evening, {{name}}. How can I help you?"
+  "greetingEveningNamed": "Good evening, {{name}}. How can I help you?",
+  "suggestionsLabel": "Suggested questions",
+  "suggestions": [
+    "Why do leaves turn yellow?",
+    "How do I know if I am overwatering?",
+    "Where in the house should my plants go?"
+  ],
+  "messageLabel": "Message to Brotinho"
 }

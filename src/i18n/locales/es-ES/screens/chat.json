@@ -41,5 +41,12 @@
   "greetingEvening": "Buenas noches. ¿Cómo puedo ayudarte?",
   "greetingMorningNamed": "Buenos días, {{name}}. ¿Cómo puedo ayudarte?",
   "greetingAfternoonNamed": "Buenas tardes, {{name}}. ¿Cómo puedo ayudarte?",
-  "greetingEveningNamed": "Buenas noches, {{name}}. ¿Cómo puedo ayudarte?"
+  "greetingEveningNamed": "Buenas noches, {{name}}. ¿Cómo puedo ayudarte?",
+  "suggestionsLabel": "Preguntas sugeridas",
+  "suggestions": [
+    "¿Por qué se ponen amarillas las hojas?",
+    "¿Cómo sé si estoy regando de más?",
+    "¿Cuál es el mejor lugar de la casa para mis plantas?"
+  ],
+  "messageLabel": "Mensaje para Brotinho"
 }

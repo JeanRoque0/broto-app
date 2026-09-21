@@ -220,8 +220,8 @@ export function useChat() {
     return all.filter((message) => message.content.trim().length > 0);
   }, [messages.data, pending, typing, threadId]);
 
-  function submit() {
-    const text = draft.trim();
+  function submit(preset?: string) {
+    const text = (preset ?? draft).trim();
     if (!text || send.isPending || !online) return;
 
     setDraft("");
