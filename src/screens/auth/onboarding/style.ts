@@ -24,6 +24,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: theme.screenPadding,
     paddingTop: 40,
   },
+  copy: {
+    alignItems: "center",
+  },
   title: {
     ...type.display,
     marginTop: theme.spacing.s6,

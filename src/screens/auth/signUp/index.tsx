@@ -4,8 +4,10 @@ import { Pressable, ScrollView, View } from "react-native";
 
 import { MailArt } from "@/components/illustrations/OnboardingArt";
 import { PasswordChecklist } from "@/components/PasswordChecklist";
+import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { Floating } from "@/components/ui/Floating";
 import { Header } from "@/components/ui/Header";
 import { Input } from "@/components/ui/Input";
 import { KeyboardAwareView } from "@/components/ui/KeyboardAwareView";
@@ -47,22 +49,34 @@ export default function SignUpScreen() {
         <Header />
 
         <View style={styles.confirm}>
-          <MailArt size={132} />
+          <Appear index={0}>
+            <Floating>
+              <MailArt size={132} />
+            </Floating>
+          </Appear>
 
-          <Text family="display" style={styles.confirmTitle}>
-            {t("confirmTitle")}
-          </Text>
-          <Text style={styles.confirmDescription}>
-            {t("confirmDescription")}
-          </Text>
-
-          <View style={styles.confirmEmail}>
-            <Text family="mono" style={styles.confirmEmailText}>
-              {pendingEmail}
+          <Appear index={1} style={styles.confirmCopy}>
+            <Text
+              family="display"
+              style={styles.confirmTitle}
+              accessibilityRole="header"
+            >
+              {t("confirmTitle")}
             </Text>
-          </View>
+            <Text style={styles.confirmDescription}>
+              {t("confirmDescription")}
+            </Text>
+          </Appear>
 
-          <Text style={styles.confirmHint}>{t("confirmHint")}</Text>
+          <Appear index={2} style={styles.confirmCopy}>
+            <View style={styles.confirmEmail}>
+              <Text family="mono" style={styles.confirmEmailText}>
+                {pendingEmail}
+              </Text>
+            </View>
+
+            <Text style={styles.confirmHint}>{t("confirmHint")}</Text>
+          </Appear>
         </View>
 
         <View style={styles.footer}>
@@ -106,7 +120,11 @@ export default function SignUpScreen() {
           showsVerticalScrollIndicator={false}
         >
           <StepTransition stepKey={step} direction={direction}>
-            <Text family="display" style={styles.title}>
+            <Text
+              family="display"
+              style={styles.title}
+              accessibilityRole="header"
+            >
               {t(`${step}StepTitle` as const)}
             </Text>
             <Text style={styles.subtitle}>

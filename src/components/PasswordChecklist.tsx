@@ -16,7 +16,10 @@ type PasswordChecklistProps = {
   value: string;
 };
 
-const RULE_LABELS: Record<PasswordRule, "ruleLength" | "ruleUppercase" | "ruleSpecial"> = {
+const RULE_LABELS: Record<
+  PasswordRule,
+  "ruleLength" | "ruleUppercase" | "ruleSpecial"
+> = {
   length: "ruleLength",
   uppercase: "ruleUppercase",
   special: "ruleSpecial",
@@ -49,7 +52,13 @@ function Rule({ met, label }: { met: boolean; label: string }) {
   }, [met, anim]);
 
   return (
-    <View style={styles.row}>
+    <View
+      style={styles.row}
+      accessible
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked: met }}
+      accessibilityLabel={label}
+    >
       <View style={[styles.marker, met && styles.markerMet]}>
         <Animated.View style={{ transform: [{ scale: anim }] }}>
           <Feather name="check" size={12} color={theme.text.onPrimary} />

@@ -6,6 +6,7 @@ import { GoogleMark } from "@/components/illustrations/GoogleMark";
 import { Logo } from "@/components/illustrations/Logo";
 import { LanguageButton } from "@/components/LanguageButton";
 import { LegalLinks } from "@/components/LegalLinks";
+import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Text } from "@/components/ui/Text";
@@ -30,12 +31,20 @@ export default function WelcomeScreen() {
           <LanguageButton />
         </View>
 
-        <Text family="display" style={styles.title}>
-          {t("title")}
-        </Text>
-        <Text style={styles.subtitle}>{t("subtitle")}</Text>
+        <Appear index={0}>
+          <Text
+            family="display"
+            style={styles.title}
+            accessibilityRole="header"
+          >
+            {t("title")}
+          </Text>
+        </Appear>
+        <Appear index={1}>
+          <Text style={styles.subtitle}>{t("subtitle")}</Text>
+        </Appear>
 
-        <View style={styles.actions}>
+        <Appear index={3} style={styles.actions}>
           {showApple && (
             <Button
               label={t("apple")}
@@ -67,9 +76,13 @@ export default function WelcomeScreen() {
               <Feather name="mail" size={18} color={theme.text.secondary} />
             }
           />
-        </View>
+        </Appear>
 
-        <LegalLinks lead="legalAgreeLead" leadStyle={styles.legal} style={styles.legalBlock} />
+        <LegalLinks
+          lead="legalAgreeLead"
+          leadStyle={styles.legal}
+          style={styles.legalBlock}
+        />
       </ScrollView>
     </Container>
   );

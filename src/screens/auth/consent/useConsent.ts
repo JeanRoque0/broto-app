@@ -30,8 +30,7 @@ export function useConsent() {
   const [declining, setDeclining] = useState(false);
 
   const mutation = useMutation({
-    mutationFn: () =>
-      acceptTerms({ userId: userId!, version: TERMS_VERSION }),
+    mutationFn: () => acceptTerms({ userId: userId!, version: TERMS_VERSION }),
     onSuccess: (profile) => {
       queryClient.setQueryData(profileKeys.detail(userId!), profile);
     },

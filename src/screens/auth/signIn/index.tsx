@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, View } from "react-native";
 
 import { ForgotPasswordSheet } from "@/components/ForgotPasswordSheet";
+import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Header } from "@/components/ui/Header";
@@ -43,12 +44,18 @@ export default function SignInScreen() {
           keyboardShouldPersistTaps="always"
           showsVerticalScrollIndicator={false}
         >
-          <Text family="display" style={styles.title}>
-            {t("signInTitle")}
-          </Text>
-          <Text style={styles.subtitle}>{t("signInSubtitle")}</Text>
+          <Appear index={0}>
+            <Text
+              family="display"
+              style={styles.title}
+              accessibilityRole="header"
+            >
+              {t("signInTitle")}
+            </Text>
+            <Text style={styles.subtitle}>{t("signInSubtitle")}</Text>
+          </Appear>
 
-          <View style={styles.form}>
+          <Appear index={1} style={styles.form}>
             <Controller
               control={control}
               name="email"
@@ -104,7 +111,7 @@ export default function SignInScreen() {
             >
               <Text style={styles.forgotLabel}>{t("forgotPassword")}</Text>
             </Pressable>
-          </View>
+          </Appear>
         </ScrollView>
 
         <View style={styles.footer}>

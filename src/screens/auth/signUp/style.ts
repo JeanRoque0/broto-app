@@ -32,6 +32,9 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: theme.screenPadding,
   },
+  confirmCopy: {
+    alignItems: "center",
+  },
   confirmTitle: {
     ...type.display,
     marginTop: theme.spacing.s5,
