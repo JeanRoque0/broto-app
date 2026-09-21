@@ -5,3 +5,7 @@ jest.mock("expo-font", () => ({
   isLoaded: () => true,
   loadAsync: jest.fn(),
 }));
+
+jest.mock("@react-native-async-storage/async-storage", () =>
+  require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
+);

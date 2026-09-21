@@ -2,10 +2,6 @@ import { useOnboardingStore } from "@/store/onboardingStore";
 
 import { TourStep, useTourStore } from "../tourStore";
 
-jest.mock("@react-native-async-storage/async-storage", () =>
-  require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
-);
-
 const steps: TourStep[] = [
   { anchor: "a", title: "A", body: "a" },
   { anchor: "b", title: "B", body: "b" },
