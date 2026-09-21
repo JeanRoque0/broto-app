@@ -196,5 +196,7 @@
   "followAction": "Analisar de novo",
   "taskRecheck": "Reanalisar",
   "followRemind": "Me lembrar em 7 dias",
-  "followReminded": "Lembrete marcado para {{date}}"
+  "followReminded": "Lembrete marcado para {{date}}",
+  "taskMarkDone": "Marcar como feito",
+  "taskEditHint": "Toque duas vezes para editar a tarefa."
 }

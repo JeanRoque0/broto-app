@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 
+import { Appear } from "@/components/ui/Appear";
 import { ChatSuggestions } from "@/components/ChatSuggestions";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { SpeciesShareCard } from "@/components/SpeciesShareCard";
@@ -97,47 +98,48 @@ export default function SpeciesScreen() {
           </ScrollView>
         )}
 
-        <View style={styles.block}>
-          <Text family="display" style={styles.title}>
-            {title}
-          </Text>
-
-          {species.common && (
-            <Text style={styles.scientific}>{species.scientific}</Text>
-          )}
-
-          {species.extract && (
-            <Text selectable style={styles.extract}>
-              {species.extract}
+        <Appear index={1}>
+          <View style={styles.block}>
+            <Text family="display" style={styles.title}>
+              {title}
             </Text>
-          )}
 
-          <RipplePressable
-            onPress={copy}
-            style={styles.copy}
-            accessibilityRole="button"
-            accessibilityLabel={t("copyAction")}
-          >
-            <Feather name="copy" size={14} color={theme.primary.clay} />
-            <Text style={styles.copyLabel}>{t("copyAction")}</Text>
-          </RipplePressable>
+            {species.common && (
+              <Text style={styles.scientific}>{species.scientific}</Text>
+            )}
 
-          <Text family="mono" style={styles.credit}>
-            {t("photoCredit")}
-          </Text>
+            {species.extract && (
+              <Text selectable style={styles.extract}>
+                {species.extract}
+              </Text>
+            )}
 
-          <Text style={styles.careHint}>{t("careHint")}</Text>
+            <RipplePressable
+              onPress={copy}
+              style={styles.copy}
+              accessibilityRole="button"
+              accessibilityLabel={t("copyAction")}
+            >
+              <Feather name="copy" size={14} color={theme.primary.clay} />
+              <Text style={styles.copyLabel}>{t("copyAction")}</Text>
+            </RipplePressable>
 
-          <View style={styles.suggestions}>
-            <ChatSuggestions
-              seed={species.scientific}
-              scopes={["species"]}
-              count={3}
-              speciesName={species.common ?? species.scientific}
-            />
+            <Text family="mono" style={styles.credit}>
+              {t("photoCredit")}
+            </Text>
+
+            <Text style={styles.careHint}>{t("careHint")}</Text>
+
+            <View style={styles.suggestions}>
+              <ChatSuggestions
+                seed={species.scientific}
+                scopes={["species"]}
+                count={3}
+                speciesName={species.common ?? species.scientific}
+              />
+            </View>
           </View>
-        </View>
-
+        </Appear>
       </ScrollView>
 
       <View style={styles.footer} onLayout={onFooterLayout}>

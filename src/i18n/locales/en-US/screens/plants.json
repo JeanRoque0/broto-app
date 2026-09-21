@@ -196,5 +196,7 @@
   "followAction": "Analyse again",
   "taskRecheck": "Analyse again",
   "followRemind": "Remind me in 7 days",
-  "followReminded": "Reminder set for {{date}}"
+  "followReminded": "Reminder set for {{date}}",
+  "taskMarkDone": "Mark as done",
+  "taskEditHint": "Double tap to edit the task."
 }

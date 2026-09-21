@@ -1,8 +1,14 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
+import Animated, {
+  FadeOut,
+  LinearTransition,
+  ReduceMotion,
+} from "react-native-reanimated";
 
 import { Card } from "@/components/ui/Card";
+import { CheckPop } from "@/components/ui/CheckPop";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
@@ -54,7 +60,14 @@ export function TodayCard({
 
       <View style={styles.list}>
         {tasks.map((task) => (
-          <View key={task.kind} style={styles.row}>
+          <Animated.View
+            key={task.kind}
+            style={styles.row}
+            exiting={FadeOut.duration(220).reduceMotion(ReduceMotion.System)}
+            layout={LinearTransition.duration(240).reduceMotion(
+              ReduceMotion.System,
+            )}
+          >
             <MaterialCommunityIcons
               name={TASK_ICONS[task.kind]}
               size={19}
@@ -80,18 +93,12 @@ export function TodayCard({
                 hitSlop={10}
                 style={styles.checkHit}
                 accessibilityRole="button"
-                accessibilityLabel={t(TASK_LABELS[task.kind])}
+                accessibilityLabel={`${t("taskMarkDone")}: ${t(TASK_LABELS[task.kind])}`}
               >
-                <View style={styles.check}>
-                  <Feather
-                    name="check"
-                    size={16}
-                    color={theme.text.secondary}
-                  />
-                </View>
+                <CheckPop checked={false} />
               </RipplePressable>
             )}
-          </View>
+          </Animated.View>
         ))}
       </View>
     </Card>
@@ -140,14 +147,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 20,
-  },
-  check: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderWidth: 1.6,
-    borderColor: theme.functional.lineStrong,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });

@@ -1,7 +1,8 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 
+import { CheckPop } from "@/components/ui/CheckPop";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
@@ -19,6 +20,12 @@ type TaskRowProps = {
 
 export function TaskRow({ task, loading, onComplete, onEdit }: TaskRowProps) {
   const { t } = useTranslation("plants");
+  const label = t(TASK_LABELS[task.kind]);
+  const status = task.done
+    ? t("taskDoneLabel")
+    : task.overdue
+      ? t("taskLate", { count: task.lateDays })
+      : "";
 
   return (
     <RipplePressable
@@ -26,7 +33,17 @@ export function TaskRow({ task, loading, onComplete, onEdit }: TaskRowProps) {
       disabled={loading}
       style={styles.row}
       accessibilityRole="button"
-      accessibilityLabel={`${t(TASK_LABELS[task.kind])} ${task.plant.nickname}`}
+      accessibilityLabel={[label, task.plant.nickname, status]
+        .filter(Boolean)
+        .join(". ")}
+      accessibilityHint={t("taskEditHint")}
+      accessibilityState={{ busy: loading }}
+      accessibilityActions={
+        task.done ? [] : [{ name: "complete", label: t("taskMarkDone") }]
+      }
+      onAccessibilityAction={(event) => {
+        if (event.nativeEvent.actionName === "complete") onComplete();
+      }}
     >
       <View style={[styles.icon, task.done && styles.iconDone]}>
         <MaterialCommunityIcons
@@ -38,7 +55,7 @@ export function TaskRow({ task, loading, onComplete, onEdit }: TaskRowProps) {
 
       <View style={styles.texts}>
         <Text style={[styles.label, task.done && styles.labelDone]}>
-          {t(TASK_LABELS[task.kind])}
+          {label}
         </Text>
         <Text style={styles.plant} numberOfLines={1}>
           {task.plant.nickname}
@@ -76,12 +93,9 @@ export function TaskRow({ task, loading, onComplete, onEdit }: TaskRowProps) {
           style={styles.checkHit}
           accessibilityRole="checkbox"
           accessibilityState={{ checked: task.done }}
+          accessibilityLabel={t("taskMarkDone")}
         >
-          <View style={[styles.check, task.done && styles.checkDone]}>
-            {task.done && (
-              <Feather name="check" size={15} color={theme.text.onPrimary} />
-            )}
-          </View>
+          <CheckPop checked={task.done} />
         </RipplePressable>
       )}
     </RipplePressable>
@@ -153,18 +167,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 20,
-  },
-  check: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    borderWidth: 1.6,
-    borderColor: theme.functional.lineStrong,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  checkDone: {
-    backgroundColor: theme.secondary.moss,
-    borderColor: theme.secondary.moss,
   },
 });

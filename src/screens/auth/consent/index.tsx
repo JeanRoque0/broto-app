@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
+import { Appear } from "@/components/ui/Appear";
 import { LegalLinks } from "@/components/LegalLinks";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -32,43 +33,61 @@ export default function ConsentScreen() {
   return (
     <Container>
       <View style={styles.content}>
-        <Eyebrow>{revoked ? t("revokedEyebrow") : updating ? t("updateEyebrow") : t("eyebrow")}</Eyebrow>
+        <Eyebrow>
+          {revoked
+            ? t("revokedEyebrow")
+            : updating
+              ? t("updateEyebrow")
+              : t("eyebrow")}
+        </Eyebrow>
 
         <Text family="display" style={styles.title}>
-          {revoked ? t("revokedTitle") : updating ? t("updateTitle") : t("title")}
+          {revoked
+            ? t("revokedTitle")
+            : updating
+              ? t("updateTitle")
+              : t("title")}
         </Text>
         <Text style={styles.intro}>
-          {revoked ? t("revokedIntro") : updating ? t("updateIntro") : t("intro")}
+          {revoked
+            ? t("revokedIntro")
+            : updating
+              ? t("updateIntro")
+              : t("intro")}
         </Text>
 
-        <Card
-          style={styles.option}
-          onPress={() => setTerms(!terms)}
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: terms }}
-        >
-          <View
-            accessibilityElementsHidden
-            importantForAccessibility="no-hide-descendants"
+        <Appear index={1}>
+          <Card
+            style={styles.option}
+            onPress={() => setTerms(!terms)}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: terms }}
           >
-            <Checkbox value={terms} onChange={setTerms} />
-          </View>
-          <View style={styles.optionText}>
-            <LegalLinks
-              lead="legalAcceptLead"
-              align="left"
-              size="md"
-              separator={false}
-              leadStyle={styles.optionTitle}
-            />
-            <Text style={styles.optionHint}>{t("termsHint")}</Text>
-          </View>
-        </Card>
-
+            <View
+              accessibilityElementsHidden
+              importantForAccessibility="no-hide-descendants"
+            >
+              <Checkbox value={terms} onChange={setTerms} />
+            </View>
+            <View style={styles.optionText}>
+              <LegalLinks
+                lead="legalAcceptLead"
+                align="left"
+                size="md"
+                separator={false}
+                leadStyle={styles.optionTitle}
+              />
+              <Text style={styles.optionHint}>{t("termsHint")}</Text>
+            </View>
+          </Card>
+        </Appear>
       </View>
 
       <View
-        style={[styles.footer, stackedActions ? styles.footerStacked : styles.footerRow]}
+        style={[
+          styles.footer,
+          stackedActions ? styles.footerStacked : styles.footerRow,
+        ]}
       >
         <Button
           label={t("decline")}

@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 
+import { Appear } from "@/components/ui/Appear";
 import { Container } from "@/components/ui/Container";
 import { Header } from "@/components/ui/Header";
 import { Loader } from "@/components/ui/Loader";
@@ -78,46 +79,49 @@ export default function InboxScreen() {
             {t("inboxKeep")}
           </Text>
 
-          {entries.map((entry) => {
+          {entries.map((entry, position) => {
             const late = entry.kind === "late";
 
             return (
-              <RipplePressable
-                key={entry.id}
-                onPress={() => open(entry)}
-                style={styles.row}
-                accessibilityRole="button"
-                accessibilityLabel={`${entry.title}: ${entry.body}`}
-              >
-                <View style={[styles.rowIcon, late && styles.rowIconLate]}>
-                  <MaterialCommunityIcons
-                    name={ICONS[entry.kind]}
-                    size={20}
-                    color={late ? theme.functional.danger : theme.primary.clay}
-                  />
-                </View>
+              <Appear key={entry.id} index={position}>
+                <RipplePressable
+                  onPress={() => open(entry)}
+                  style={styles.row}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${entry.title}: ${entry.body}`}
+                >
+                  <View style={[styles.rowIcon, late && styles.rowIconLate]}>
+                    <MaterialCommunityIcons
+                      name={ICONS[entry.kind]}
+                      size={20}
+                      color={
+                        late ? theme.functional.danger : theme.primary.clay
+                      }
+                    />
+                  </View>
 
-                <View style={styles.rowTexts}>
-                  <View style={styles.rowHead}>
-                    {!entry.read_at && <View style={styles.dot} />}
-                    <Text style={styles.rowTitle} numberOfLines={1}>
-                      {entry.title}
+                  <View style={styles.rowTexts}>
+                    <View style={styles.rowHead}>
+                      {!entry.read_at && <View style={styles.dot} />}
+                      <Text style={styles.rowTitle} numberOfLines={1}>
+                        {entry.title}
+                      </Text>
+                    </View>
+
+                    <Text style={styles.rowBody}>{entry.body}</Text>
+
+                    <Text family="mono" style={styles.rowTime}>
+                      {formatLongDate(new Date(entry.sent_at))}
                     </Text>
                   </View>
 
-                  <Text style={styles.rowBody}>{entry.body}</Text>
-
-                  <Text family="mono" style={styles.rowTime}>
-                    {formatLongDate(new Date(entry.sent_at))}
-                  </Text>
-                </View>
-
-                <Feather
-                  name="chevron-right"
-                  size={17}
-                  color={theme.text.secondary}
-                />
-              </RipplePressable>
+                  <Feather
+                    name="chevron-right"
+                    size={17}
+                    color={theme.text.secondary}
+                  />
+                </RipplePressable>
+              </Appear>
             );
           })}
         </ScrollView>

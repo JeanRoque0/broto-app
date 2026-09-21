@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 
+import { Appear } from "@/components/ui/Appear";
 import { CHAT_MONTH_CAP, MONTH_CAP } from "@/constants";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -87,127 +88,139 @@ export default function PaywallScreen() {
         </Text>
         <Text style={styles.subtitle}>{t("subtitle")}</Text>
 
-        <View style={styles.usage}>
-          <Eyebrow>
-            {isPro
-              ? t("usageEyebrow")
-              : inTrial
-                ? t("usageTrialTitle")
-                : t("usageFreeTitle")}
-          </Eyebrow>
+        <Appear index={0}>
+          <View style={styles.usage}>
+            <Eyebrow>
+              {isPro
+                ? t("usageEyebrow")
+                : inTrial
+                  ? t("usageTrialTitle")
+                  : t("usageFreeTitle")}
+            </Eyebrow>
 
-          {fullAccess ? (
-            <Meter
-              label={t("usageAnalyses")}
-              used={usage.analysesUsed}
-              cap={usage.analysesCap}
-            />
-          ) : (
-            <>
-              <Text family="mono" style={styles.credits}>
-                {t("usageCredits", { count: usage.analysesLeft })}
-              </Text>
-              <Text style={styles.creditsHint}>{t("usageFreeHint")}</Text>
-            </>
-          )}
+            {fullAccess ? (
+              <Meter
+                label={t("usageAnalyses")}
+                used={usage.analysesUsed}
+                cap={usage.analysesCap}
+              />
+            ) : (
+              <>
+                <Text family="mono" style={styles.credits}>
+                  {t("usageCredits", { count: usage.analysesLeft })}
+                </Text>
+                <Text style={styles.creditsHint}>{t("usageFreeHint")}</Text>
+              </>
+            )}
 
-          {hasChat && (
-            <Meter
-              label={t("usageChat")}
-              used={usage.chatUsed}
-              cap={usage.chatCap}
-            />
-          )}
+            {hasChat && (
+              <Meter
+                label={t("usageChat")}
+                used={usage.chatUsed}
+                cap={usage.chatCap}
+              />
+            )}
 
-          <Text family="mono" style={styles.renews}>
-            {inTrial && trialEndsAt
-              ? t("usageTrialEnds", { date: formatShortDate(trialEndsAt) })
-              : t("usageRenews", { date: formatShortDate(usage.renewsAt) })}
-          </Text>
-        </View>
+            <Text family="mono" style={styles.renews}>
+              {inTrial && trialEndsAt
+                ? t("usageTrialEnds", { date: formatShortDate(trialEndsAt) })
+                : t("usageRenews", { date: formatShortDate(usage.renewsAt) })}
+            </Text>
+          </View>
+        </Appear>
 
-        <View style={styles.plans}>
-          {products.map((product) => (
-            <RipplePressable
-              key={product.id}
-              onPress={() => setSelected(product.id)}
-              style={[
-                styles.plan,
-                selected === product.id && styles.planActive,
-              ]}
-              accessibilityRole="radio"
-              accessibilityState={{ selected: selected === product.id }}
-            >
-              <View style={styles.planTexts}>
-                <View style={styles.planHead}>
-                  <Text style={styles.planName}>
-                    {t(
-                      product.period === "year" ? "planAnnual" : "planMonthly",
+        <Appear index={1}>
+          <View style={styles.plans}>
+            {products.map((product) => (
+              <RipplePressable
+                key={product.id}
+                onPress={() => setSelected(product.id)}
+                style={[
+                  styles.plan,
+                  selected === product.id && styles.planActive,
+                ]}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: selected === product.id }}
+              >
+                <View style={styles.planTexts}>
+                  <View style={styles.planHead}>
+                    <Text style={styles.planName}>
+                      {t(
+                        product.period === "year"
+                          ? "planAnnual"
+                          : "planMonthly",
+                      )}
+                    </Text>
+
+                    {product.saves && (
+                      <View style={styles.badge}>
+                        <Text family="mono" style={styles.badgeText}>
+                          {t("saves", { amount: product.saves })}
+                        </Text>
+                      </View>
                     )}
+                  </View>
+
+                  <Text family="mono" style={styles.planPrice}>
+                    {product.price}
                   </Text>
 
-                  {product.saves && (
-                    <View style={styles.badge}>
-                      <Text family="mono" style={styles.badgeText}>
-                        {t("saves", { amount: product.saves })}
-                      </Text>
-                    </View>
+                  {product.monthly && (
+                    <Text style={styles.planPeriod}>
+                      {t("equivalent", { price: product.monthly })}
+                    </Text>
                   )}
                 </View>
 
-                <Text family="mono" style={styles.planPrice}>
-                  {product.price}
-                </Text>
-
-                {product.monthly && (
-                  <Text style={styles.planPeriod}>
-                    {t("equivalent", { price: product.monthly })}
-                  </Text>
-                )}
-              </View>
-
-              <Feather
-                name={selected === product.id ? "check-circle" : "circle"}
-                size={20}
-                color={
-                  selected === product.id
-                    ? theme.secondary.moss
-                    : theme.functional.line
-                }
-              />
-            </RipplePressable>
-          ))}
-        </View>
-
-        <View style={styles.features}>
-          {PRO_FEATURES.map((key) => (
-            <View key={key} style={styles.feature}>
-              <Feather name="check" size={16} color={theme.secondary.moss} />
-              <Text style={styles.featureText}>{t(key)}</Text>
-            </View>
-          ))}
-        </View>
-
-        <View style={styles.caps}>
-          <Text style={styles.capsTitle}>{t("capsTitle")}</Text>
-          <Text style={styles.capsText}>
-            {t("capsText", { analyses: MONTH_CAP, chat: CHAT_MONTH_CAP })}
-          </Text>
-        </View>
-
-        <View style={styles.single}>
-          <View style={styles.singleTexts}>
-            <Text style={styles.singleTitle}>{t("singleTitle")}</Text>
-            <Text style={styles.singleText}>{t("singleText")}</Text>
+                <Feather
+                  name={selected === product.id ? "check-circle" : "circle"}
+                  size={20}
+                  color={
+                    selected === product.id
+                      ? theme.secondary.moss
+                      : theme.functional.line
+                  }
+                />
+              </RipplePressable>
+            ))}
           </View>
-          <Button
-            label={singlePrice}
-            onPress={buySingle}
-            loading={busy}
-            variant="outline"
-            fullWidth={false}
-          />
-        </View>
+        </Appear>
+
+        <Appear index={2}>
+          <View style={styles.features}>
+            {PRO_FEATURES.map((key) => (
+              <View key={key} style={styles.feature}>
+                <Feather name="check" size={16} color={theme.secondary.moss} />
+                <Text style={styles.featureText}>{t(key)}</Text>
+              </View>
+            ))}
+          </View>
+        </Appear>
+
+        <Appear index={3}>
+          <View style={styles.caps}>
+            <Text style={styles.capsTitle}>{t("capsTitle")}</Text>
+            <Text style={styles.capsText}>
+              {t("capsText", { analyses: MONTH_CAP, chat: CHAT_MONTH_CAP })}
+            </Text>
+          </View>
+        </Appear>
+
+        <Appear index={4}>
+          <View style={styles.single}>
+            <View style={styles.singleTexts}>
+              <Text style={styles.singleTitle}>{t("singleTitle")}</Text>
+              <Text style={styles.singleText}>{t("singleText")}</Text>
+            </View>
+            <Button
+              label={singlePrice}
+              onPress={buySingle}
+              loading={busy}
+              variant="outline"
+              fullWidth={false}
+            />
+          </View>
+        </Appear>
 
         <Button
           label={isPro ? t("current") : t("subscribe")}

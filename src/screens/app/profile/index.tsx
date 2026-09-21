@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 
+import { Appear } from "@/components/ui/Appear";
 import { AvatarSheet } from "@/components/AvatarSheet";
 import { LanguageSheet } from "@/components/LanguageSheet";
 import { useTabBarSpace } from "@/hooks/useTabBarSpace";
@@ -144,163 +145,173 @@ export default function ProfileScreen() {
           />
         </View>
 
-        <View style={styles.section}>
-          <AnnouncementBanner style={styles.banner} />
+        <Appear index={0}>
+          <View style={styles.section}>
+            <AnnouncementBanner style={styles.banner} />
 
-          <Card style={styles.planCard}>
-            <View style={styles.planHead}>
-              <View style={styles.planTexts}>
-                <Eyebrow color={theme.primary.clay}>
-                  {planLabel}
-                </Eyebrow>
-                {!credits.isPro && (
-                  <Text style={styles.planUsage}>{usedLabel}</Text>
+            <Card style={styles.planCard}>
+              <View style={styles.planHead}>
+                <View style={styles.planTexts}>
+                  <Eyebrow color={theme.primary.clay}>{planLabel}</Eyebrow>
+                  {!credits.isPro && (
+                    <Text style={styles.planUsage}>{usedLabel}</Text>
+                  )}
+                </View>
+
+                {credits.paidCredits > 0 && (
+                  <Chip
+                    label={t("paidCredits", { count: credits.paidCredits })}
+                    tone="filled"
+                    size="md"
+                  />
                 )}
               </View>
 
-              {credits.paidCredits > 0 && (
-                <Chip
-                  label={t("paidCredits", { count: credits.paidCredits })}
-                  tone="filled"
-                  size="md"
+              {credits.fullAccess && (
+                <View style={styles.planBars}>
+                  <QuotaBar
+                    label={t("usageAnalyses")}
+                    left={credits.monthRemaining}
+                    total={MONTH_CAP}
+                  />
+                  <QuotaBar
+                    label={t("usageChat")}
+                    left={credits.chatRemaining}
+                    total={CHAT_MONTH_CAP}
+                  />
+                </View>
+              )}
+
+              {credits.isPro && (
+                <Text style={styles.planRenews}>{renewsLabel}</Text>
+              )}
+
+              {!credits.isPro && (
+                <Button
+                  label={t("seePlans")}
+                  onPress={openPaywall}
+                  style={styles.planAction}
                 />
               )}
-            </View>
+            </Card>
+          </View>
+        </Appear>
 
-            {credits.fullAccess && (
-              <View style={styles.planBars}>
-                <QuotaBar
-                  label={t("usageAnalyses")}
-                  left={credits.monthRemaining}
-                  total={MONTH_CAP}
-                />
-                <QuotaBar
-                  label={t("usageChat")}
-                  left={credits.chatRemaining}
-                  total={CHAT_MONTH_CAP}
-                />
-              </View>
-            )}
+        <Appear index={1}>
+          <View style={styles.menuSection}>
+            <Text family="mono" style={styles.groupLabel}>
+              {t("groupSubscription")}
+            </Text>
 
-            {credits.isPro && (
-              <Text style={styles.planRenews}>{renewsLabel}</Text>
-            )}
-
-            {!credits.isPro && (
-              <Button
-                label={t("seePlans")}
-                onPress={openPaywall}
-                style={styles.planAction}
+            <Card style={styles.menuCard}>
+              <MenuRow
+                label={t("refund")}
+                icon="credit-card"
+                onPress={openRefund}
               />
-            )}
-          </Card>
-        </View>
+              <MenuRow
+                label={t("restorePurchase")}
+                icon="refresh-ccw"
+                onPress={handleRestorePurchase}
+                last
+              />
+            </Card>
 
-        <View style={styles.menuSection}>
-          <Text family="mono" style={styles.groupLabel}>
-            {t("groupSubscription")}
-          </Text>
+            <Text family="mono" style={styles.groupLabel}>
+              {t("groupPreferences")}
+            </Text>
 
-          <Card style={styles.menuCard}>
-            <MenuRow
-              label={t("refund")}
-              icon="credit-card"
-              onPress={openRefund}
-            />
-            <MenuRow
-              label={t("restorePurchase")}
-              icon="refresh-ccw"
-              onPress={handleRestorePurchase}
-              last
-            />
-          </Card>
+            <Card style={styles.menuCard}>
+              <MenuRow
+                label={t("notifications")}
+                icon="bell"
+                hint={
+                  profile?.notifications_enabled === false
+                    ? t("notificationsOff")
+                    : t("notificationsOn")
+                }
+                onPress={openNotifications}
+              />
+              <MenuRow
+                label={t("language")}
+                icon="globe"
+                hint={languageLabel}
+                onPress={openLanguage}
+              />
+              <MenuRow
+                label={t("temperatureUnit")}
+                icon="thermometer"
+                hint={
+                  unit === "celsius" ? t("celsiusLabel") : t("fahrenheitLabel")
+                }
+                onPress={() => setUnitsVisible(true)}
+                last
+              />
+            </Card>
 
-          <Text family="mono" style={styles.groupLabel}>
-            {t("groupPreferences")}
-          </Text>
+            <Text family="mono" style={styles.groupLabel}>
+              {t("groupHelp")}
+            </Text>
 
-          <Card style={styles.menuCard}>
-            <MenuRow
-              label={t("notifications")}
-              icon="bell"
-              hint={
-                profile?.notifications_enabled === false
-                  ? t("notificationsOff")
-                  : t("notificationsOn")
-              }
-              onPress={openNotifications}
-            />
-            <MenuRow
-              label={t("language")}
-              icon="globe"
-              hint={languageLabel}
-              onPress={openLanguage}
-            />
-            <MenuRow
-              label={t("temperatureUnit")}
-              icon="thermometer"
-              hint={
-                unit === "celsius" ? t("celsiusLabel") : t("fahrenheitLabel")
-              }
-              onPress={() => setUnitsVisible(true)}
-              last
-            />
-          </Card>
+            <Card style={styles.menuCard}>
+              <MenuRow
+                label={t("support")}
+                icon="help-circle"
+                onPress={openSupport}
+              />
+              <MenuRow
+                label={t("replayTours")}
+                icon="compass"
+                onPress={replayTours}
+              />
+              <MenuRow
+                label={t("terms")}
+                icon="file-text"
+                onPress={openTerms}
+              />
+              <MenuRow
+                label={t("privacy")}
+                icon="shield"
+                onPress={openPrivacy}
+              />
+              <MenuRow
+                label={t("exportData")}
+                icon="download"
+                hint={exporting ? t("exportPreparing") : undefined}
+                onPress={exportData}
+              />
+              <MenuRow
+                label={t("revoke")}
+                icon="rotate-ccw"
+                onPress={openRevoke}
+                last
+              />
+            </Card>
 
-          <Text family="mono" style={styles.groupLabel}>
-            {t("groupHelp")}
-          </Text>
+            <Text family="mono" style={styles.groupLabel}>
+              {t("groupAccount")}
+            </Text>
 
-          <Card style={styles.menuCard}>
-            <MenuRow
-              label={t("support")}
-              icon="help-circle"
-              onPress={openSupport}
-            />
-            <MenuRow
-              label={t("replayTours")}
-              icon="compass"
-              onPress={replayTours}
-            />
-            <MenuRow label={t("terms")} icon="file-text" onPress={openTerms} />
-            <MenuRow label={t("privacy")} icon="shield" onPress={openPrivacy} />
-            <MenuRow
-              label={t("exportData")}
-              icon="download"
-              hint={exporting ? t("exportPreparing") : undefined}
-              onPress={exportData}
-            />
-            <MenuRow
-              label={t("revoke")}
-              icon="rotate-ccw"
-              onPress={openRevoke}
-              last
-            />
-          </Card>
+            <Card style={styles.menuCard}>
+              <MenuRow
+                label={signingOut ? t("signingOut") : t("signOut")}
+                icon="log-out"
+                onPress={handleSignOut}
+              />
+              <MenuRow
+                label={t("deleteAccount")}
+                icon="trash-2"
+                onPress={openDeleteAccount}
+                danger
+                last
+              />
+            </Card>
 
-          <Text family="mono" style={styles.groupLabel}>
-            {t("groupAccount")}
-          </Text>
-
-          <Card style={styles.menuCard}>
-            <MenuRow
-              label={signingOut ? t("signingOut") : t("signOut")}
-              icon="log-out"
-              onPress={handleSignOut}
-            />
-            <MenuRow
-              label={t("deleteAccount")}
-              icon="trash-2"
-              onPress={openDeleteAccount}
-              danger
-              last
-            />
-          </Card>
-
-          <Text family="mono" style={styles.version}>
-            {t("version", { version })}
-          </Text>
-        </View>
+            <Text family="mono" style={styles.version}>
+              {t("version", { version })}
+            </Text>
+          </View>
+        </Appear>
       </Animated.ScrollView>
 
       <View

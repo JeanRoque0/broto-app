@@ -2,6 +2,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 
+import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Checkbox } from "@/components/ui/Checkbox";
@@ -50,35 +51,39 @@ export default function DeleteAccountScreen() {
         </Text>
         <Text style={styles.lead}>{t("deleteLead")}</Text>
 
-        <View style={styles.list}>
-          {ITEMS.map((item) => (
-            <View key={item} style={styles.item}>
-              <Feather
-                name="x"
-                size={17}
-                color={theme.functional.danger}
-                style={styles.itemIcon}
-              />
-              <Text style={styles.itemText}>{t(item)}</Text>
-            </View>
-          ))}
-        </View>
-
-        <Card style={styles.warning}>
-          <MaterialCommunityIcons
-            name="alert-circle"
-            size={20}
-            color={theme.functional.danger}
-          />
-          <View style={styles.warningTexts}>
-            <Text style={styles.warningTitle}>
-              {t("deleteSubscriptionTitle")}
-            </Text>
-            <Text style={styles.warningText}>
-              {t("deleteSubscriptionText")}
-            </Text>
+        <Appear index={1}>
+          <View style={styles.list}>
+            {ITEMS.map((item) => (
+              <View key={item} style={styles.item}>
+                <Feather
+                  name="x"
+                  size={17}
+                  color={theme.functional.danger}
+                  style={styles.itemIcon}
+                />
+                <Text style={styles.itemText}>{t(item)}</Text>
+              </View>
+            ))}
           </View>
-        </Card>
+        </Appear>
+
+        <Appear index={2}>
+          <Card style={styles.warning}>
+            <MaterialCommunityIcons
+              name="alert-circle"
+              size={20}
+              color={theme.functional.danger}
+            />
+            <View style={styles.warningTexts}>
+              <Text style={styles.warningTitle}>
+                {t("deleteSubscriptionTitle")}
+              </Text>
+              <Text style={styles.warningText}>
+                {t("deleteSubscriptionText")}
+              </Text>
+            </View>
+          </Card>
+        </Appear>
 
         <RipplePressable
           onPress={toggleUnderstood}
