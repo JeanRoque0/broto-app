@@ -9,8 +9,10 @@ import Animated, {
   ReduceMotion,
 } from "react-native-reanimated";
 
+import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { Floating } from "@/components/ui/Floating";
 import { Loader } from "@/components/ui/Loader";
 import { Header } from "@/components/ui/Header";
 import { RipplePressable } from "@/components/ui/RipplePressable";
@@ -32,8 +34,10 @@ export default function NotificationsScreen() {
     blocked,
     upcoming,
     applying,
+    fullAccess,
     toggle,
     openSettings,
+    openPaywall,
   } = useNotificationSettings();
 
   const [expanded, setExpanded] = useState(false);
@@ -47,6 +51,25 @@ export default function NotificationsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Text style={styles.subtitle}>{t("subtitle")}</Text>
+
+        {enabled && !fullAccess && (
+          <Appear index={0} style={styles.waterOnly}>
+            <View style={styles.waterOnlyHead}>
+              <MaterialCommunityIcons
+                name="watering-can-outline"
+                size={18}
+                color={theme.primary.clay}
+              />
+              <Text style={styles.blockedTitle}>{t("waterOnlyTitle")}</Text>
+            </View>
+            <Text style={styles.hint}>{t("waterOnlyText")}</Text>
+            <Button
+              label={t("waterOnlyAction")}
+              onPress={openPaywall}
+              variant="outline"
+            />
+          </Appear>
+        )}
 
         {blocked && (
           <View style={styles.blocked}>
@@ -83,7 +106,6 @@ export default function NotificationsScreen() {
           </View>
         </RipplePressable>
 
-
         {enabled && applying && (
           <View style={styles.applying}>
             <Loader />
@@ -105,8 +127,14 @@ export default function NotificationsScreen() {
               <Animated.View
                 key={item.id}
                 style={styles.row}
-                entering={FadeIn.duration(180).reduceMotion(ReduceMotion.System)}
-                exiting={FadeOut.duration(140).reduceMotion(ReduceMotion.System)}
+                accessible
+                accessibilityLabel={`${item.title}. ${item.body}. ${formatWeekday(item.at)} ${item.at.getDate()} ${formatMonth(item.at)}, ${item.at.getHours().toString().padStart(2, "0")}:${item.at.getMinutes().toString().padStart(2, "0")}`}
+                entering={FadeIn.duration(180).reduceMotion(
+                  ReduceMotion.System,
+                )}
+                exiting={FadeOut.duration(140).reduceMotion(
+                  ReduceMotion.System,
+                )}
                 layout={LinearTransition.duration(220).reduceMotion(
                   ReduceMotion.System,
                 )}
@@ -160,20 +188,25 @@ export default function NotificationsScreen() {
         )}
 
         {enabled && !applying && upcoming.length === 0 && (
-          <View style={styles.empty}>
-            <MaterialCommunityIcons
-              name="bell-sleep-outline"
-              size={30}
-              color={theme.illustration.leaf}
-            />
-            <Text family="display" style={styles.emptyTitle}>
+          <Appear index={1} style={styles.empty}>
+            <Floating>
+              <MaterialCommunityIcons
+                name="bell-sleep-outline"
+                size={30}
+                color={theme.illustration.leaf}
+              />
+            </Floating>
+            <Text
+              family="display"
+              style={styles.emptyTitle}
+              accessibilityRole="header"
+            >
               {t("emptyTitle")}
             </Text>
             <Text style={styles.emptyText}>{t("emptyText")}</Text>
-          </View>
+          </Appear>
         )}
       </ScrollView>
-
     </Container>
   );
 }

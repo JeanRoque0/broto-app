@@ -28,5 +28,8 @@
   "upcomingNext": "Próximos recordatorios",
   "upcomingMore": "y {{count}} más programado",
   "upcomingMore_other": "y {{count}} más programados",
-  "upcomingLess": "Mostrar menos"
+  "upcomingLess": "Mostrar menos",
+  "waterOnlyTitle": "Por ahora solo avisa el riego",
+  "waterOnlyText": "Tu prueba terminó. Los recordatorios de abono, poda y los demás cuidados vuelven cuando te suscribas.",
+  "waterOnlyAction": "Ver planes"
 }

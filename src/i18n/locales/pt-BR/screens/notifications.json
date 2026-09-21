@@ -28,5 +28,8 @@
   "upcomingNext": "Próximos lembretes",
   "upcomingMore": "e mais {{count}} agendado",
   "upcomingMore_other": "e mais {{count}} agendados",
-  "upcomingLess": "Mostrar menos"
+  "upcomingLess": "Mostrar menos",
+  "waterOnlyTitle": "Só a rega avisa agora",
+  "waterOnlyText": "Seu período de teste acabou. Os lembretes de adubo, poda e os outros cuidados voltam quando você assinar.",
+  "waterOnlyAction": "Ver planos"
 }

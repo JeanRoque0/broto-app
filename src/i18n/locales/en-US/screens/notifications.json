@@ -28,5 +28,8 @@
   "upcomingNext": "Next reminders",
   "upcomingMore": "and {{count}} more scheduled",
   "upcomingMore_other": "and {{count}} more scheduled",
-  "upcomingLess": "Show less"
+  "upcomingLess": "Show less",
+  "waterOnlyTitle": "Only watering reminders for now",
+  "waterOnlyText": "Your trial has ended. Fertilizing, pruning and other care reminders come back when you subscribe.",
+  "waterOnlyAction": "See plans"
 }

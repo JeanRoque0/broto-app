@@ -120,6 +120,19 @@ export const styles = StyleSheet.create({
     ...type.displayXs,
     textAlign: "center",
   },
+  waterOnly: {
+    gap: theme.spacing.s2,
+    padding: theme.spacing.s4,
+    borderRadius: theme.radius.md,
+    borderWidth: 1,
+    borderColor: theme.primary.clayBorder,
+    backgroundColor: theme.primary.clayTint,
+  },
+  waterOnlyHead: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.s2,
+  },
   blocked: {
     gap: theme.spacing.s2,
     padding: theme.spacing.s4,

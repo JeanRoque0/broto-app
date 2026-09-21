@@ -1,4 +1,5 @@
 import * as Notifications from "expo-notifications";
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Linking } from "react-native";
@@ -11,8 +12,12 @@ import { ensureNotificationPermission } from "@/services/notifications";
 import { registerPushToken, unregisterPushToken } from "@/services/push";
 import { getCredits } from "@/utils/credits";
 import { TASK_LABELS } from "@/utils/taskLabels";
-import { isTaskKind, parseDay, startOfDay , remindableTasks } from "@/utils/tasks";
-
+import {
+  isTaskKind,
+  parseDay,
+  startOfDay,
+  remindableTasks,
+} from "@/utils/tasks";
 
 const HORIZON = 20;
 
@@ -24,11 +29,13 @@ interface Upcoming {
 }
 
 export function useNotificationSettings() {
+  const router = useRouter();
   const { t: tPlants } = useTranslation("plants");
   const { data: profile } = useProfile();
   const { data: plants } = usePlants();
   const { tasks: allTasks } = usePlantTasks();
-  const tasks = remindableTasks(allTasks, getCredits(profile ?? null).fullAccess);
+  const fullAccess = getCredits(profile ?? null).fullAccess;
+  const tasks = remindableTasks(allTasks, fullAccess);
   const { mutate: updateProfile, isPending: saving } = useUpdateProfile();
 
   const [blocked, setBlocked] = useState(false);
@@ -130,7 +137,9 @@ export function useNotificationSettings() {
     applying,
     saving,
     hasTasks: tasks.length > 0,
+    fullAccess: !profile || fullAccess,
     toggle,
     openSettings: () => Linking.openSettings(),
+    openPaywall: () => router.push("/(app)/paywall"),
   };
 }
