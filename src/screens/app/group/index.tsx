@@ -1,4 +1,4 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -6,15 +6,17 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AddPlantSheet } from "@/components/AddPlantSheet";
 import { GroupPlantsSheet } from "@/components/GroupPlantsSheet";
 import { GroupSheet } from "@/components/GroupSheet";
+import { EmptyPlantArt } from "@/components/illustrations/OnboardingArt";
 import { PlantCard } from "@/components/PlantCard";
 import { Button } from "@/components/ui/Button";
 import { CircleButton } from "@/components/ui/CircleButton";
 import { Container } from "@/components/ui/Container";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { FlashListContainer } from "@/components/ui/FlashListContainer";
 import { Header } from "@/components/ui/Header";
-import { Loader } from "@/components/ui/Loader";
+import { PlantListSkeleton } from "@/components/ui/Skeleton";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
 
@@ -57,7 +59,7 @@ export default function GroupScreen() {
     return (
       <Container>
         <Header showBack />
-        <Loader />
+        <PlantListSkeleton rows={3} />
       </Container>
     );
   }
@@ -109,17 +111,13 @@ export default function GroupScreen() {
         ListHeaderComponent={
           <View style={styles.content}>
             {plants.length === 0 ? (
-              <View style={styles.empty}>
-                <MaterialCommunityIcons
-                  name="leaf"
-                  size={40}
-                  color={theme.illustration.leaf}
-                />
-                <Text family="display" style={styles.emptyTitle}>
-                  {t("groupEmptyTitle")}
-                </Text>
-                <Text style={styles.emptyHint}>{t("groupEmptyHint")}</Text>
-              </View>
+              <EmptyState
+                illustration={<EmptyPlantArt size={120} />}
+                title={t("groupEmptyTitle")}
+                description={t("groupEmptyHint")}
+                actionLabel={t("groupAddPlant")}
+                onAction={openPick}
+              />
             ) : (
               <Text family="mono" style={styles.count}>
                 {t("groupPlantCount", { count: plants.length })}
@@ -128,14 +126,16 @@ export default function GroupScreen() {
           </View>
         }
         ListFooterComponent={
-          <View style={styles.content}>
-            <Button
-              label={t("groupAddPlant")}
-              onPress={openPick}
-              variant="outline"
-              style={styles.add}
-            />
-          </View>
+          plants.length > 0 ? (
+            <View style={styles.content}>
+              <Button
+                label={t("groupAddPlant")}
+                onPress={openPick}
+                variant="outline"
+                style={styles.add}
+              />
+            </View>
+          ) : null
         }
         renderItem={({ item }) => (
           <View style={styles.content}>

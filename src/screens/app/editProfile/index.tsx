@@ -3,6 +3,7 @@ import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 
+import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
@@ -40,7 +41,7 @@ export default function EditProfileScreen() {
           keyboardShouldPersistTaps="always"
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.form}>
+          <Appear index={0} style={styles.form}>
             <Controller
               control={control}
               name="name"
@@ -61,7 +62,11 @@ export default function EditProfileScreen() {
               )}
             />
 
-            <View style={styles.locked}>
+            <View
+              style={styles.locked}
+              accessible
+              accessibilityLabel={`${t("emailLabel")}: ${email}. ${t("emailLocked")}`}
+            >
               <Text style={styles.lockedLabel}>{t("emailLabel")}</Text>
               <View style={styles.lockedValue}>
                 <Text style={styles.lockedText} numberOfLines={1}>
@@ -71,17 +76,19 @@ export default function EditProfileScreen() {
               </View>
               <Text style={styles.lockedHint}>{t("emailLocked")}</Text>
             </View>
-          </View>
+          </Appear>
 
-          <Card style={styles.passwordCard}>
-            <MenuRow
-              label={t("changePassword")}
-              icon="key"
-              hint={sendingReset ? undefined : t("changePasswordHint")}
-              onPress={sendPasswordReset}
-              last
-            />
-          </Card>
+          <Appear index={1}>
+            <Card style={styles.passwordCard}>
+              <MenuRow
+                label={t("changePassword")}
+                icon="key"
+                hint={sendingReset ? undefined : t("changePasswordHint")}
+                onPress={sendPasswordReset}
+                last
+              />
+            </Card>
+          </Appear>
         </ScrollView>
 
         <View style={styles.footer}>
