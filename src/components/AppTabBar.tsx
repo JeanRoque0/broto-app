@@ -15,6 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { TourAnchor } from "@/components/tour/TourAnchor";
 import { BrotinhoFace } from "@/components/illustrations/BrotinhoArt";
 import { useAnalysisStore } from "@/store";
 import { theme } from "@/style/theme";
@@ -111,6 +112,7 @@ function TabItem({ config, label, focused, onPress }: TabItemProps) {
       accessibilityLabel={label}
     >
       <Animated.View style={[styles.pill, pillStyle]} />
+      <TourAnchor id={`tab.${config.name}`} />
 
       <View style={styles.icon}>
         {config.name === "chat" ? (

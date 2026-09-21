@@ -79,6 +79,7 @@ export default function ProfileScreen() {
     handleRevoke,
     exportData,
     exporting,
+    replayTours,
     openTerms,
     openPrivacy,
     openRefund,
@@ -255,6 +256,11 @@ export default function ProfileScreen() {
               label={t("support")}
               icon="help-circle"
               onPress={openSupport}
+            />
+            <MenuRow
+              label={t("replayTours")}
+              icon="compass"
+              onPress={replayTours}
             />
             <MenuRow label={t("terms")} icon="file-text" onPress={openTerms} />
             <MenuRow label={t("privacy")} icon="shield" onPress={openPrivacy} />

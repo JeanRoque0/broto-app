@@ -100,5 +100,8 @@
   "exportFailedSubtitle": "Try again in a few seconds.",
   "planTrial": "Free trial",
   "trialUntil": "Everything unlocked until {{date}}.",
-  "freeOnlyWater": "Only watering is still unlocked."
+  "freeOnlyWater": "Only watering is still unlocked.",
+  "replayTours": "Replay the screen tips",
+  "replayToursDone": "Tips turned back on",
+  "replayToursHint": "They show up the next time you open each screen."
 }

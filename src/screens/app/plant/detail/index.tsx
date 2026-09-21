@@ -24,6 +24,7 @@ import {
   DIAGNOSIS_CARD_WIDTH,
   DiagnosisCard,
 } from "@/components/DiagnosisCard";
+import { TourAnchor } from "@/components/tour/TourAnchor";
 import { ConfirmCard } from "@/components/ConfirmCard";
 import { CareRoutine } from "@/components/CareRoutine";
 import { CopyableName } from "@/components/CopyableName";
@@ -60,6 +61,7 @@ import { formatShortDate } from "@/utils/format";
 
 import { HEADER_PHOTO, styles } from "./style";
 import { usePlantDetail } from "./usePlantDetail";
+import { usePlantTour } from "./usePlantTour";
 
 const SNAP = DIAGNOSIS_CARD_WIDTH + theme.spacing.s3;
 type SectionLayout = { y: number; parent?: string; chip: boolean };
@@ -138,6 +140,8 @@ export default function PlantDetailScreen() {
     edit,
     goBack,
   } = usePlantDetail();
+
+  usePlantTour(!isLoading && !!plant, goToSection);
 
   const { facts } = useSpeciesFacts(plant?.species_scientific);
   const { shot, share } = useShareCard();
@@ -416,12 +420,15 @@ export default function PlantDetailScreen() {
               <Text style={styles.species}>{plant.species_scientific}</Text>
             )}
 
-            <TodayCard
-              tasks={todayTasks}
-              upcoming={upcoming}
-              pending={pendingTask}
-              onComplete={complete}
-            />
+            <View onLayout={registerAnchor("today")}>
+              <TodayCard
+                tasks={todayTasks}
+                upcoming={upcoming}
+                pending={pendingTask}
+                onComplete={complete}
+              />
+              <TourAnchor id="plant.today" />
+            </View>
           </View>
           <View
             style={[styles.section, styles.padded]}
@@ -511,6 +518,7 @@ export default function PlantDetailScreen() {
               <Text style={styles.sectionHint}>{t("careTasksHint")}</Text>
 
               <View style={styles.routine}>
+                <TourAnchor id="plant.care" />
                 <CareRoutine
                   tasks={careTasks}
                   onEdit={editTask}
@@ -827,6 +835,7 @@ export default function PlantDetailScreen() {
       </View>
       <View style={[styles.share, { top: insets.top + theme.spacing.s2 }]}>
         <Animated.View style={barStyle}>
+          <TourAnchor id="plant.menu" />
           <CircleButton onPress={openMenu} accessibilityLabel={t("plantMenu")}>
             <Feather
               name="more-horizontal"

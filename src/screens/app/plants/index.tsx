@@ -31,6 +31,7 @@ import { AnalysesPanel } from "./components/AnalysesPanel";
 import { PlantsPanel } from "./components/PlantsPanel";
 import { TasksPanel } from "./components/TasksPanel";
 import { styles } from "./style";
+import { useHomeTour } from "./useHomeTour";
 import { usePlantsScreen } from "./usePlantsScreen";
 
 const TABS = ["plants", "tasks", "analyses"] as const;
@@ -91,6 +92,8 @@ export default function PlantsScreen() {
     openAdd,
     closeAdd,
   } = usePlantsScreen();
+
+  useHomeTour(plants.length > 0, !isLoading && !isError);
 
   const sheets = (
     <>
@@ -181,12 +184,13 @@ export default function PlantsScreen() {
           </Text>
         </View>
 
-        <NotificationBell />
+        <NotificationBell tourId="home.bell" />
       </View>
 
       <AnnouncementBanner style={styles.banner} />
 
       <SegmentedTabs
+        tourId="home.tabs"
         options={[
           { value: "plants", label: t("tabPlants") },
           { value: "tasks", label: t("tabTasks") },
@@ -241,6 +245,7 @@ export default function PlantsScreen() {
       </ScrollView>
 
       <Fab
+        tourId="home.add"
         onPress={openAdd}
         bottom={fabBottom}
         accessibilityLabel={t("addPlant")}

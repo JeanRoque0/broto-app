@@ -100,5 +100,8 @@
   "exportFailedSubtitle": "Tente de novo em alguns segundos.",
   "planTrial": "Teste grátis",
   "trialUntil": "Tudo liberado até {{date}}.",
-  "freeOnlyWater": "Só a rega continua liberada."
+  "freeOnlyWater": "Só a rega continua liberada.",
+  "replayTours": "Rever as dicas das telas",
+  "replayToursDone": "Dicas ligadas de novo",
+  "replayToursHint": "Elas aparecem na próxima vez que você abrir cada tela."
 }

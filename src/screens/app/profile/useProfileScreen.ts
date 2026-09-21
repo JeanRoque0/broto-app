@@ -18,6 +18,7 @@ import { Toast } from "@/components/ui/Toast";
 import { MONTH_CAP } from "@/constants";
 import { useAuth } from "@/hooks/useAuth";
 import { useExportData } from "@/hooks/useExportData";
+import { useOnboardingStore } from "@/store/onboardingStore";
 import { useCredits, useProfile } from "@/hooks/useProfile";
 import { signOut } from "@/services/supabase/auth";
 import { revokeTerms } from "@/services/supabase/profile";
@@ -32,6 +33,7 @@ export function useProfileScreen() {
   const { data: profile, isLoading } = useProfile();
   const credits = useCredits();
   const { exportData, exporting } = useExportData();
+  const resetTours = useOnboardingStore((state) => state.resetTours);
   const queryClient = useQueryClient();
   const [signingOut, setSigningOut] = useState(false);
   const [languageVisible, setLanguageVisible] = useState(false);
@@ -231,6 +233,10 @@ export function useProfileScreen() {
     handleRevoke,
     exportData,
     exporting,
+    replayTours: () => {
+      resetTours();
+      Toast.show({ text: t("replayToursDone"), subtitle: t("replayToursHint") });
+    },
     openTerms,
     openPrivacy,
     openRefund,

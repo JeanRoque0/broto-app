@@ -12,6 +12,7 @@ import plants from "./screens/plants.json";
 import prompts from "./prompts.json";
 import profile from "./screens/profile.json";
 import search from "./screens/search.json";
+import tour from "./tour.json";
 import welcome from "./screens/welcome.json";
 import watering from "./watering.json";
 
@@ -30,6 +31,7 @@ export default {
   prompts,
   profile,
   search,
+  tour,
   watering,
   welcome,
 };

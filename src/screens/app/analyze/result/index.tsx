@@ -25,6 +25,7 @@ import {
   DIAGNOSIS_CARD_WIDTH,
   DiagnosisCard,
 } from "@/components/DiagnosisCard";
+import { TourAnchor } from "@/components/tour/TourAnchor";
 import { CareRoutine } from "@/components/CareRoutine";
 import { ConfirmCard } from "@/components/ConfirmCard";
 import { CopyableName } from "@/components/CopyableName";
@@ -57,6 +58,7 @@ import { previewCareTasks } from "@/utils/carePreview";
 import { CareTiles } from "./components/CareTiles";
 import { HEADER_PHOTO, styles } from "./style";
 import { useResult } from "./useResult";
+import { useResultTour } from "./useResultTour";
 
 const SNAP = DIAGNOSIS_CARD_WIDTH + theme.spacing.s3;
 const BAR_IN = 120;
@@ -98,6 +100,8 @@ export default function ResultScreen() {
     submitGroup,
   } = useResult();
   const [card, setCard] = useState(1);
+
+  useResultTour(!!result && canSave && !fromHistory && !plantId, goToSection);
   const { shot, share, sharing } = useShareCard();
   const [zoom, setZoom] = useState<{
     mark: SymptomMark | null;
@@ -351,6 +355,7 @@ export default function ResultScreen() {
           {!healthy && diagnostico.length > 0 && (
             <View style={styles.section} onLayout={registerSection("diagnosis")}>
               <View style={styles.padded}>
+                <TourAnchor id="result.causes" />
                 <Text family="display" style={styles.sectionTitle}>
                   {t("diagnosisTitle")}
                 </Text>
@@ -407,10 +412,13 @@ export default function ResultScreen() {
                 {t(healthy ? "confirmTitleHealthy" : "confirmTitle")}
               </Text>
               <Text style={styles.sectionHint}>{t("confirmEyebrow")}</Text>
-              <ConfirmCard
-                value={result.como_confirmar}
-                style={styles.confirm}
-              />
+              <View>
+                <ConfirmCard
+                  value={result.como_confirmar}
+                  style={styles.confirm}
+                />
+                <TourAnchor id="result.confirm" />
+              </View>
             </View>
           ) : null}
 
@@ -604,7 +612,10 @@ export default function ResultScreen() {
           ) : (
             <>
               {canSave && (
-                <Button label={t("save")} onPress={save} loading={saving} />
+                <View>
+                  <Button label={t("save")} onPress={save} loading={saving} />
+                  <TourAnchor id="result.save" />
+                </View>
               )}
               <Button label={t("discard")} onPress={close} variant="ghost" />
             </>

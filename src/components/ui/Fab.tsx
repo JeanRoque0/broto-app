@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
+import { TourAnchor } from "@/components/tour/TourAnchor";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { theme } from "@/style/theme";
 
@@ -14,6 +15,7 @@ type FabProps = {
   bottom: number;
   accessibilityLabel: string;
   style?: StyleProp<ViewStyle>;
+  tourId?: string;
 };
 
 export function Fab({
@@ -22,6 +24,7 @@ export function Fab({
   bottom,
   accessibilityLabel,
   style,
+  tourId,
 }: FabProps) {
   return (
     <View style={[styles.anchor, { bottom }, style]} pointerEvents="box-none">
@@ -32,8 +35,10 @@ export function Fab({
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
         style={styles.button}
+        pressScale={0.92}
       >
         {children}
+        {tourId && <TourAnchor id={tourId} />}
       </RipplePressable>
     </View>
   );

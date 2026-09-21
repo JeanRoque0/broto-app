@@ -13,6 +13,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { TourAnchor } from "@/components/tour/TourAnchor";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
@@ -25,6 +26,7 @@ type SegmentedTabsProps<T extends string> = {
   value: T;
   onChange: (value: T) => void;
   style?: StyleProp<ViewStyle>;
+  tourId?: string;
 };
 
 export function SegmentedTabs<T extends string>({
@@ -32,6 +34,7 @@ export function SegmentedTabs<T extends string>({
   value,
   onChange,
   style,
+  tourId,
 }: SegmentedTabsProps<T>) {
   const layouts = useRef<Partial<Record<T, { x: number; width: number }>>>({});
   const pillX = useSharedValue(0);
@@ -63,6 +66,7 @@ export function SegmentedTabs<T extends string>({
   return (
     <View style={[styles.track, style]}>
       <Animated.View style={[styles.pill, pillStyle]} pointerEvents="none" />
+      {tourId && <TourAnchor id={tourId} />}
 
       {options.map((option) => {
         const active = option.value === value;

@@ -3,19 +3,21 @@ import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
+import { TourAnchor } from "@/components/tour/TourAnchor";
 import { CircleButton } from "@/components/ui/CircleButton";
 import { Text } from "@/components/ui/Text";
 import { useUnreadNotifications } from "@/hooks/useNotificationInbox";
 import { theme } from "@/style/theme";
 import { fontSize } from "@/style/typography";
 
-export function NotificationBell() {
+export function NotificationBell({ tourId }: { tourId?: string }) {
   const { t } = useTranslation("notifications");
   const router = useRouter();
   const unread = useUnreadNotifications();
 
   return (
     <View>
+      {tourId && <TourAnchor id={tourId} />}
       <CircleButton
         onPress={() => router.push("/(app)/inbox")}
         accessibilityLabel={t("notificationsBell")}

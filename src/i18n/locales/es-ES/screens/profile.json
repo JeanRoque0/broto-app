@@ -100,5 +100,8 @@
   "exportFailedSubtitle": "Inténtalo de nuevo en unos segundos.",
   "planTrial": "Prueba gratis",
   "trialUntil": "Todo desbloqueado hasta {{date}}.",
-  "freeOnlyWater": "Solo el riego sigue desbloqueado."
+  "freeOnlyWater": "Solo el riego sigue desbloqueado.",
+  "replayTours": "Volver a ver los consejos",
+  "replayToursDone": "Consejos activados de nuevo",
+  "replayToursHint": "Aparecen la próxima vez que abras cada pantalla."
 }
