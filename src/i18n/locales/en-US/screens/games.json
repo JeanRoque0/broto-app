@@ -11,5 +11,8 @@
   "play": "Start",
   "again": "Play again",
   "score": "Score",
-  "quizCardHint": "Eight quick questions about plant care"
+  "quizCardHint": "Eight quick questions about plant care",
+  "quizRight": "Correct answer",
+  "quizWrong": "Wrong answer",
+  "quizScore": "{{hits}} right out of {{total}}"
 }

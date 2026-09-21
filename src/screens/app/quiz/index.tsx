@@ -1,11 +1,18 @@
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, View } from "react-native";
+import { AccessibilityInfo, ScrollView, View } from "react-native";
+import Animated, {
+  FadeInDown,
+  ReduceMotion,
+  ZoomIn,
+} from "react-native-reanimated";
 
 import { BrotinhoArt } from "@/components/illustrations/BrotinhoArt";
+import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { Floating } from "@/components/ui/Floating";
 import { Header } from "@/components/ui/Header";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
@@ -14,7 +21,9 @@ import { QUIZ, QUIZ_ROUND } from "@/constants/quiz";
 import { useBestScore } from "@/hooks/useBestScore";
 import { useLanguageStore } from "@/store";
 import { theme } from "@/style/theme";
+import { haptic } from "@/utils/haptics";
 
+import { QuizProgress } from "./components/QuizProgress";
 import { styles } from "./style";
 
 function buildDeck(language: LanguageCode) {
@@ -49,8 +58,13 @@ export default function QuizScreen() {
     if (picked !== null) return;
 
     setPicked(index);
+    const right = index === question.answer;
+    AccessibilityInfo.announceForAccessibility(
+      `${t(right ? "quizRight" : "quizWrong")}. ${question.why}`,
+    );
 
-    if (index === question.answer) {
+    if (right) {
+      haptic.success();
       setHits((current) => current + 1);
       setStreak((current) => {
         const next = current + 1;
@@ -60,6 +74,7 @@ export default function QuizScreen() {
       return;
     }
 
+    haptic.warn();
     setStreak(0);
   }
 
@@ -85,23 +100,40 @@ export default function QuizScreen() {
         <Header showBack title={t("quizTitle")} />
 
         <View style={styles.over}>
-          <BrotinhoArt size={128} />
+          <Appear index={0}>
+            <Floating>
+              <BrotinhoArt size={128} />
+            </Floating>
+          </Appear>
 
-          <Text family="mono" style={styles.overScore}>
-            {hits}/{deck.length}
-          </Text>
-          <Text style={styles.overText}>
-            {t(hits >= deck.length - 1 ? "quizGreat" : "quizOk")}
-          </Text>
+          <Appear index={1} style={styles.overCopy}>
+            <Text
+              family="mono"
+              style={styles.overScore}
+              accessibilityLabel={t("quizScore", {
+                hits,
+                total: deck.length,
+              })}
+            >
+              {hits}/{deck.length}
+            </Text>
+            <Text style={styles.overText} accessibilityRole="header">
+              {t(hits >= deck.length - 1 ? "quizGreat" : "quizOk")}
+            </Text>
+          </Appear>
 
-          <Text family="mono" style={styles.streak}>
-            {t("quizStreak", { count: bestStreak })}
-          </Text>
-          <Text family="mono" style={styles.streak}>
-            {t("bestScore", { count: best })}
-          </Text>
+          <Appear index={2} style={styles.overCopy}>
+            <Text family="mono" style={styles.streak}>
+              {t("quizStreak", { count: bestStreak })}
+            </Text>
+            <Text family="mono" style={styles.streak}>
+              {t("bestScore", { count: best })}
+            </Text>
+          </Appear>
 
-          <Button label={t("again")} onPress={restart} style={styles.action} />
+          <Appear index={3} style={styles.action}>
+            <Button label={t("again")} onPress={restart} />
+          </Appear>
         </View>
       </Container>
     );
@@ -121,56 +153,108 @@ export default function QuizScreen() {
           </Text>
 
           {streak > 1 && (
-            <Text family="mono" style={styles.streakChip}>
-              {t("combo", { count: streak })}
-            </Text>
+            <Animated.View
+              key={streak}
+              entering={ZoomIn.springify()
+                .damping(12)
+                .reduceMotion(ReduceMotion.System)}
+            >
+              <Text family="mono" style={styles.streakChip}>
+                {t("combo", { count: streak })}
+              </Text>
+            </Animated.View>
           )}
         </View>
 
-        <Text family="display" style={styles.ask}>
-          {question.ask}
-        </Text>
+        <QuizProgress
+          step={step + (picked !== null ? 1 : 0)}
+          total={deck.length}
+          label={t("quizProgress", { step: step + 1, total: deck.length })}
+        />
 
-        {question.options.map((option, index) => {
-          const right = index === question.answer;
-          const chosen = index === picked;
-          const reveal = picked !== null;
-
-          return (
-            <RipplePressable
-              key={option}
-              onPress={() => pick(index)}
-              style={[
-                styles.option,
-                reveal && right && styles.optionRight,
-                reveal && chosen && !right && styles.optionWrong,
-              ]}
-              accessibilityRole="button"
+        <View key={step} style={styles.question}>
+          <Appear index={0}>
+            <Text
+              family="display"
+              style={styles.ask}
+              accessibilityRole="header"
             >
-              <Text style={styles.optionText}>{option}</Text>
+              {question.ask}
+            </Text>
+          </Appear>
 
-              {reveal && (right || chosen) && (
-                <Feather
-                  name={right ? "check" : "x"}
-                  size={17}
-                  color={right ? theme.secondary.moss : theme.functional.danger}
-                />
+          {question.options.map((option, index) => {
+            const right = index === question.answer;
+            const chosen = index === picked;
+            const reveal = picked !== null;
+            const verdict =
+              reveal && right
+                ? t("quizRight")
+                : reveal && chosen
+                  ? t("quizWrong")
+                  : "";
+
+            return (
+              <Appear key={option} index={index + 1}>
+                <RipplePressable
+                  onPress={() => pick(index)}
+                  disabled={reveal}
+                  pressScale={0.98}
+                  style={[
+                    styles.option,
+                    reveal && right && styles.optionRight,
+                    reveal && chosen && !right && styles.optionWrong,
+                    reveal && !right && !chosen && styles.optionMuted,
+                  ]}
+                  accessibilityRole="button"
+                  accessibilityLabel={[option, verdict]
+                    .filter(Boolean)
+                    .join(". ")}
+                  accessibilityState={{ disabled: reveal, selected: chosen }}
+                >
+                  <Text style={styles.optionText}>{option}</Text>
+
+                  {reveal && (right || chosen) && (
+                    <Animated.View
+                      entering={ZoomIn.springify()
+                        .damping(11)
+                        .reduceMotion(ReduceMotion.System)}
+                    >
+                      <Feather
+                        name={right ? "check" : "x"}
+                        size={17}
+                        color={
+                          right ? theme.secondary.moss : theme.functional.danger
+                        }
+                      />
+                    </Animated.View>
+                  )}
+                </RipplePressable>
+              </Appear>
+            );
+          })}
+
+          {picked !== null && (
+            <Animated.View
+              style={styles.why}
+              entering={FadeInDown.duration(320).reduceMotion(
+                ReduceMotion.System,
               )}
-            </RipplePressable>
-          );
-        })}
-
-        {picked !== null && (
-          <View style={styles.why}>
-            <Text style={styles.whyText}>{question.why}</Text>
-          </View>
-        )}
+            >
+              <Feather name="info" size={16} color={theme.text.secondary} />
+              <Text style={styles.whyText}>{question.why}</Text>
+            </Animated.View>
+          )}
+        </View>
       </ScrollView>
 
       {picked !== null && (
-        <View style={styles.footer}>
+        <Animated.View
+          style={styles.footer}
+          entering={FadeInDown.duration(260).reduceMotion(ReduceMotion.System)}
+        >
           <Button label={t("quizNext")} onPress={next} />
-        </View>
+        </Animated.View>
       )}
     </Container>
   );

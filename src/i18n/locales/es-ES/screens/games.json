@@ -11,5 +11,8 @@
   "play": "Empezar",
   "again": "Jugar de nuevo",
   "score": "Puntos",
-  "quizCardHint": "Ocho preguntas rápidas sobre cuidar plantas"
+  "quizCardHint": "Ocho preguntas rápidas sobre cuidar plantas",
+  "quizRight": "Respuesta correcta",
+  "quizWrong": "Respuesta incorrecta",
+  "quizScore": "{{hits}} aciertos de {{total}}"
 }

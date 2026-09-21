@@ -29,6 +29,10 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
     color: theme.secondary.moss,
   },
+  question: {
+    gap: theme.spacing.s3,
+    marginTop: theme.spacing.s3,
+  },
   ask: {
     ...type.displayXs,
     marginBottom: theme.spacing.s2,
@@ -51,18 +55,24 @@ export const styles = StyleSheet.create({
     borderColor: theme.functional.dangerBorder,
     backgroundColor: theme.functional.dangerSoft,
   },
+  optionMuted: {
+    opacity: 0.6,
+  },
   optionText: {
     flex: 1,
     fontSize: fontSize.s6,
     color: theme.text.primary,
   },
   why: {
+    flexDirection: "row",
+    gap: theme.spacing.s3,
     padding: theme.spacing.s4,
     borderRadius: theme.radius.md,
     backgroundColor: theme.surface.container,
   },
   whyText: {
     ...type.bodySm,
+    flex: 1,
   },
   footer: {
     paddingHorizontal: theme.screenPadding,
@@ -79,6 +89,10 @@ export const styles = StyleSheet.create({
     fontSize: fontSize.s13,
     color: theme.primary.clay,
     marginTop: theme.spacing.s4,
+  },
+  overCopy: {
+    alignItems: "center",
+    gap: theme.spacing.s2,
   },
   overText: {
     ...type.bodySm,
