@@ -198,5 +198,12 @@
   "followRemind": "Me lembrar em 7 dias",
   "followReminded": "Lembrete marcado para {{date}}",
   "taskMarkDone": "Marcar como feito",
-  "taskEditHint": "Toque duas vezes para editar a tarefa."
+  "taskEditHint": "Toque duas vezes para editar a tarefa.",
+  "trialLeft_one": "Teste grátis: falta {{count}} dia",
+  "trialLeft_other": "Teste grátis: faltam {{count}} dias",
+  "trialLeftText": "Tudo liberado até lá. Depois, só a rega segue com lembrete.",
+  "trialEnded": "Seu teste grátis acabou",
+  "trialEndedText": "A rega continua avisando. Análise, Brotinho e os outros lembretes voltam com o plano.",
+  "trialPlans": "Ver planos",
+  "trialDismiss": "Dispensar aviso"
 }

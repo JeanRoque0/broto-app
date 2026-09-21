@@ -82,3 +82,17 @@ export function getCredits(profile: Profile | null, now = new Date()): Credits {
     renewsAt: nextPeriodStart(now),
   };
 }
+
+export type TrialNotice =
+  { kind: "trial"; daysLeft: number } | { kind: "ended" } | null;
+
+export function getTrialNotice(
+  credits: Credits,
+  now = new Date(),
+): TrialNotice {
+  if (credits.isPro || !credits.trialEndsAt) return null;
+  if (!credits.inTrial) return { kind: "ended" };
+
+  const left = credits.trialEndsAt.getTime() - now.getTime();
+  return { kind: "trial", daysLeft: Math.max(1, Math.ceil(left / 86400000)) };
+}

@@ -198,5 +198,12 @@
   "followRemind": "Recordarme en 7 días",
   "followReminded": "Recordatorio para el {{date}}",
   "taskMarkDone": "Marcar como hecho",
-  "taskEditHint": "Toca dos veces para editar la tarea."
+  "taskEditHint": "Toca dos veces para editar la tarea.",
+  "trialLeft_one": "Prueba gratis: queda {{count}} día",
+  "trialLeft_other": "Prueba gratis: quedan {{count}} días",
+  "trialLeftText": "Todo está desbloqueado hasta entonces. Después, solo el riego sigue con recordatorio.",
+  "trialEnded": "Tu prueba gratis terminó",
+  "trialEndedText": "El riego sigue avisando. El análisis, Brotinho y los demás recordatorios vuelven con un plan.",
+  "trialPlans": "Ver planes",
+  "trialDismiss": "Descartar aviso"
 }

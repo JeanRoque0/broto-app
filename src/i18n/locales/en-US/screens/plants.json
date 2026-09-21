@@ -198,5 +198,12 @@
   "followRemind": "Remind me in 7 days",
   "followReminded": "Reminder set for {{date}}",
   "taskMarkDone": "Mark as done",
-  "taskEditHint": "Double tap to edit the task."
+  "taskEditHint": "Double tap to edit the task.",
+  "trialLeft_one": "Free trial: {{count}} day left",
+  "trialLeft_other": "Free trial: {{count}} days left",
+  "trialLeftText": "Everything is unlocked until then. After that, only watering keeps its reminder.",
+  "trialEnded": "Your free trial has ended",
+  "trialEndedText": "Watering still reminds you. Analysis, Brotinho and the other reminders come back with a plan.",
+  "trialPlans": "See plans",
+  "trialDismiss": "Dismiss notice"
 }

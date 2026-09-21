@@ -1,6 +1,6 @@
 import { CHAT_DAILY_CAP, CHAT_MONTH_CAP, MONTH_CAP } from "@/constants";
 import { Profile } from "@/types/profile";
-import { getCredits } from "@/utils/credits";
+import { getCredits, getTrialNotice } from "@/utils/credits";
 
 const NOW = new Date("2026-09-15T12:00:00.000Z");
 
@@ -208,5 +208,39 @@ describe("sem perfil", () => {
     expect(credits.total).toBe(0);
     expect(credits.isPro).toBe(false);
     expect(credits.renewsAt.getTime()).toBeGreaterThan(NOW.getTime());
+  });
+});
+
+describe("aviso do teste na home", () => {
+  it("conta os dias que faltam arredondando para cima", () => {
+    const notice = getTrialNotice(
+      getCredits(profile({ trial_ends_at: "2026-09-17T08:00:00.000Z" }), NOW),
+      NOW,
+    );
+
+    expect(notice).toEqual({ kind: "trial", daysLeft: 2 });
+  });
+
+  it("no último dia ainda fala em um dia", () => {
+    const notice = getTrialNotice(
+      getCredits(profile({ trial_ends_at: "2026-09-15T13:00:00.000Z" }), NOW),
+      NOW,
+    );
+
+    expect(notice).toEqual({ kind: "trial", daysLeft: 1 });
+  });
+
+  it("avisa que acabou quando o teste passou", () => {
+    expect(getTrialNotice(getCredits(profile(), NOW), NOW)).toEqual({
+      kind: "ended",
+    });
+  });
+
+  it("assinante não vê aviso", () => {
+    expect(getTrialNotice(getCredits(pro(), NOW), NOW)).toBeNull();
+  });
+
+  it("sem perfil carregado não afirma nada", () => {
+    expect(getTrialNotice(getCredits(null, NOW), NOW)).toBeNull();
   });
 });

@@ -7,11 +7,13 @@ interface OnboardingState {
   completed: boolean;
   photoTipsSeen: boolean;
   toursSeen: string[];
+  trialEndedSeen: boolean;
 
   complete: () => void;
   seePhotoTips: () => void;
   seeTour: (id: string) => void;
   resetTours: () => void;
+  seeTrialEnded: () => void;
   reset: () => void;
 }
 
@@ -21,6 +23,7 @@ export const useOnboardingStore = create<OnboardingState>()(
       completed: false,
       photoTipsSeen: false,
       toursSeen: [],
+      trialEndedSeen: false,
 
       complete: () => set({ completed: true }),
       seePhotoTips: () => set({ photoTipsSeen: true }),
@@ -31,7 +34,14 @@ export const useOnboardingStore = create<OnboardingState>()(
             : { toursSeen: [...state.toursSeen, id] },
         ),
       resetTours: () => set({ toursSeen: [] }),
-      reset: () => set({ completed: false, photoTipsSeen: false, toursSeen: [] }),
+      seeTrialEnded: () => set({ trialEndedSeen: true }),
+      reset: () =>
+        set({
+          completed: false,
+          photoTipsSeen: false,
+          toursSeen: [],
+          trialEndedSeen: false,
+        }),
     }),
     {
       name: "onboarding-storage",

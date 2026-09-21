@@ -30,6 +30,7 @@ import { SegmentedTabs } from "@/components/ui/SegmentedTabs";
 import { AnalysesPanel } from "./components/AnalysesPanel";
 import { PlantsPanel } from "./components/PlantsPanel";
 import { TasksPanel } from "./components/TasksPanel";
+import { TrialBanner } from "./components/TrialBanner";
 import { styles } from "./style";
 import { useHomeTour } from "./useHomeTour";
 import { usePlantsScreen } from "./usePlantsScreen";
@@ -128,7 +129,11 @@ export default function PlantsScreen() {
 
   const screenTitle = (
     <View style={styles.topbar}>
-      <Text family="display" style={styles.screenTitle}>
+      <Text
+        family="display"
+        style={styles.screenTitle}
+        accessibilityRole="header"
+      >
         {t("title")}
       </Text>
     </View>
@@ -176,7 +181,11 @@ export default function PlantsScreen() {
     <>
       <View style={styles.topbar}>
         <View style={styles.titleGroup}>
-          <Text family="display" style={styles.screenTitle}>
+          <Text
+            family="display"
+            style={styles.screenTitle}
+            accessibilityRole="header"
+          >
             {t("title")}
           </Text>
           <Text family="mono" style={styles.count}>
@@ -188,6 +197,7 @@ export default function PlantsScreen() {
       </View>
 
       <AnnouncementBanner style={styles.banner} />
+      <TrialBanner style={styles.banner} />
 
       <SegmentedTabs
         tourId="home.tabs"
