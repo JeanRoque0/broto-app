@@ -3,8 +3,10 @@ import React from "react";
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 import { RipplePressable } from "@/components/ui/RipplePressable";
+import i18n from "@/i18n";
 import { theme } from "@/style/theme";
 import { fontSize } from "@/style/typography";
+import { haptic } from "@/utils/haptics";
 
 import { Text } from "./Text";
 
@@ -15,6 +17,7 @@ type StepperProps = {
   max?: number;
   step?: number;
   format?: (value: number) => string;
+  label?: string;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -25,18 +28,40 @@ export function Stepper({
   max = 365,
   step = 1,
   format = (v) => String(v),
+  label,
   style,
 }: StepperProps) {
   const canDecrement = value - step >= min;
   const canIncrement = value + step <= max;
 
+  function shift(delta: number) {
+    const next = value + delta;
+    if (next < min || next > max) return;
+    haptic.select();
+    onChange(next);
+  }
+
   return (
-    <View style={[styles.container, style]}>
+    <View
+      style={[styles.container, style]}
+      accessible
+      accessibilityRole="adjustable"
+      accessibilityLabel={label}
+      accessibilityValue={{ text: format(value) }}
+      accessibilityActions={[
+        { name: "increment", label: i18n.t("increase") },
+        { name: "decrement", label: i18n.t("decrease") },
+      ]}
+      onAccessibilityAction={(event) =>
+        shift(event.nativeEvent.actionName === "increment" ? step : -step)
+      }
+    >
       <RipplePressable
-        onPress={() => onChange(value - step)}
+        onPress={() => shift(-step)}
         disabled={!canDecrement}
+        pressScale={0.9}
         accessibilityRole="button"
-        accessibilityLabel="Diminuir"
+        accessibilityLabel={i18n.t("decrease")}
         style={[styles.button, !canDecrement && styles.buttonDisabled]}
       >
         <Feather name="minus" size={17} color={theme.text.primary} />
@@ -47,10 +72,11 @@ export function Stepper({
       </Text>
 
       <RipplePressable
-        onPress={() => onChange(value + step)}
+        onPress={() => shift(step)}
         disabled={!canIncrement}
+        pressScale={0.9}
         accessibilityRole="button"
-        accessibilityLabel="Aumentar"
+        accessibilityLabel={i18n.t("increase")}
         style={[styles.button, !canIncrement && styles.buttonDisabled]}
       >
         <Feather name="plus" size={17} color={theme.text.primary} />

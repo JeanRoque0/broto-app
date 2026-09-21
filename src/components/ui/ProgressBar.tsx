@@ -8,6 +8,7 @@ import {
   ViewStyle,
 } from "react-native";
 
+import i18n from "@/i18n";
 import { theme } from "@/style/theme";
 
 const FILL_DURATION = 380;
@@ -24,7 +25,13 @@ type StepProgressProps = {
 
 export function StepProgress({ total, current, style }: StepProgressProps) {
   return (
-    <View style={[styles.row, style]}>
+    <View
+      style={[styles.row, style]}
+      accessible
+      accessibilityRole="progressbar"
+      accessibilityLabel={i18n.t("stepOf", { current, total })}
+      accessibilityValue={{ min: 1, max: total, now: current }}
+    >
       {Array.from({ length: total }, (_, index) => (
         <Segment
           key={index}
@@ -99,7 +106,13 @@ type StepDotsProps = {
 
 export function StepDots({ total, current, style }: StepDotsProps) {
   return (
-    <View style={[styles.dotsRow, style]}>
+    <View
+      style={[styles.dotsRow, style]}
+      accessible
+      accessibilityRole="progressbar"
+      accessibilityLabel={i18n.t("stepOf", { current, total })}
+      accessibilityValue={{ min: 1, max: total, now: current }}
+    >
       {Array.from({ length: total }, (_, index) => (
         <Dot key={index} active={index === current - 1} />
       ))}

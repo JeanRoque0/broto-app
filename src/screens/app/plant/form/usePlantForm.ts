@@ -9,7 +9,11 @@ import { haptic } from "@/utils/haptics";
 import { Toast } from "@/components/ui/Toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useCreateGroup, useGroups } from "@/hooks/useGroups";
-import { taskKeys, usePlantTasks, useUpdatePlantTask } from "@/hooks/usePlantTasks";
+import {
+  taskKeys,
+  usePlantTasks,
+  useUpdatePlantTask,
+} from "@/hooks/usePlantTasks";
 import { useProfile } from "@/hooks/useProfile";
 import { useSpeciesFacts } from "@/hooks/useSpeciesFacts";
 import { useTemperatureUnit } from "@/hooks/useTemperatureUnit";
@@ -203,8 +207,9 @@ export function usePlantForm() {
 
   const routineTasks = isEditing
     ? plantTasks.map(fromCareStep)
-    : previewCareTasks({ rega_dias: interval, adubo: fertilizer }).map((task) =>
-        drafts[task.kind] ? { ...task, ...drafts[task.kind] } : task,
+    : previewCareTasks({ rega_dias: interval, adubo: fertilizer }).map(
+        (task) =>
+          drafts[task.kind] ? { ...task, ...drafts[task.kind] } : task,
       );
 
   const persist = useCallback(

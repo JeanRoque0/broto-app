@@ -40,5 +40,8 @@
   "previousMonth": "Mês anterior",
   "nextMonth": "Próximo mês",
   "photoOf": "Foto {{index}} de {{total}}",
-  "loading": "Carregando"
+  "loading": "Carregando",
+  "decrease": "Diminuir",
+  "increase": "Aumentar",
+  "stepOf": "Passo {{current}} de {{total}}"
 }

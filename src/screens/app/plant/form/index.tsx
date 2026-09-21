@@ -2,7 +2,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Pressable, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 import { CareRoutine } from "@/components/CareRoutine";
 import { GroupSheet } from "@/components/GroupSheet";
@@ -19,6 +19,7 @@ import { Header } from "@/components/ui/Header";
 import { Input } from "@/components/ui/Input";
 import { KeyboardAwareView } from "@/components/ui/KeyboardAwareView";
 import { StepProgress } from "@/components/ui/ProgressBar";
+import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Stepper } from "@/components/ui/Stepper";
 import { StepTransition } from "@/components/ui/StepTransition";
 import { Text } from "@/components/ui/Text";
@@ -95,9 +96,7 @@ export default function PlantFormScreen() {
   } = usePlantForm();
 
   const formatTemp = (celsius: number) =>
-    unit === "fahrenheit"
-      ? `${toFahrenheit(celsius)} °F`
-      : `${celsius} °C`;
+    unit === "fahrenheit" ? `${toFahrenheit(celsius)} °F` : `${celsius} °C`;
 
   const hasPhoto = !!photoUri || !!photoPath;
   const filledPhotoStep = step === "photo" && hasPhoto;
@@ -124,7 +123,11 @@ export default function PlantFormScreen() {
           showsVerticalScrollIndicator={false}
         >
           <StepTransition stepKey={step} direction={direction}>
-            <Text family="display" style={styles.title}>
+            <Text
+              family="display"
+              style={styles.title}
+              accessibilityRole="header"
+            >
               {filledPhotoStep
                 ? t("photoStepTitleFilled")
                 : t(`${step}StepTitle` as const)}
@@ -142,11 +145,14 @@ export default function PlantFormScreen() {
             style={styles.form}
           >
             {step === "photo" && (
-              <Pressable
+              <RipplePressable
                 onPress={openPhotoSheet}
+                pressScale={0.98}
                 style={styles.photoTile}
                 accessibilityRole="button"
-                accessibilityLabel={t("photoAdd")}
+                accessibilityLabel={
+                  hasPhoto ? t("photoSheetTitle") : t("photoAdd")
+                }
               >
                 {photoUri ? (
                   <Image
@@ -159,14 +165,22 @@ export default function PlantFormScreen() {
                 ) : (
                   <>
                     <View style={styles.photoPlus}>
-                      <Feather name="plus" size={26} color={theme.text.onDark} />
+                      <Feather
+                        name="plus"
+                        size={26}
+                        color={theme.text.onDark}
+                      />
                     </View>
                     <Text style={styles.photoHint}>{t("photoAdd")}</Text>
                   </>
                 )}
 
                 {hasPhoto && (
-                  <View style={styles.photoEdit}>
+                  <View
+                    style={styles.photoEdit}
+                    importantForAccessibility="no-hide-descendants"
+                    accessibilityElementsHidden
+                  >
                     <CircleButton
                       onPress={openPhotoSheet}
                       size={46}
@@ -181,7 +195,7 @@ export default function PlantFormScreen() {
                     </CircleButton>
                   </View>
                 )}
-              </Pressable>
+              </RipplePressable>
             )}
 
             {step === "identity" && (
@@ -282,6 +296,7 @@ export default function PlantFormScreen() {
                         }}
                         min={1}
                         max={90}
+                        label={t("intervalLabel")}
                         format={(days) => t("interval", { count: days })}
                       />
                     )}
@@ -380,6 +395,7 @@ export default function PlantFormScreen() {
                           <Stepper
                             value={value}
                             onChange={onChange}
+                            label={`${tAnalysis("temperatureLabel")}, ${t("tempMinLabel")}`}
                             min={-10}
                             max={45}
                             format={formatTemp}
@@ -399,6 +415,7 @@ export default function PlantFormScreen() {
                           <Stepper
                             value={value}
                             onChange={onChange}
+                            label={`${tAnalysis("temperatureLabel")}, ${t("tempMaxLabel")}`}
                             min={-10}
                             max={45}
                             format={formatTemp}
