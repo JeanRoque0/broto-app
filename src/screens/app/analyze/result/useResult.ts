@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { haptic } from "@/utils/haptics";
 import { Toast } from "@/components/ui/Toast";
 import { useCreateGroup, useGroups } from "@/hooks/useGroups";
 import { useCreatePlant } from "@/hooks/usePlants";
@@ -89,6 +90,8 @@ export function useResult() {
         repot_months: result.cuidados?.replantar_meses ?? null,
         prune_month: result.cuidados?.podar_mes ?? null,
       });
+
+      haptic.success();
 
       if (identificationId) {
         await linkIdentificationToPlant(identificationId, plant.id).catch(

@@ -39,5 +39,6 @@
   "hidePassword": "Hide password",
   "previousMonth": "Previous month",
   "nextMonth": "Next month",
-  "photoOf": "Photo {{index}} of {{total}}"
+  "photoOf": "Photo {{index}} of {{total}}",
+  "loading": "Loading"
 }

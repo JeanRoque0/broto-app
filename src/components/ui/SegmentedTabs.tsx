@@ -13,6 +13,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { haptic } from "@/utils/haptics";
 import { TourAnchor } from "@/components/tour/TourAnchor";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
@@ -74,7 +75,10 @@ export function SegmentedTabs<T extends string>({
         return (
           <RipplePressable
             key={option.value}
-            onPress={() => onChange(option.value)}
+            onPress={() => {
+              if (option.value !== value) haptic.select();
+              onChange(option.value);
+            }}
             onLayout={(event) => measure(option.value, event)}
             style={styles.segment}
             accessibilityRole="tab"

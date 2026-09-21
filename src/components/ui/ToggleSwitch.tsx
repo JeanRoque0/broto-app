@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Animated, Pressable, StyleSheet } from "react-native";
 
+import { haptic } from "@/utils/haptics";
 import { theme } from "@/style/theme";
 
 type ToggleSwitchProps = {
@@ -42,7 +43,10 @@ export function ToggleSwitch({
 
   return (
     <Pressable
-      onPress={onToggle}
+      onPress={() => {
+        haptic.select();
+        onToggle();
+      }}
       disabled={disabled}
       hitSlop={8}
       accessibilityRole="switch"

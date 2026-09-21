@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LayoutChangeEvent } from "react-native";
 
+import { haptic } from "@/utils/haptics";
 import { Toast } from "@/components/ui/Toast";
 import { useCreatePlant } from "@/hooks/usePlants";
 import { useShareCard } from "@/hooks/useShareCard";
@@ -62,6 +63,7 @@ export function useSpecies() {
         species_scientific: species.scientific,
       });
 
+      haptic.success();
       Toast.show({ text: t("added") });
       router.replace(`/(app)/plant/${plant.id}`);
     } catch {

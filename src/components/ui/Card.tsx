@@ -43,8 +43,9 @@ export function Card({
   return (
     <RipplePressable
       onPress={onPress}
+      pressScale={0.98}
       style={cardStyle}
-      accessibilityRole={accessibilityRole}
+      accessibilityRole={accessibilityRole ?? "button"}
       accessibilityState={accessibilityState}
       accessibilityLabel={accessibilityLabel}
     >

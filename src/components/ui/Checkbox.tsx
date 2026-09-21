@@ -2,6 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef } from "react";
 import { Animated, Easing, StyleProp, StyleSheet, ViewStyle } from "react-native";
 
+import { haptic } from "@/utils/haptics";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { theme } from "@/style/theme";
 
@@ -54,7 +55,10 @@ export function Checkbox({ value, onChange, style }: CheckboxProps) {
 
   return (
     <RipplePressable
-      onPress={() => onChange(!value)}
+      onPress={() => {
+        haptic.select();
+        onChange(!value);
+      }}
       accessibilityRole="checkbox"
       accessibilityState={{ checked: value }}
       hitSlop={8}

@@ -97,6 +97,7 @@ export function Chip({
   return (
     <RipplePressable
       onPress={onPress}
+      pressScale={0.96}
       style={containerStyle}
       accessibilityRole="button"
       accessibilityLabel={label}

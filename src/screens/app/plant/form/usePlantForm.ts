@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { BackHandler } from "react-native";
 
+import { haptic } from "@/utils/haptics";
 import { Toast } from "@/components/ui/Toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useCreateGroup, useGroups } from "@/hooks/useGroups";
@@ -270,6 +271,7 @@ export function usePlantForm() {
         }
 
         const created = await createPlant.mutateAsync(payload);
+        haptic.success();
 
         if (wateredAt) {
           await logCareEvent({

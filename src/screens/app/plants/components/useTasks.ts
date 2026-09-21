@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { haptic } from "@/utils/haptics";
 import { Toast } from "@/components/ui/Toast";
 import { toDateString } from "@/services/supabase/plantTasks";
 import { useAnalysisStore } from "@/store";
@@ -94,6 +95,7 @@ export function useTasks() {
 
     try {
       await logTask.mutateAsync({ plantId, kind });
+      haptic.success();
     } catch {
       Toast.show({ text: t("taskFailed") });
     } finally {

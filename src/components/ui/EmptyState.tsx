@@ -1,6 +1,8 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
+import { Floating } from "@/components/ui/Floating";
+import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { theme } from "@/style/theme";
 import { type } from "@/style/typography";
@@ -28,16 +30,26 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <View style={styles.container}>
-      {illustration}
+      {illustration && (
+        <Appear index={0}>
+          <Floating>{illustration}</Floating>
+        </Appear>
+      )}
 
-      <Text family="display" style={styles.title}>
-        {title}
-      </Text>
+      <Appear index={1}>
+        <Text family="display" style={styles.title} accessibilityRole="header">
+          {title}
+        </Text>
+      </Appear>
 
-      {description && <Text style={styles.description}>{description}</Text>}
+      {description && (
+        <Appear index={2}>
+          <Text style={styles.description}>{description}</Text>
+        </Appear>
+      )}
 
       {(actionLabel || secondaryLabel) && (
-        <View style={styles.actions}>
+        <Appear index={3} style={styles.actions}>
           {actionLabel && onAction && (
             <Button label={actionLabel} onPress={onAction} />
           )}
@@ -48,7 +60,7 @@ export function EmptyState({
               variant="ghost"
             />
           )}
-        </View>
+        </Appear>
       )}
     </View>
   );

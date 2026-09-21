@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { haptic } from "@/utils/haptics";
 import { Toast } from "@/components/ui/Toast";
 import { DEFAULT_REMINDER_TIME } from "@/constants";
 import { useAnalysisStore } from "@/store";
@@ -107,6 +108,7 @@ export function usePlantDetail() {
   async function complete(kind: string) {
     try {
       await logCare.mutateAsync({ kind: kind as CareEventKind });
+      haptic.success();
       Toast.show({ text: t("taskDone") });
     } catch {
       Toast.show({

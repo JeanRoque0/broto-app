@@ -19,7 +19,7 @@ import { EmptyPlantArt } from "@/components/illustrations/OnboardingArt";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
-import { Loader } from "@/components/ui/Loader";
+import { PlantListSkeleton } from "@/components/ui/Skeleton";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
 
@@ -147,7 +147,7 @@ export default function PlantsScreen() {
     return (
       <Container>
         {screenTitle}
-        <Loader />
+        <PlantListSkeleton />
       </Container>
     );
   }

@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { haptic } from "@/utils/haptics";
 import { useAuth } from "@/hooks/useAuth";
 import { profileKeys } from "@/hooks/useProfile";
 import { identify } from "@/services/api/identify";
@@ -58,6 +59,7 @@ export function useAnalyzing() {
 
       setIdentificationId(response.identification_id);
       setResult(response);
+      haptic.success();
       router.replace("/(app)/analyze/result");
     } catch (error) {
       const status = (error as { response?: { status?: number } })?.response
