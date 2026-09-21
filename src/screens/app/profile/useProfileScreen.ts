@@ -46,7 +46,7 @@ export function useProfileScreen() {
   const collapseAt = useSharedValue(0);
 
   const onScroll = useAnimatedScrollHandler((event) => {
-    scrollY.value = event.contentOffset.y;
+    scrollY.set(event.contentOffset.y);
   });
 
   const scrollToTop = useCallback(() => {
@@ -99,7 +99,7 @@ export function useProfileScreen() {
       node?.measureInWindow((x, y, _width, measured) => {
         target.x.value = x;
         target.y.value = scrolls ? y + scrollY.value : y;
-        if (height) height.value = measured;
+        if (height) height.set(measured);
       });
     },
     [scrollY],
@@ -116,7 +116,7 @@ export function useProfileScreen() {
   const onIdentityLayout = useCallback(
     (event: LayoutChangeEvent) => {
       const { y, height } = event.nativeEvent.layout;
-      collapseAt.value = y + height;
+      collapseAt.set(y + height);
     },
     [collapseAt],
   );
@@ -235,7 +235,10 @@ export function useProfileScreen() {
     exporting,
     replayTours: () => {
       resetTours();
-      Toast.show({ text: t("replayToursDone"), subtitle: t("replayToursHint") });
+      Toast.show({
+        text: t("replayToursDone"),
+        subtitle: t("replayToursHint"),
+      });
     },
     openTerms,
     openPrivacy,

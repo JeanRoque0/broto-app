@@ -1,6 +1,12 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useEffect, useRef } from "react";
-import { Animated, Easing, StyleProp, StyleSheet, ViewStyle } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Animated,
+  Easing,
+  StyleProp,
+  StyleSheet,
+  ViewStyle,
+} from "react-native";
 
 import { haptic } from "@/utils/haptics";
 import { RipplePressable } from "@/components/ui/RipplePressable";
@@ -13,8 +19,8 @@ type CheckboxProps = {
 };
 
 export function Checkbox({ value, onChange, style }: CheckboxProps) {
-  const bgAnim = useRef(new Animated.Value(value ? 1 : 0)).current;
-  const checkScale = useRef(new Animated.Value(value ? 1 : 0)).current;
+  const bgAnim = useState(() => new Animated.Value(value ? 1 : 0))[0];
+  const checkScale = useState(() => new Animated.Value(value ? 1 : 0))[0];
 
   useEffect(() => {
     Animated.parallel([

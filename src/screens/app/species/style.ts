@@ -53,7 +53,7 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.surface.photo,
   },
   photo: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   block: {
     paddingHorizontal: theme.screenPadding,
@@ -83,5 +83,4 @@ export const styles = StyleSheet.create({
   suggestions: {
     marginTop: theme.spacing.s6,
   },
-
 });

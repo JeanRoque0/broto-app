@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.surface.photo,
   },
   heroFallback: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   bar: {
     position: "absolute",
@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
     right: theme.spacing.s5,
   },
   backOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   backOnPhoto: {
     backgroundColor: theme.functional.black35,

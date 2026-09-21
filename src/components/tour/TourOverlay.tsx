@@ -69,6 +69,12 @@ export function TourOverlay() {
   const height = useSharedValue(0);
 
   const step = id ? steps[index] : null;
+  const [placedStep, setPlacedStep] = useState(step);
+
+  if (step !== placedStep) {
+    setPlacedStep(step);
+    setPlacement(null);
+  }
 
   const origin = useCallback(
     () =>
@@ -152,16 +158,17 @@ export function TourOverlay() {
         easing: Easing.bezier(0.22, 1, 0.36, 1),
       };
 
-      x.value = withTiming(target.x, timing);
-      y.value = withTiming(target.y, timing);
-      w.value = withTiming(target.w, timing);
-      h.value = withTiming(target.h, timing);
+      x.set(withTiming(target.x, timing));
+      y.set(withTiming(target.y, timing));
+      w.set(withTiming(target.w, timing));
+      h.set(withTiming(target.h, timing));
 
       place(local, size);
-      AccessibilityInfo.announceForAccessibility(`${step!.title}. ${step!.body}`);
+      AccessibilityInfo.announceForAccessibility(
+        `${step!.title}. ${step!.body}`,
+      );
     }
 
-    setPlacement(null);
     locate();
 
     return () => {
@@ -172,35 +179,40 @@ export function TourOverlay() {
   useEffect(() => {
     if (!id || reduceMotion) {
       cancelAnimation(pulse);
-      pulse.value = 0;
+      pulse.set(0);
       return;
     }
 
-    pulse.value = 0;
-    pulse.value = withRepeat(
-      withTiming(1, { duration: 1400, easing: Easing.out(Easing.quad) }),
-      -1,
-      false,
+    pulse.set(0);
+    pulse.set(
+      withRepeat(
+        withTiming(1, { duration: 1400, easing: Easing.out(Easing.quad) }),
+        -1,
+        false,
+      ),
     );
   }, [id, reduceMotion, pulse]);
 
   useEffect(() => {
     if (!id) return;
 
-    const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
-      finish();
-      return true;
-    });
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        finish();
+        return true;
+      },
+    );
 
     return () => subscription.remove();
   }, [id, finish]);
 
   useEffect(() => {
     if (!id) {
-      x.value = 0;
-      y.value = 0;
-      w.value = 0;
-      h.value = 0;
+      x.set(0);
+      y.set(0);
+      w.set(0);
+      h.set(0);
     }
   }, [id, x, y, w, h]);
 
@@ -235,8 +247,8 @@ export function TourOverlay() {
   function handleLayout(event: LayoutChangeEvent) {
     const frame = event.nativeEvent.layout;
     setSize({ width: frame.width, height: frame.height });
-    width.value = frame.width;
-    height.value = frame.height;
+    width.set(frame.width);
+    height.set(frame.height);
   }
 
   function advance() {
@@ -289,7 +301,11 @@ export function TourOverlay() {
           <Text family="mono" style={styles.count}>
             {t("count", { step: index + 1, total: steps.length })}
           </Text>
-          <Text family="display" style={styles.title} accessibilityRole="header">
+          <Text
+            family="display"
+            style={styles.title}
+            accessibilityRole="header"
+          >
             {step.title}
           </Text>
           <Text style={styles.body}>{step.body}</Text>

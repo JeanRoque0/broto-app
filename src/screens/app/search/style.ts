@@ -109,7 +109,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   thumbImage: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   texts: {
     flex: 1,

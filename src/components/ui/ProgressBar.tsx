@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
   Animated,
   Easing,
@@ -44,8 +44,8 @@ export function StepProgress({ total, current, style }: StepProgressProps) {
 }
 
 function Segment({ filled, active }: { filled: boolean; active: boolean }) {
-  const fill = useRef(new Animated.Value(filled ? 1 : 0)).current;
-  const emphasis = useRef(new Animated.Value(active ? 1 : 0)).current;
+  const fill = useState(() => new Animated.Value(filled ? 1 : 0))[0];
+  const emphasis = useState(() => new Animated.Value(active ? 1 : 0))[0];
 
   useEffect(() => {
     Animated.timing(fill, {
@@ -121,7 +121,7 @@ export function StepDots({ total, current, style }: StepDotsProps) {
 }
 
 function Dot({ active }: { active: boolean }) {
-  const emphasis = useRef(new Animated.Value(active ? 1 : 0)).current;
+  const emphasis = useState(() => new Animated.Value(active ? 1 : 0))[0];
 
   useEffect(() => {
     Animated.spring(emphasis, {

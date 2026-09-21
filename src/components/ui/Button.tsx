@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleProp, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
+import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { haptic } from "@/utils/haptics";
@@ -214,7 +220,7 @@ const styles = StyleSheet.create({
     opacity: 0,
   },
   loaderOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: "center",
     justifyContent: "center",
   },

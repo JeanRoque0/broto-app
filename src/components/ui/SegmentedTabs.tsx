@@ -45,8 +45,8 @@ export function SegmentedTabs<T extends string>({
     const layout = layouts.current[value];
     if (!layout) return;
 
-    pillX.value = withSpring(layout.x, { damping: 58, stiffness: 300 });
-    pillWidth.value = withTiming(layout.width, { duration: 180 });
+    pillX.set(withSpring(layout.x, { damping: 58, stiffness: 300 }));
+    pillWidth.set(withTiming(layout.width, { duration: 180 }));
   }, [value, pillX, pillWidth]);
 
   const pillStyle = useAnimatedStyle(() => ({
@@ -59,8 +59,8 @@ export function SegmentedTabs<T extends string>({
     layouts.current[option] = { x, width };
 
     if (option === value && pillWidth.value === 0) {
-      pillX.value = x;
-      pillWidth.value = width;
+      pillX.set(x);
+      pillWidth.set(width);
     }
   }
 

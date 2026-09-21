@@ -58,12 +58,12 @@ function GalleryPage({
   const savedY = useSharedValue(0);
 
   const reset = useCallback(() => {
-    scale.value = withTiming(1);
-    saved.value = 1;
-    x.value = withTiming(0);
-    y.value = withTiming(0);
-    savedX.value = 0;
-    savedY.value = 0;
+    scale.set(withTiming(1));
+    saved.set(1);
+    x.set(withTiming(0));
+    y.set(withTiming(0));
+    savedX.set(0);
+    savedY.set(0);
     onZoomChange(false);
   }, [scale, saved, x, y, savedX, savedY, onZoomChange]);
 
@@ -74,20 +74,19 @@ function GalleryPage({
   const gesture = useMemo(() => {
     const pinch = Gesture.Pinch()
       .onUpdate((event) => {
-        scale.value = Math.min(
-          MAX_SCALE,
-          Math.max(MIN_SCALE, saved.value * event.scale),
+        scale.set(
+          Math.min(MAX_SCALE, Math.max(MIN_SCALE, saved.value * event.scale)),
         );
       })
       .onEnd(() => {
-        saved.value = scale.value;
+        saved.set(scale.value);
         const isZoomed = scale.value > MIN_SCALE;
 
         if (!isZoomed) {
-          x.value = withTiming(0);
-          y.value = withTiming(0);
-          savedX.value = 0;
-          savedY.value = 0;
+          x.set(withTiming(0));
+          y.set(withTiming(0));
+          savedX.set(0);
+          savedY.set(0);
         }
 
         runOnJS(onZoomChange)(isZoomed);
@@ -97,26 +96,26 @@ function GalleryPage({
       .enabled(zoomed)
       .averageTouches(true)
       .onUpdate((event) => {
-        x.value = savedX.value + event.translationX;
-        y.value = savedY.value + event.translationY;
+        x.set(savedX.value + event.translationX);
+        y.set(savedY.value + event.translationY);
       })
       .onEnd(() => {
-        savedX.value = x.value;
-        savedY.value = y.value;
+        savedX.set(x.value);
+        savedY.set(y.value);
       });
 
     const doubleTap = Gesture.Tap()
       .numberOfTaps(2)
       .onEnd(() => {
         const next = scale.value > MIN_SCALE ? MIN_SCALE : TAP_SCALE;
-        scale.value = withTiming(next);
-        saved.value = next;
+        scale.set(withTiming(next));
+        saved.set(next);
 
         if (next === MIN_SCALE) {
-          x.value = withTiming(0);
-          y.value = withTiming(0);
-          savedX.value = 0;
-          savedY.value = 0;
+          x.set(withTiming(0));
+          y.set(withTiming(0));
+          savedX.set(0);
+          savedY.set(0);
         }
 
         runOnJS(onZoomChange)(next > MIN_SCALE);
@@ -168,12 +167,15 @@ export function PhotoGallery({
   const [zoomed, setZoomed] = useState(false);
   const pager = useRef<ScrollView>(null);
 
-  useEffect(() => {
+  const [wasVisible, setWasVisible] = useState(visible);
+
+  if (visible !== wasVisible) {
+    setWasVisible(visible);
     if (visible) {
       setIndex(initialIndex);
       setZoomed(false);
     }
-  }, [visible, initialIndex]);
+  }
 
   useEffect(() => {
     if (!visible) return;

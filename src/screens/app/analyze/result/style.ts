@@ -61,7 +61,7 @@ export const styles = StyleSheet.create({
     right: theme.spacing.s5,
   },
   backOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   backOnPhoto: {
     backgroundColor: theme.functional.black35,

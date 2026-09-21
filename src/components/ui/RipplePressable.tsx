@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   Animated,
   GestureResponderEvent,
@@ -34,9 +34,9 @@ export function RipplePressable({
   onLayout,
   ...props
 }: RipplePressableProps) {
-  const scale = useRef(new Animated.Value(0)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
-  const squeeze = useRef(new Animated.Value(1)).current;
+  const scale = useState(() => new Animated.Value(0))[0];
+  const opacity = useState(() => new Animated.Value(0))[0];
+  const squeeze = useState(() => new Animated.Value(1))[0];
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
   const [rippleSize, setRippleSize] = useState(0);
   const [pressed, setPressed] = useState(false);

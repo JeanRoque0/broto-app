@@ -44,9 +44,12 @@ export function useNotificationSettings() {
   const stored = profile?.notifications_enabled ?? true;
   const [enabled, setEnabled] = useState(stored);
 
-  useEffect(() => {
+  const [syncedStored, setSyncedStored] = useState(stored);
+
+  if (stored !== syncedStored) {
+    setSyncedStored(stored);
     setEnabled(stored);
-  }, [stored]);
+  }
 
   useEffect(() => {
     Notifications.getPermissionsAsync().then((status) => {

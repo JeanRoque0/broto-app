@@ -1,6 +1,8 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { BottomTabBarHeightCallbackContext } from "@react-navigation/bottom-tabs";
+import {
+  type BottomTabBarProps,
+  BottomTabBarHeightCallbackContext,
+} from "expo-router/js-tabs";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import React, { useContext, useEffect } from "react";
@@ -90,7 +92,7 @@ function TabItem({ config, label, focused, onPress }: TabItemProps) {
 
   const activeIconStyle = useAnimatedStyle(() => ({
     opacity: progress.value,
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: "center",
     justifyContent: "center",
   }));
@@ -246,7 +248,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.s1,
   },
   pill: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: theme.primary.clayTint,
     borderWidth: 1,
     borderColor: theme.primary.clayBorder,

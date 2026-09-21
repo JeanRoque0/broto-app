@@ -139,10 +139,8 @@ export default function ResultScreen() {
     }
   }
 
-  function registerSection(id: string) {
-    return (event: LayoutChangeEvent) => {
-      offsets.current[id] = event.nativeEvent.layout.y;
-    };
+  function onSectionLayout(id: string, event: LayoutChangeEvent) {
+    offsets.current[id] = event.nativeEvent.layout.y;
   }
 
   function releaseJump() {
@@ -355,7 +353,7 @@ export default function ResultScreen() {
           {!healthy && diagnostico.length > 0 && (
             <View
               style={styles.section}
-              onLayout={registerSection("diagnosis")}
+              onLayout={(event) => onSectionLayout("diagnosis", event)}
             >
               <View style={styles.padded}>
                 <TourAnchor id="result.causes" />
@@ -413,7 +411,7 @@ export default function ResultScreen() {
           {result.como_confirmar ? (
             <View
               style={[styles.section, styles.padded]}
-              onLayout={registerSection("confirm")}
+              onLayout={(event) => onSectionLayout("confirm", event)}
             >
               <Text
                 accessibilityRole="header"
@@ -435,7 +433,7 @@ export default function ResultScreen() {
 
           <View
             style={[styles.suggestionsBlock, styles.padded]}
-            onLayout={registerSection("brotinho")}
+            onLayout={(event) => onSectionLayout("brotinho", event)}
           >
             <ChatSuggestions
               seed={result.especie?.cientifico ?? "analise"}
@@ -455,7 +453,7 @@ export default function ResultScreen() {
           {cuidados && (
             <View
               style={[styles.section, styles.padded]}
-              onLayout={registerSection("care")}
+              onLayout={(event) => onSectionLayout("care", event)}
             >
               <Text
                 accessibilityRole="header"
@@ -487,7 +485,7 @@ export default function ResultScreen() {
           {result.cultivo ? (
             <View
               style={[styles.section, styles.padded]}
-              onLayout={registerSection("grow")}
+              onLayout={(event) => onSectionLayout("grow", event)}
             >
               <Text
                 accessibilityRole="header"
@@ -505,7 +503,7 @@ export default function ResultScreen() {
           {result.simbolismo ? (
             <View
               style={[styles.section, styles.padded]}
-              onLayout={registerSection("lore")}
+              onLayout={(event) => onSectionLayout("lore", event)}
             >
               <Text
                 accessibilityRole="header"

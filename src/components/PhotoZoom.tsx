@@ -75,12 +75,12 @@ function ZoomStage({
   const savedY = useSharedValue(0);
 
   const reset = useCallback(() => {
-    scale.value = withTiming(MIN_SCALE);
-    saved.value = MIN_SCALE;
-    x.value = withTiming(0);
-    y.value = withTiming(0);
-    savedX.value = 0;
-    savedY.value = 0;
+    scale.set(withTiming(MIN_SCALE));
+    saved.set(MIN_SCALE);
+    x.set(withTiming(0));
+    y.set(withTiming(0));
+    savedX.set(0);
+    savedY.set(0);
     onZoomChange(false);
   }, [scale, saved, x, y, savedX, savedY, onZoomChange]);
 
@@ -91,20 +91,19 @@ function ZoomStage({
   const gesture = useMemo(() => {
     const pinch = Gesture.Pinch()
       .onUpdate((event) => {
-        scale.value = Math.min(
-          MAX_SCALE,
-          Math.max(MIN_SCALE, saved.value * event.scale),
+        scale.set(
+          Math.min(MAX_SCALE, Math.max(MIN_SCALE, saved.value * event.scale)),
         );
       })
       .onEnd(() => {
-        saved.value = scale.value;
+        saved.set(scale.value);
         const isZoomed = scale.value > MIN_SCALE;
 
         if (!isZoomed) {
-          x.value = withTiming(0);
-          y.value = withTiming(0);
-          savedX.value = 0;
-          savedY.value = 0;
+          x.set(withTiming(0));
+          y.set(withTiming(0));
+          savedX.set(0);
+          savedY.set(0);
         }
 
         runOnJS(onZoomChange)(isZoomed);
@@ -114,26 +113,26 @@ function ZoomStage({
       .enabled(zoomed)
       .averageTouches(true)
       .onUpdate((event) => {
-        x.value = savedX.value + event.translationX;
-        y.value = savedY.value + event.translationY;
+        x.set(savedX.value + event.translationX);
+        y.set(savedY.value + event.translationY);
       })
       .onEnd(() => {
-        savedX.value = x.value;
-        savedY.value = y.value;
+        savedX.set(x.value);
+        savedY.set(y.value);
       });
 
     const doubleTap = Gesture.Tap()
       .numberOfTaps(2)
       .onEnd(() => {
         const next = scale.value > MIN_SCALE ? MIN_SCALE : TAP_SCALE;
-        scale.value = withTiming(next);
-        saved.value = next;
+        scale.set(withTiming(next));
+        saved.set(next);
 
         if (next === MIN_SCALE) {
-          x.value = withTiming(0);
-          y.value = withTiming(0);
-          savedX.value = 0;
-          savedY.value = 0;
+          x.set(withTiming(0));
+          y.set(withTiming(0));
+          savedX.set(0);
+          savedY.set(0);
         }
 
         runOnJS(onZoomChange)(next > MIN_SCALE);
@@ -202,16 +201,23 @@ export function PhotoZoom({
 
   const dim = useSharedValue(0);
 
-  useEffect(() => {
-    if (!visible) return;
-    setIndex(initialIndex);
-    setExpanded(false);
-    setZoomed(false);
-    dim.value = 0;
-  }, [visible, initialIndex, dim]);
+  const [wasVisible, setWasVisible] = useState(visible);
+
+  if (visible !== wasVisible) {
+    setWasVisible(visible);
+    if (visible) {
+      setIndex(initialIndex);
+      setExpanded(false);
+      setZoomed(false);
+    }
+  }
 
   useEffect(() => {
-    dim.value = withTiming(expanded ? 0.6 : 0, { duration: MOTION });
+    if (visible) dim.set(0);
+  }, [visible, dim]);
+
+  useEffect(() => {
+    dim.set(withTiming(expanded ? 0.6 : 0, { duration: MOTION }));
   }, [expanded, dim]);
 
   useEffect(() => {
@@ -392,7 +398,7 @@ export function PhotoZoom({
 
 const styles = StyleSheet.create({
   root: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 30,
     elevation: 30,
     backgroundColor: theme.surface.dark,
@@ -408,7 +414,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   scrim: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: "#000000",
   },
   close: {

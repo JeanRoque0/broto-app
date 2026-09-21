@@ -133,7 +133,7 @@ export function IdentityFlyer({
 
 const styles = StyleSheet.create({
   layer: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   avatarBox: {
     position: "absolute",

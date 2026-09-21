@@ -58,7 +58,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   photoImage: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   photoPlus: {
     width: 56,

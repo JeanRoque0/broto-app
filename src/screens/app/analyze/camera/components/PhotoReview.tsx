@@ -128,7 +128,7 @@ export function PhotoReview({ uri, onRetake, onAnalyze }: PhotoReviewProps) {
 
 const styles = StyleSheet.create({
   root: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: theme.surface.dark,
   },
   stage: {

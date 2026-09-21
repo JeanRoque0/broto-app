@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
-import ViewShot from "react-native-view-shot";
+import ViewShot, { type ViewShotRef } from "react-native-view-shot";
 
 import { Logo } from "@/components/illustrations/Logo";
 import { PlantPhoto } from "@/components/PlantPhoto";
@@ -20,7 +20,7 @@ export type SpeciesShareData = {
 };
 
 export const SpeciesShareCard = forwardRef<
-  ViewShot,
+  ViewShotRef,
   { data: SpeciesShareData }
 >(function SpeciesShareCard({ data }, ref) {
   const { t } = useTranslation("search");

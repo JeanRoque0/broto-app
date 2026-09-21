@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
@@ -37,7 +37,10 @@ const MINUTES = [0, 15, 30, 45].map((value) => ({
 const DEFAULT_TIME = DEFAULT_REMINDER_TIME;
 
 function splitTime(value: string | null) {
-  const [hour, minute] = (value ?? DEFAULT_TIME).slice(0, 5).split(":").map(Number);
+  const [hour, minute] = (value ?? DEFAULT_TIME)
+    .slice(0, 5)
+    .split(":")
+    .map(Number);
   return {
     hour: Number.isFinite(hour) ? hour : 9,
     minute: MINUTES.some((item) => item.value === minute) ? minute : 0,
@@ -98,11 +101,7 @@ function FieldRow({ icon, label, value, onPress }: FieldRowProps) {
         <Text style={styles.fieldValue}>{value}</Text>
       </View>
 
-      <Feather
-        name="chevron-right"
-        size={18}
-        color={theme.text.secondary}
-      />
+      <Feather name="chevron-right" size={18} color={theme.text.secondary} />
     </RipplePressable>
   );
 }
@@ -140,20 +139,23 @@ export function TaskEditSheet({
   const [minute, setMinute] = useState(0);
   const [step, setStep] = useState<Step>("main");
 
-  useEffect(() => {
-    if (!task) return;
+  const [loadedTask, setLoadedTask] = useState(task);
 
-    const split = splitInterval(task.interval_days);
-    setAmount(split.amount);
-    setUnit(split.unit);
-    setNextAt(parseDay(task.next_at));
+  if (task !== loadedTask) {
+    setLoadedTask(task);
+    if (task) {
+      const split = splitInterval(task.interval_days);
+      setAmount(split.amount);
+      setUnit(split.unit);
+      setNextAt(parseDay(task.next_at));
 
-    const time = splitTime(task.remind_at);
-    setHour(time.hour);
-    setMinute(time.minute);
+      const time = splitTime(task.remind_at);
+      setHour(time.hour);
+      setMinute(time.minute);
 
-    setStep("main");
-  }, [task]);
+      setStep("main");
+    }
+  }
 
   const amounts = useMemo(
     () =>

@@ -61,11 +61,14 @@ export default function PlantsScreen() {
     if (next && next !== tab) setTab(next);
   };
 
-  useEffect(() => {
+  const [linkedTab, setLinkedTab] = useState<string | undefined>(undefined);
+
+  if (params.tab !== linkedTab) {
+    setLinkedTab(params.tab);
     if (params.tab === "tasks" || params.tab === "analyses") {
       setTab(params.tab);
     }
-  }, [params.tab]);
+  }
   const {
     plants,
     isLoading,

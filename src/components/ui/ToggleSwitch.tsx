@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Animated, Pressable, StyleSheet } from "react-native";
 
 import { haptic } from "@/utils/haptics";
@@ -20,7 +20,7 @@ export function ToggleSwitch({
   onToggle,
   disabled = false,
 }: ToggleSwitchProps) {
-  const anim = useRef(new Animated.Value(value ? 1 : 0)).current;
+  const anim = useState(() => new Animated.Value(value ? 1 : 0))[0];
 
   useEffect(() => {
     Animated.timing(anim, {
@@ -55,7 +55,9 @@ export function ToggleSwitch({
       <Animated.View
         style={[styles.track, disabled && styles.disabled, { backgroundColor }]}
       >
-        <Animated.View style={[styles.thumb, { transform: [{ translateX }] }]} />
+        <Animated.View
+          style={[styles.thumb, { transform: [{ translateX }] }]}
+        />
       </Animated.View>
     </Pressable>
   );

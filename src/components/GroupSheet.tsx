@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
@@ -28,9 +28,12 @@ export function GroupSheet({
   const [name, setName] = useState(initialName);
   const { ref: inputRef, onShow, cancelAutoFocus } = useModalAutoFocus();
 
-  useEffect(() => {
+  const [wasVisible, setWasVisible] = useState(visible);
+
+  if (visible !== wasVisible) {
+    setWasVisible(visible);
     if (visible) setName(initialName);
-  }, [visible, initialName]);
+  }
 
   const editing = initialName.length > 0;
   const trimmed = name.trim();

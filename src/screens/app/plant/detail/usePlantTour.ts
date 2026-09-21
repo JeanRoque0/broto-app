@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { TourStep } from "@/components/tour/tourStore";
@@ -7,7 +7,10 @@ import { useTour } from "@/components/tour/useTour";
 export function usePlantTour(ready: boolean, goTo: (section: string) => void) {
   const { t } = useTranslation("tour");
   const jump = useRef(goTo);
-  jump.current = goTo;
+
+  useEffect(() => {
+    jump.current = goTo;
+  }, [goTo]);
 
   const steps = useMemo<TourStep[]>(
     () => [

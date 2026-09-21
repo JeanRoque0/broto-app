@@ -1,5 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
@@ -40,9 +40,12 @@ export function GroupPlantsSheet({
   const { t } = useTranslation("plants");
   const [selected, setSelected] = useState<string[]>(selectedIds);
 
-  useEffect(() => {
+  const [wasVisible, setWasVisible] = useState(visible);
+
+  if (visible !== wasVisible) {
+    setWasVisible(visible);
     if (visible) setSelected(selectedIds);
-  }, [visible, selectedIds]);
+  }
 
   function toggle(plantId: string) {
     setSelected((current) =>

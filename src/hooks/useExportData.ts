@@ -1,6 +1,6 @@
 import { File, Paths } from "expo-file-system";
 import * as Sharing from "expo-sharing";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Toast } from "@/components/ui/Toast";
@@ -18,7 +18,7 @@ export function useExportData() {
   const { userId, user } = useAuth();
   const [exporting, setExporting] = useState(false);
 
-  const exportData = useCallback(async () => {
+  async function exportData() {
     if (!userId || exporting || blockedOffline()) return;
 
     setExporting(true);
@@ -50,7 +50,7 @@ export function useExportData() {
     } finally {
       setExporting(false);
     }
-  }, [userId, user?.email, exporting, t]);
+  }
 
   return { exportData, exporting };
 }

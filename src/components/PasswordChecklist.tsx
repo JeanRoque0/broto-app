@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
@@ -39,7 +39,7 @@ export function PasswordChecklist({ value }: PasswordChecklistProps) {
 }
 
 function Rule({ met, label }: { met: boolean; label: string }) {
-  const anim = useRef(new Animated.Value(met ? 1 : 0)).current;
+  const anim = useState(() => new Animated.Value(met ? 1 : 0))[0];
 
   useEffect(() => {
     Animated.spring(anim, {

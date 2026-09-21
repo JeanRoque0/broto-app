@@ -33,7 +33,7 @@ export function ToastContainer() {
   const insets = useSafeAreaInsets();
   const [visible, setVisible] = useState(false);
   const [params, setParams] = useState<ToastShowParams | null>(null);
-  const progress = useRef(new Animated.Value(0)).current;
+  const progress = useState(() => new Animated.Value(0))[0];
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const show = useCallback(
@@ -115,7 +115,7 @@ export const Toast = {
 
 const styles = StyleSheet.create({
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: "center",
     justifyContent: "flex-start",
     paddingHorizontal: theme.spacing.s4,

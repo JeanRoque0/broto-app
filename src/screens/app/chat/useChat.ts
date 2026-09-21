@@ -168,11 +168,15 @@ export function useChat() {
     return () => clearTimeout(timer);
   }, [typing, threadId, queryClient]);
 
+  const [wasPending, setWasPending] = useState(send.isPending);
+
+  if (send.isPending !== wasPending) {
+    setWasPending(send.isPending);
+    if (!send.isPending) setThinking(0);
+  }
+
   useEffect(() => {
-    if (!send.isPending) {
-      setThinking(0);
-      return;
-    }
+    if (!send.isPending) return;
 
     const timer = setInterval(
       () => setThinking((index) => index + 1),

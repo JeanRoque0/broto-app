@@ -2,7 +2,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { forwardRef } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
-import ViewShot from "react-native-view-shot";
+import ViewShot, { type ViewShotRef } from "react-native-view-shot";
 
 import { PlantPhoto } from "@/components/PlantPhoto";
 import { Text } from "@/components/ui/Text";
@@ -24,9 +24,14 @@ export type ShareCardData = {
   toxic?: boolean | null;
 };
 
-type Line = { icon: "water-outline" | "white-balance-sunny" | "sprout-outline" | "thermometer"; label: string; value: string };
+type Line = {
+  icon:
+    "water-outline" | "white-balance-sunny" | "sprout-outline" | "thermometer";
+  label: string;
+  value: string;
+};
 
-export const PlantShareCard = forwardRef<ViewShot, { data: ShareCardData }>(
+export const PlantShareCard = forwardRef<ViewShotRef, { data: ShareCardData }>(
   function PlantShareCard({ data }, ref) {
     const { t } = useTranslation("analysis");
     const { unit } = useTemperatureUnit();
@@ -58,7 +63,6 @@ export const PlantShareCard = forwardRef<ViewShot, { data: ShareCardData }>(
         value: t("temperatureRange", convertRange(data.temperatura, unit)),
       });
     }
-
 
     return (
       <View style={styles.offscreen} pointerEvents="none">

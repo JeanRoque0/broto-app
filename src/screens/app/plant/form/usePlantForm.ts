@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { BackHandler } from "react-native";
 
@@ -108,7 +108,13 @@ export function usePlantForm() {
   const [photoWarning, setPhotoWarning] = useState(false);
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [photoPath, setPhotoPath] = useState<string | null>(null);
-  const [ready, setReady] = useState(!isEditing);
+  const [photoLoadedFor, setPhotoLoadedFor] = useState<string | null>(null);
+  const formLoadedFor = useRef<string | null>(null);
+
+  if (isEditing && plant && photoLoadedFor !== plant.id) {
+    setPhotoLoadedFor(plant.id);
+    setPhotoPath(plant.photo_path);
+  }
   const [groupSheet, setGroupSheet] = useState(false);
   const [editingTask, setEditingTask] = useState<PlantTask | null>(null);
   const [drafts, setDrafts] = useState<Record<string, TaskDraft>>({});
@@ -120,7 +126,6 @@ export function usePlantForm() {
     trigger,
     reset,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<PlantFormValues>({
     defaultValues: {
@@ -139,7 +144,8 @@ export function usePlantForm() {
   });
 
   useEffect(() => {
-    if (!isEditing || !plant || ready) return;
+    if (!isEditing || !plant || formLoadedFor.current === plant.id) return;
+    formLoadedFor.current = plant.id;
 
     reset({
       nickname: plant.nickname,
@@ -155,13 +161,9 @@ export function usePlantForm() {
       tempMax:
         plant.temp_max_c ?? facts?.temperatura?.max_c ?? DEFAULT_TEMP_MAX_C,
     });
-
-    setPhotoPath(plant.photo_path);
-    setReady(true);
   }, [
     isEditing,
     plant,
-    ready,
     reset,
     facts?.temperatura?.min_c,
     facts?.temperatura?.max_c,
@@ -169,9 +171,9 @@ export function usePlantForm() {
 
   const step = PLANT_FORM_STEPS[stepIndex];
   const isLastStep = stepIndex === PLANT_FORM_STEPS.length - 1;
-  const nickname = watch("nickname");
-  const interval = watch("interval");
-  const fertilizer = watch("fertilizer");
+  const nickname = useWatch({ control, name: "nickname" });
+  const interval = useWatch({ control, name: "interval" });
+  const fertilizer = useWatch({ control, name: "fertilizer" });
   const photoChanged = !!photoUri;
   const fullAccess = getCredits(profile ?? null).fullAccess;
   const lockedKinds = fullAccess

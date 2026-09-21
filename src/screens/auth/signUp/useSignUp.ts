@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { Toast } from "@/components/ui/Toast";
@@ -31,7 +31,6 @@ export function useSignUp() {
     control,
     handleSubmit,
     trigger,
-    watch,
     formState: { errors },
   } = useForm<SignUpForm>({
     defaultValues: { name: "", email: "", password: "" },
@@ -40,7 +39,7 @@ export function useSignUp() {
 
   const step = SIGN_UP_STEPS[stepIndex];
   const isLastStep = stepIndex === SIGN_UP_STEPS.length - 1;
-  const password = watch("password") ?? "";
+  const password = useWatch({ control, name: "password" }) ?? "";
 
   const submit = useCallback(
     async (values: SignUpForm) => {

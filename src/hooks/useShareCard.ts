@@ -1,13 +1,13 @@
 import * as Sharing from "expo-sharing";
 import { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import ViewShot from "react-native-view-shot";
+import type { ViewShotRef } from "react-native-view-shot";
 
 import { Toast } from "@/components/ui/Toast";
 
 export function useShareCard() {
   const { t } = useTranslation("analysis");
-  const shot = useRef<ViewShot>(null);
+  const shot = useRef<ViewShotRef>(null);
   const [sharing, setSharing] = useState(false);
 
   const share = useCallback(async () => {

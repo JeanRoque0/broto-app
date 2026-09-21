@@ -13,7 +13,7 @@ import {
   type DimensionValue,
   Keyboard,
   Modal,
-  PanResponder,
+  type GestureResponderEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -70,9 +70,9 @@ export function ContainerModal({
   onShow,
 }: ContainerModalProps) {
   const insets = useSafeAreaInsets();
-  const translateY = useRef(new Animated.Value(300)).current;
+  const translateY = useState(() => new Animated.Value(300))[0];
   const dismissAnim = useRef<Animated.CompositeAnimation | null>(null);
-  const keyboardPadding = useRef(new Animated.Value(0)).current;
+  const keyboardPadding = useState(() => new Animated.Value(0))[0];
   const onCloseRef = useRef(onClose);
 
   const [hasScrollable, setHasScrollable] = useState(false);
@@ -173,18 +173,34 @@ export function ContainerModal({
     [dismiss],
   );
 
-  const panResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onMoveShouldSetPanResponder: (_, gesture) => gesture.dy > 5,
-        onPanResponderMove: (_, gesture) => {
-          if (gesture.dy > 0) translateY.setValue(gesture.dy);
-        },
-        onPanResponderRelease: (_, gesture) => dismiss(gesture),
-      }),
-    [dismiss, translateY],
-  );
+  const drag = useRef({ startY: 0, lastY: 0, lastT: 0, dy: 0, vy: 0 });
+
+  const panHandlers = {
+    onStartShouldSetResponder: () => true,
+    onResponderGrant: (event: GestureResponderEvent) => {
+      const { pageY, timestamp } = event.nativeEvent;
+      drag.current = {
+        startY: pageY,
+        lastY: pageY,
+        lastT: timestamp,
+        dy: 0,
+        vy: 0,
+      };
+    },
+    onResponderMove: (event: GestureResponderEvent) => {
+      const { pageY, timestamp } = event.nativeEvent;
+      const state = drag.current;
+      const elapsed = timestamp - state.lastT;
+      state.dy = pageY - state.startY;
+      if (elapsed > 0) state.vy = (pageY - state.lastY) / elapsed;
+      state.lastY = pageY;
+      state.lastT = timestamp;
+      if (state.dy > 0) translateY.setValue(state.dy);
+    },
+    onResponderRelease: () =>
+      dismiss({ dy: drag.current.dy, vy: drag.current.vy }),
+    onResponderTerminate: () => dismiss({ dy: 0, vy: 0 }),
+  };
 
   const scrollContextValue = useMemo<ModalScrollContextValue>(
     () => ({ setHasScrollable, onOverscrollY, onOverscrollEnd }),
@@ -193,14 +209,14 @@ export function ContainerModal({
 
   const sheet = (
     <Animated.View
-      {...(hasScrollable ? {} : panResponder.panHandlers)}
+      {...(hasScrollable ? {} : panHandlers)}
       style={[
         styles.sheet,
         { maxHeight, paddingBottom: insets.bottom + theme.spacing.s5 },
         { transform: [{ translateY }] },
       ]}
     >
-      <View style={styles.header} {...panResponder.panHandlers}>
+      <View style={styles.header} {...panHandlers}>
         <View style={styles.grab} />
 
         {eyebrow && (

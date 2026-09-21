@@ -31,15 +31,19 @@ export function ForgotPasswordSheet({
   const [loading, setLoading] = useState(false);
   const { ref: inputRef, onShow, cancelAutoFocus } = useModalAutoFocus();
 
-  useEffect(() => {
+  const [wasVisible, setWasVisible] = useState(visible);
+
+  if (visible !== wasVisible) {
+    setWasVisible(visible);
     if (visible) {
       setEmail(initialEmail);
       setError(undefined);
-      return;
     }
+  }
 
-    cancelAutoFocus();
-  }, [visible, initialEmail, cancelAutoFocus]);
+  useEffect(() => {
+    if (!visible) cancelAutoFocus();
+  }, [visible, cancelAutoFocus]);
 
   async function handleSubmit() {
     const trimmed = email.trim();

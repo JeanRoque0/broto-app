@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 
 import { theme } from "@/style/theme";
@@ -8,9 +8,9 @@ const STEP_DURATION = 300;
 const STAGGER = 150;
 
 export function TypingDots() {
-  const dot0 = useRef(new Animated.Value(0)).current;
-  const dot1 = useRef(new Animated.Value(0)).current;
-  const dot2 = useRef(new Animated.Value(0)).current;
+  const dot0 = useState(() => new Animated.Value(0))[0];
+  const dot1 = useState(() => new Animated.Value(0))[0];
+  const dot2 = useState(() => new Animated.Value(0))[0];
 
   useEffect(() => {
     const dots = [dot0, dot1, dot2];

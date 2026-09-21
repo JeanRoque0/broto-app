@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   camera: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   topActions: {
     flexDirection: "row",

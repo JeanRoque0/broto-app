@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Animated, StyleProp, ViewStyle } from "react-native";
 
 const OFFSET = 20;
@@ -16,8 +16,8 @@ export function StepTransition({
   children,
   style,
 }: StepTransitionProps) {
-  const opacity = useRef(new Animated.Value(1)).current;
-  const translateX = useRef(new Animated.Value(0)).current;
+  const opacity = useState(() => new Animated.Value(1))[0];
+  const translateX = useState(() => new Animated.Value(0))[0];
   const previousKey = useRef(stepKey);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
   Animated,
   Easing,
@@ -25,7 +25,9 @@ const spinProgress = Array.from(
 );
 const spinAngles = spinProgress.map((progress) => progress * Math.PI * 2);
 
-const horizontalOffset = spinAngles.map((angle) => ORBIT_RADIUS * Math.cos(angle));
+const horizontalOffset = spinAngles.map(
+  (angle) => ORBIT_RADIUS * Math.cos(angle),
+);
 const horizontalOffsetOpposite = horizontalOffset.map((offset) => -offset);
 const depthScale = spinAngles.map((angle) => 1 + DEPTH_SCALE * Math.sin(angle));
 const depthScaleOpposite = spinAngles.map(
@@ -38,7 +40,7 @@ type LoaderProps = {
 };
 
 export function Loader({ style, variant = "clay" }: LoaderProps = {}) {
-  const spin = useRef(new Animated.Value(0)).current;
+  const spin = useState(() => new Animated.Value(0))[0];
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -58,7 +60,9 @@ export function Loader({ style, variant = "clay" }: LoaderProps = {}) {
   const leadColor =
     variant === "light" ? theme.text.onPrimary : theme.primary.clay;
   const trailColor =
-    variant === "light" ? theme.functional.white55 : theme.functional.lineStrong;
+    variant === "light"
+      ? theme.functional.white55
+      : theme.functional.lineStrong;
 
   return (
     <View style={[styles.container, style]}>
