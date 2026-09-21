@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import { Text } from "@/components/ui/Text";
+import i18n from "@/i18n";
 import { theme } from "@/style/theme";
 import { type } from "@/style/typography";
 
@@ -44,10 +45,26 @@ export function ContainerModalCenter({
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={[styles.dialog, dialogStyle]}>
+      <Pressable
+        style={styles.backdrop}
+        onPress={onClose}
+        accessible={false}
+        importantForAccessibility="no"
+      >
+        <Pressable
+          style={[styles.dialog, dialogStyle]}
+          accessible={false}
+          accessibilityViewIsModal
+          onAccessibilityEscape={onClose}
+        >
           {showClose && (
-            <Pressable style={styles.closeButton} onPress={onClose} hitSlop={8}>
+            <Pressable
+              style={styles.closeButton}
+              onPress={onClose}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel={i18n.t("close")}
+            >
               <Feather name="x" size={16} color={theme.text.secondary} />
             </Pressable>
           )}

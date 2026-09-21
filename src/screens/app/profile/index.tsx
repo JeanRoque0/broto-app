@@ -101,6 +101,7 @@ export default function ProfileScreen() {
         style={styles.header}
         onLayout={onHeaderLayout}
         onPress={scrollToTop}
+        accessible={false}
       >
         <ProfileHeader
           title={t("title")}

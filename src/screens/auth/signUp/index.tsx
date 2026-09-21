@@ -207,7 +207,11 @@ export default function SignUpScreen() {
           />
 
           {!keyboardVisible && (
-            <Pressable onPress={goToSignIn} hitSlop={8}>
+            <Pressable
+              onPress={goToSignIn}
+              hitSlop={8}
+              accessibilityRole="button"
+            >
               <Text style={styles.switch}>
                 {t("hasAccount")}
                 <Text style={styles.switchAction}>{t("hasAccountAction")}</Text>

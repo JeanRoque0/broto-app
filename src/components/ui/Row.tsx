@@ -104,6 +104,8 @@ export function MenuRow({
     <RipplePressable
       onPress={onPress}
       style={[styles.menuRow, last && styles.rowLast]}
+      accessibilityRole="button"
+      accessibilityLabel={[label, hint, description].filter(Boolean).join(". ")}
     >
       {content}
     </RipplePressable>

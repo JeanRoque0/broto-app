@@ -493,7 +493,12 @@ export default function ResultScreen() {
           ) : null}
 
           <View style={styles.padded}>
-            <Pressable onPress={report} hitSlop={8} style={styles.report}>
+            <Pressable
+              onPress={report}
+              hitSlop={8}
+              style={styles.report}
+              accessibilityRole="button"
+            >
               <Text style={styles.reportLead}>{t("reportLead")}</Text>
               <Text style={styles.reportAction}>{t("reportAction")}</Text>
             </Pressable>

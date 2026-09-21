@@ -33,5 +33,11 @@
   "noticeOk": "Got it",
   "offlineTitle": "You are offline",
   "offlineText": "You can see your plants and routine, but editing and analysing wait for the connection to come back.",
-  "offlineBlocked": "Saving needs a connection. Try again once it is back."
+  "offlineBlocked": "Saving needs a connection. Try again once it is back.",
+  "close": "Close",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
+  "previousMonth": "Previous month",
+  "nextMonth": "Next month",
+  "photoOf": "Photo {{index}} of {{total}}"
 }

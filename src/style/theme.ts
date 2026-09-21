@@ -1,6 +1,6 @@
 export const theme = {
   primary: {
-    clay: "#B4522F",
+    clay: "#A44A2A",
     claySoft: "#F2E2D8",
     clayTint: "#FFF9F5",
     clayBorder: "#E6CFC2",
@@ -9,7 +9,7 @@ export const theme = {
   secondary: {
     moss: "#3E6B4A",
     mossSoft: "#E1EBE0",
-    ochre: "#A8761C",
+    ochre: "#855C13",
   },
   surface: {
     base: "#F7F4ED",
@@ -26,8 +26,8 @@ export const theme = {
   },
   text: {
     primary: "#17251A",
-    secondary: "#5D6B5F",
-    tertiary: "#A9AFA4",
+    secondary: "#566359",
+    tertiary: "#616B62",
     disabled: "#9AA096",
     onPrimary: "#FFF8F4",
     onDark: "#F7F4ED",

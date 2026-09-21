@@ -29,7 +29,11 @@ export default function OnboardingScreen() {
       <View style={styles.topbar}>
         <LanguageButton />
 
-        <Pressable onPress={handleSkip} hitSlop={12}>
+        <Pressable
+          onPress={handleSkip}
+          hitSlop={12}
+          accessibilityRole="button"
+        >
           <Text style={styles.skip}>{t("skip")}</Text>
         </Pressable>
       </View>

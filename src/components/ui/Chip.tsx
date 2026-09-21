@@ -95,7 +95,13 @@ export function Chip({
   }
 
   return (
-    <RipplePressable onPress={onPress} style={containerStyle}>
+    <RipplePressable
+      onPress={onPress}
+      style={containerStyle}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: !!selected }}
+    >
       {content}
     </RipplePressable>
   );

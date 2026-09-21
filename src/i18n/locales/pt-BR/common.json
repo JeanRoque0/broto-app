@@ -33,5 +33,11 @@
   "noticeOk": "Entendi",
   "offlineTitle": "Você está sem conexão",
   "offlineText": "Dá para ver suas plantas e a rotina, mas não dá para editar nem analisar até a internet voltar.",
-  "offlineBlocked": "Sem internet não dá para salvar. Tente de novo quando a conexão voltar."
+  "offlineBlocked": "Sem internet não dá para salvar. Tente de novo quando a conexão voltar.",
+  "close": "Fechar",
+  "showPassword": "Mostrar senha",
+  "hidePassword": "Esconder senha",
+  "previousMonth": "Mês anterior",
+  "nextMonth": "Próximo mês",
+  "photoOf": "Foto {{index}} de {{total}}"
 }

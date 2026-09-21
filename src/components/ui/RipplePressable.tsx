@@ -6,21 +6,27 @@ import {
   Platform,
   Pressable,
   PressableProps,
+  PressableStateCallbackType,
   StyleSheet,
 } from "react-native";
+import { useReducedMotion } from "react-native-reanimated";
 
 import { theme } from "@/style/theme";
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 type RipplePressableProps = Omit<PressableProps, "android_ripple"> & {
   rippleColor?: string;
   borderless?: boolean;
   radius?: number;
+  pressScale?: number;
 };
 
 export function RipplePressable({
   rippleColor = theme.functional.ripple,
   borderless = false,
   radius,
+  pressScale,
   style,
   children,
   onPressIn,
@@ -30,8 +36,13 @@ export function RipplePressable({
 }: RipplePressableProps) {
   const scale = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
+  const squeeze = useRef(new Animated.Value(1)).current;
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
   const [rippleSize, setRippleSize] = useState(0);
+  const [pressed, setPressed] = useState(false);
+  const reduceMotion = useReducedMotion();
+
+  const squeezes = !!pressScale && !reduceMotion;
 
   function handleLayout(e: LayoutChangeEvent) {
     const { width, height } = e.nativeEvent.layout;
@@ -40,6 +51,17 @@ export function RipplePressable({
   }
 
   function handlePressIn(e: GestureResponderEvent) {
+    setPressed(true);
+
+    if (squeezes) {
+      Animated.spring(squeeze, {
+        toValue: pressScale!,
+        speed: 40,
+        bounciness: 0,
+        useNativeDriver: true,
+      }).start();
+    }
+
     if (Platform.OS === "ios") {
       const { locationX, locationY } = e.nativeEvent;
       setOrigin({ x: locationX, y: locationY });
@@ -56,6 +78,17 @@ export function RipplePressable({
   }
 
   function handlePressOut(e: GestureResponderEvent) {
+    setPressed(false);
+
+    if (squeezes) {
+      Animated.spring(squeeze, {
+        toValue: 1,
+        speed: 18,
+        bounciness: 8,
+        useNativeDriver: true,
+      }).start();
+    }
+
     if (Platform.OS === "ios") {
       Animated.timing(opacity, {
         toValue: 0,
@@ -67,54 +100,54 @@ export function RipplePressable({
     onPressOut?.(e);
   }
 
+  const state: PressableStateCallbackType = { pressed, hovered: false };
+  const resolved = typeof style === "function" ? style(state) : style;
+
   return (
-    <Pressable
+    <AnimatedPressable
       android_ripple={{
         color: rippleColor,
         borderless,
         radius,
         foreground: true,
       }}
-      style={(state) => [
-        typeof style === "function" ? style(state) : style,
+      style={[
+        resolved,
         { overflow: "hidden" },
+        squeezes && { transform: [{ scale: squeeze }] },
       ]}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       onLayout={handleLayout}
       {...props}
     >
-      {(state) => (
-        <>
-          {typeof children === "function" ? children(state) : children}
-          {Platform.OS === "ios" && (
-            <Animated.View
-              pointerEvents="none"
-              style={[
-                StyleSheet.absoluteFill,
-                {
-                  overflow: "hidden",
-                  borderRadius: borderless && radius != null ? radius : 0,
-                },
-              ]}
-            >
-              <Animated.View
-                style={{
-                  position: "absolute",
-                  width: rippleSize,
-                  height: rippleSize,
-                  borderRadius: rippleSize / 2,
-                  backgroundColor: rippleColor,
-                  left: origin.x - rippleSize / 2,
-                  top: origin.y - rippleSize / 2,
-                  opacity,
-                  transform: [{ scale }],
-                }}
-              />
-            </Animated.View>
-          )}
-        </>
+      {typeof children === "function" ? children(state) : children}
+      {Platform.OS === "ios" && (
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              overflow: "hidden",
+              borderRadius: borderless && radius != null ? radius : 0,
+            },
+          ]}
+        >
+          <Animated.View
+            style={{
+              position: "absolute",
+              width: rippleSize,
+              height: rippleSize,
+              borderRadius: rippleSize / 2,
+              backgroundColor: rippleColor,
+              left: origin.x - rippleSize / 2,
+              top: origin.y - rippleSize / 2,
+              opacity,
+              transform: [{ scale }],
+            }}
+          />
+        </Animated.View>
       )}
-    </Pressable>
+    </AnimatedPressable>
   );
 }

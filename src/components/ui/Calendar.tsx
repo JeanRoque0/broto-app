@@ -9,6 +9,7 @@ import Animated, {
 
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
+import i18n from "@/i18n";
 import { theme } from "@/style/theme";
 import { fontSize } from "@/style/typography";
 import { formatMonthYear, formatWeekday } from "@/utils/format";
@@ -66,6 +67,7 @@ export function Calendar({ value, onChange, minDate }: CalendarProps) {
           radius={18}
           style={styles.arrow}
           accessibilityRole="button"
+          accessibilityLabel={i18n.t("previousMonth")}
         >
           <Feather name="chevron-left" size={17} color={theme.text.secondary} />
         </RipplePressable>
@@ -85,6 +87,7 @@ export function Calendar({ value, onChange, minDate }: CalendarProps) {
           radius={18}
           style={styles.arrow}
           accessibilityRole="button"
+          accessibilityLabel={i18n.t("nextMonth")}
         >
           <Feather
             name="chevron-right"

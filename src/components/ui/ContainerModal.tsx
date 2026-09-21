@@ -24,6 +24,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Text } from "@/components/ui/Text";
+import i18n from "@/i18n";
 import { theme } from "@/style/theme";
 import { type } from "@/style/typography";
 
@@ -218,7 +219,13 @@ export function ContainerModal({
       </View>
 
       {showClose && (
-        <Pressable style={styles.closeButton} onPress={onClose} hitSlop={12}>
+        <Pressable
+          style={styles.closeButton}
+          onPress={onClose}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel={i18n.t("close")}
+        >
           <Feather name="x" size={18} color={theme.text.secondary} />
         </Pressable>
       )}
@@ -242,12 +249,22 @@ export function ContainerModal({
         <Animated.View
           style={[styles.backdrop, { paddingBottom: keyboardPadding }]}
         >
-          <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={onClose}
+            accessible={false}
+            importantForAccessibility="no"
+          />
           {sheet}
         </Animated.View>
       ) : (
         <View style={styles.backdrop}>
-          <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={onClose}
+            accessible={false}
+            importantForAccessibility="no"
+          />
           {sheet}
         </View>
       )}

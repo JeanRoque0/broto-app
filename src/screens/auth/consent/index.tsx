@@ -47,7 +47,12 @@ export default function ConsentScreen() {
           accessibilityRole="checkbox"
           accessibilityState={{ checked: terms }}
         >
-          <Checkbox value={terms} onChange={setTerms} />
+          <View
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          >
+            <Checkbox value={terms} onChange={setTerms} />
+          </View>
           <View style={styles.optionText}>
             <LegalLinks
               lead="legalAcceptLead"

@@ -19,9 +19,16 @@ type PlantCardProps = {
 export function PlantCard({ plant, onPress }: PlantCardProps) {
   const { t } = useTranslation("watering");
   const watering = getWateringInfo(plant);
+  const status = t(watering.labelKey, watering.labelParams);
 
   return (
-    <RipplePressable onPress={onPress} style={styles.card}>
+    <RipplePressable
+      onPress={onPress}
+      pressScale={0.98}
+      style={styles.card}
+      accessibilityRole="button"
+      accessibilityLabel={`${plant.nickname}. ${status}`}
+    >
       <PlantPhoto
         path={plant.photo_path}
         style={styles.thumb}
@@ -41,7 +48,7 @@ export function PlantCard({ plant, onPress }: PlantCardProps) {
         <View style={styles.meta}>
           <StatusDot status={watering.status} />
           <Text style={styles.metaLabel}>
-            {t(watering.labelKey, watering.labelParams)}
+            {status}
           </Text>
         </View>
       </View>

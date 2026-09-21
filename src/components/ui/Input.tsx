@@ -11,6 +11,7 @@ import {
   ViewStyle,
 } from "react-native";
 
+import i18n from "@/i18n";
 import { theme } from "@/style/theme";
 import { fontSize, maxScaleFor, resolveFontFamily } from "@/style/typography";
 
@@ -82,6 +83,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           inputWrapperStyle,
         ]}
         onPress={() => inputRef.current?.focus()}
+        accessible={false}
       >
         {iconLeft}
 
@@ -109,6 +111,13 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
             onPress={resolvedIconRightPress}
             disabled={!resolvedIconRightPress}
             hitSlop={12}
+            accessible={!!resolvedIconRightPress}
+            accessibilityRole="button"
+            accessibilityLabel={
+              isPassword
+                ? i18n.t(showPassword ? "hidePassword" : "showPassword")
+                : undefined
+            }
           >
             {resolvedIconRight}
           </Pressable>

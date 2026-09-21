@@ -28,6 +28,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CircleButton } from "@/components/ui/CircleButton";
 import { RipplePressable } from "@/components/ui/RipplePressable";
+import i18n from "@/i18n";
 import { theme } from "@/style/theme";
 
 const MIN_SCALE = 1;
@@ -248,6 +249,10 @@ export function PhotoGallery({
                     position === index && styles.thumbActive,
                   ]}
                   accessibilityRole="button"
+                  accessibilityLabel={i18n.t("photoOf", {
+                    index: position + 1,
+                    total: images.length,
+                  })}
                   accessibilityState={{ selected: position === index }}
                 >
                   <Image
