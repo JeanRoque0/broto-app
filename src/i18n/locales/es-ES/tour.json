@@ -24,5 +24,9 @@
   "resultConfirmTitle": "Compruébalo en casa",
   "resultConfirmBody": "Una prueba sencilla para distinguir una causa de otra antes de tocar la planta.",
   "resultSaveTitle": "Guarda la planta",
-  "resultSaveBody": "Así recibe recordatorios de cuidado y guarda el historial de sus análisis."
+  "resultSaveBody": "Así recibe recordatorios de cuidado y guarda el historial de sus análisis.",
+  "cameraTipsTitle": "Buena foto, respuesta correcta",
+  "cameraTipsBody": "Mira cómo encuadrar hojas, tallo y luz para que Broto acierte la especie.",
+  "cameraGalleryTitle": "¿Ya tienes la foto?",
+  "cameraGalleryBody": "Elige una de la galería. Funciona igual."
 }

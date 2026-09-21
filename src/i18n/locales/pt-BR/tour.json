@@ -24,5 +24,9 @@
   "resultConfirmTitle": "Tire a dúvida em casa",
   "resultConfirmBody": "Um teste simples para separar uma causa da outra antes de mexer na planta.",
   "resultSaveTitle": "Salve a planta",
-  "resultSaveBody": "Assim ela ganha lembretes de cuidado e guarda o histórico das análises."
+  "resultSaveBody": "Assim ela ganha lembretes de cuidado e guarda o histórico das análises.",
+  "cameraTipsTitle": "Foto boa, resposta certa",
+  "cameraTipsBody": "Veja como enquadrar folha, caule e luz para o Broto acertar a espécie.",
+  "cameraGalleryTitle": "Já tem a foto?",
+  "cameraGalleryBody": "Escolha uma da galeria. Funciona do mesmo jeito."
 }

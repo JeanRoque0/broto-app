@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleProp, StyleSheet, ViewStyle } from "react-native";
+import {
+  AccessibilityRole,
+  AccessibilityState,
+  StyleProp,
+  StyleSheet,
+  ViewStyle,
+} from "react-native";
 
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { theme } from "@/style/theme";
@@ -10,6 +16,8 @@ type CircleButtonProps = {
   tone?: "surface" | "light";
   size?: number;
   accessibilityLabel?: string;
+  accessibilityRole?: AccessibilityRole;
+  accessibilityState?: AccessibilityState;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -19,6 +27,8 @@ export function CircleButton({
   tone = "surface",
   size = 36,
   accessibilityLabel,
+  accessibilityRole = "button",
+  accessibilityState,
   style,
 }: CircleButtonProps) {
   return (
@@ -26,8 +36,10 @@ export function CircleButton({
       onPress={onPress}
       borderless
       radius={size / 2}
-      accessibilityRole="button"
+      pressScale={0.92}
+      accessibilityRole={accessibilityRole}
       accessibilityLabel={accessibilityLabel}
+      accessibilityState={accessibilityState}
       hitSlop={8}
       style={[
         styles.base,

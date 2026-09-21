@@ -105,7 +105,10 @@ export function PhotoReview({ uri, onRetake, onAnalyze }: PhotoReviewProps) {
       </GestureDetector>
 
       <View
-        style={[styles.actions, { paddingBottom: insets.bottom + theme.spacing.s5 }]}
+        style={[
+          styles.actions,
+          { paddingBottom: insets.bottom + theme.spacing.s5 },
+        ]}
       >
         <Button
           label={t("retake")}

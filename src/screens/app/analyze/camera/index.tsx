@@ -1,7 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { CameraView } from "expo-camera";
 import { useTranslation } from "react-i18next";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -11,14 +11,20 @@ import { CameraPlantArt } from "@/components/illustrations/CameraPlantArt";
 import { Button } from "@/components/ui/Button";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { PhotoTipsSheet } from "@/components/PhotoTipsSheet";
+import { TourAnchor } from "@/components/tour/TourAnchor";
+import { Floating } from "@/components/ui/Floating";
 import { CircleButton } from "@/components/ui/CircleButton";
+import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { useStatusBarStyle } from "@/hooks/useStatusBarStyle";
 import { theme } from "@/style/theme";
+import { haptic } from "@/utils/haptics";
 
+import { GuideFrame } from "./components/GuideFrame";
 import { PhotoReview } from "./components/PhotoReview";
 import { styles } from "./style";
 import { useCamera } from "./useCamera";
+import { useCameraTour } from "./useCameraTour";
 
 const CREDITS_TOP = 56;
 
@@ -59,13 +65,17 @@ export default function CameraScreen() {
     closeTips,
   } = useCamera();
 
+  useCameraTour(!!permission?.granted && photos.length === 0);
+
   if (!permission?.granted) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.permission}>
           {canAskAgain ? (
             <View style={styles.permissionArt}>
-              <CameraPlantArt size={152} />
+              <Floating>
+                <CameraPlantArt size={152} />
+              </Floating>
             </View>
           ) : (
             <View style={styles.permissionIcon}>
@@ -134,7 +144,7 @@ export default function CameraScreen() {
           flash={flash}
         />
 
-        <View style={styles.guide} pointerEvents="none" />
+        <GuideFrame />
 
         <View
           style={[styles.topbar, { paddingTop: insets.top + theme.spacing.s2 }]}
@@ -148,18 +158,30 @@ export default function CameraScreen() {
           </CircleButton>
 
           <View style={styles.topActions}>
-            <CircleButton
-              onPress={openTips}
-              tone="light"
-              accessibilityLabel={t("tipsOpen")}
-            >
-              <Feather name="help-circle" size={17} color={theme.text.onDark} />
-            </CircleButton>
+            <View>
+              <CircleButton
+                onPress={openTips}
+                tone="light"
+                accessibilityLabel={t("tipsOpen")}
+              >
+                <Feather
+                  name="help-circle"
+                  size={17}
+                  color={theme.text.onDark}
+                />
+              </CircleButton>
+              <TourAnchor id="camera.tips" />
+            </View>
 
             <CircleButton
-              onPress={toggleFlash}
+              onPress={() => {
+                haptic.select();
+                toggleFlash();
+              }}
               tone="light"
               accessibilityLabel={t("flash")}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: flash === "on" }}
             >
               <Feather
                 name={flash === "on" ? "zap" : "zap-off"}
@@ -186,41 +208,45 @@ export default function CameraScreen() {
           <Text family="display" style={styles.hintTitle}>
             {t("plantTitle")}
           </Text>
-          <Text style={styles.hintText}>
-            {t("plantText")}
-          </Text>
+          <Text style={styles.hintText}>{t("plantText")}</Text>
         </View>
       </View>
 
       <View style={styles.bottom}>
-
         <View style={styles.shutterbar}>
           <View style={styles.action}>
-            <Pressable
-              onPress={handlePickFromGallery}
-              disabled={blocked}
-              style={styles.sideButton}
-              accessibilityRole="button"
-              accessibilityLabel={t("gallery")}
-            >
-              <Feather name="image" size={19} color={theme.text.onDark} />
-            </Pressable>
+            <View>
+              <RipplePressable
+                onPress={handlePickFromGallery}
+                disabled={blocked}
+                pressScale={0.92}
+                style={styles.sideButton}
+                accessibilityRole="button"
+                accessibilityLabel={t("gallery")}
+              >
+                <Feather name="image" size={19} color={theme.text.onDark} />
+              </RipplePressable>
+              <TourAnchor id="camera.gallery" />
+            </View>
             <Text style={styles.actionLabel}>{t("galleryLabel")}</Text>
           </View>
 
           <View style={styles.action}>
-            <Pressable
-              onPress={handleCapture}
+            <RipplePressable
+              onPress={() => {
+                haptic.tap();
+                handleCapture();
+              }}
               disabled={capturing || blocked}
+              pressScale={0.9}
+              rippleColor="transparent"
               accessibilityRole="button"
               accessibilityLabel={t("shutter")}
-              style={[
-                styles.shutter,
-                capturing && styles.shutterBusy,
-              ]}
+              accessibilityState={{ busy: capturing }}
+              style={[styles.shutter, capturing && styles.shutterBusy]}
             >
               <View style={styles.shutterCore} />
-            </Pressable>
+            </RipplePressable>
             <Text style={styles.actionLabel}>{t("shutterLabel")}</Text>
           </View>
 

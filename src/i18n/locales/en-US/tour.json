@@ -24,5 +24,9 @@
   "resultConfirmTitle": "Check at home",
   "resultConfirmBody": "A simple test to tell one cause from another before touching the plant.",
   "resultSaveTitle": "Save the plant",
-  "resultSaveBody": "It gets care reminders and keeps the history of its analyses."
+  "resultSaveBody": "It gets care reminders and keeps the history of its analyses.",
+  "cameraTipsTitle": "Good photo, right answer",
+  "cameraTipsBody": "See how to frame leaves, stem and light so Broto gets the species right.",
+  "cameraGalleryTitle": "Already have a photo?",
+  "cameraGalleryBody": "Pick one from your gallery. It works the same way."
 }
