@@ -1,9 +1,13 @@
 import Constants from "expo-constants";
 import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
 import { supabase } from "@/services/supabase/client";
+
+import {
+  loadNotifications,
+  notificationsAvailable,
+} from "./notificationsModule";
 
 function projectId() {
   return (
@@ -14,11 +18,14 @@ function projectId() {
 }
 
 export function pushSupported() {
-  return Device.isDevice && !!projectId();
+  return notificationsAvailable && Device.isDevice && !!projectId();
 }
 
 export async function getPushToken() {
   if (!pushSupported()) return null;
+
+  const Notifications = await loadNotifications();
+  if (!Notifications) return null;
 
   try {
     const { data } = await Notifications.getExpoPushTokenAsync({

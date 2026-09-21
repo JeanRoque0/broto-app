@@ -1,11 +1,15 @@
-import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
 import i18n from "@/i18n";
 
+import { loadNotifications } from "./notificationsModule";
+
 const CHANNEL = "care-reminders";
 
-export function configureNotifications() {
+export async function configureNotifications() {
+  const Notifications = await loadNotifications();
+  if (!Notifications) return;
+
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowBanner: true,
@@ -19,7 +23,17 @@ export function configureNotifications() {
   Notifications.cancelAllScheduledNotificationsAsync();
 }
 
+export async function getNotificationPermission() {
+  const Notifications = await loadNotifications();
+  if (!Notifications) return null;
+
+  return Notifications.getPermissionsAsync();
+}
+
 export async function ensureNotificationPermission() {
+  const Notifications = await loadNotifications();
+  if (!Notifications) return false;
+
   const current = await Notifications.getPermissionsAsync();
 
   if (current.granted) return true;
@@ -32,6 +46,9 @@ export async function ensureNotificationPermission() {
 export async function ensureChannel() {
   if (Platform.OS !== "android") return;
 
+  const Notifications = await loadNotifications();
+  if (!Notifications) return;
+
   await Notifications.setNotificationChannelAsync(CHANNEL, {
     name: i18n.t("notifications:channelName"),
     importance: Notifications.AndroidImportance.DEFAULT,
@@ -41,5 +58,8 @@ export async function ensureChannel() {
 }
 
 export async function clearScheduledLegacy() {
+  const Notifications = await loadNotifications();
+  if (!Notifications) return;
+
   await Notifications.cancelAllScheduledNotificationsAsync();
 }

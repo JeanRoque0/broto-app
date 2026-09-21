@@ -1,4 +1,3 @@
-import * as Notifications from "expo-notifications";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,7 +7,10 @@ import { DEFAULT_REMINDER_TIME } from "@/constants";
 import { usePlants } from "@/hooks/usePlants";
 import { usePlantTasks } from "@/hooks/usePlantTasks";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
-import { ensureNotificationPermission } from "@/services/notifications";
+import {
+  ensureNotificationPermission,
+  getNotificationPermission,
+} from "@/services/notifications";
 import { registerPushToken, unregisterPushToken } from "@/services/push";
 import { getCredits } from "@/utils/credits";
 import { TASK_LABELS } from "@/utils/taskLabels";
@@ -52,8 +54,8 @@ export function useNotificationSettings() {
   }
 
   useEffect(() => {
-    Notifications.getPermissionsAsync().then((status) => {
-      setBlocked(!status.granted && !status.canAskAgain);
+    getNotificationPermission().then((status) => {
+      if (status) setBlocked(!status.granted && !status.canAskAgain);
     });
   }, []);
 
@@ -117,8 +119,8 @@ export function useNotificationSettings() {
       const granted = await ensureNotificationPermission();
 
       if (!granted) {
-        const status = await Notifications.getPermissionsAsync();
-        setBlocked(!status.canAskAgain);
+        const status = await getNotificationPermission();
+        setBlocked(!!status && !status.canAskAgain);
         setEnabled(false);
         return;
       }
