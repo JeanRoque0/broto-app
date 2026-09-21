@@ -3,10 +3,13 @@ import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
+import { Appear } from "@/components/ui/Appear";
+import { Chip } from "@/components/ui/Chip";
 import { Container } from "@/components/ui/Container";
 import { FlashListContainer } from "@/components/ui/FlashListContainer";
+import { Floating } from "@/components/ui/Floating";
 import { Input } from "@/components/ui/Input";
-import { Loader } from "@/components/ui/Loader";
+import { PlantListSkeleton } from "@/components/ui/Skeleton";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { useTabBarSpace } from "@/hooks/useTabBarSpace";
@@ -33,17 +36,21 @@ export default function SearchScreen() {
     onFocus,
     onBlur,
   } = useSearch();
+  const popular = t("popularTerms", {
+    returnObjects: true,
+  }) as unknown as string[];
 
   return (
     <Container>
       <View style={styles.header}>
-        <Text family="display" style={styles.title}>
+        <Text family="display" style={styles.title} accessibilityRole="header">
           {t("title")}
         </Text>
 
         <Input
           ref={inputRef}
           placeholder={t("placeholder")}
+          accessibilityLabel={t("title")}
           value={term}
           onChangeText={setTerm}
           autoCapitalize="none"
@@ -78,74 +85,104 @@ export default function SearchScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          <View style={styles.content}>
-            {showHistory && (
-              <View style={styles.history}>
-                <Text family="mono" style={styles.historyLabel}>
-                  {t("recent")}
-                </Text>
+          hasQuery && isLoading ? (
+            <PlantListSkeleton rows={5} />
+          ) : (
+            <View style={styles.content}>
+              {showHistory && (
+                <View style={styles.history}>
+                  <Text family="mono" style={styles.historyLabel}>
+                    {t("recent")}
+                  </Text>
 
-                {history.map((item) => (
-                  <View key={item} style={styles.historyRow}>
-                    <RipplePressable
-                      onPress={() => setTerm(item)}
-                      style={styles.historyTerm}
-                      accessibilityRole="button"
-                    >
-                      <Feather
-                        name="clock"
-                        size={15}
-                        color={theme.text.tertiary}
-                      />
-                      <Text style={styles.historyText} numberOfLines={1}>
-                        {item}
-                      </Text>
-                    </RipplePressable>
+                  {history.map((item) => (
+                    <View key={item} style={styles.historyRow}>
+                      <RipplePressable
+                        onPress={() => setTerm(item)}
+                        style={styles.historyTerm}
+                        accessibilityRole="button"
+                      >
+                        <Feather
+                          name="clock"
+                          size={15}
+                          color={theme.text.tertiary}
+                        />
+                        <Text style={styles.historyText} numberOfLines={1}>
+                          {item}
+                        </Text>
+                      </RipplePressable>
 
-                    <RipplePressable
-                      onPress={() => forgetTerm(item)}
-                      hitSlop={8}
-                      style={styles.historyRemove}
-                      accessibilityRole="button"
-                      accessibilityLabel={t("removeRecent")}
-                    >
-                      <Feather
-                        name="x"
-                        size={14}
-                        color={theme.text.secondary}
-                      />
-                    </RipplePressable>
+                      <RipplePressable
+                        onPress={() => forgetTerm(item)}
+                        hitSlop={8}
+                        style={styles.historyRemove}
+                        accessibilityRole="button"
+                        accessibilityLabel={t("removeRecent")}
+                      >
+                        <Feather
+                          name="x"
+                          size={14}
+                          color={theme.text.secondary}
+                        />
+                      </RipplePressable>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              {!hasQuery && (
+                <View style={styles.history}>
+                  <Text family="mono" style={styles.historyLabel}>
+                    {t("popular")}
+                  </Text>
+                  <View style={styles.popular}>
+                    {popular.map((item, index) => (
+                      <Appear key={item} index={index}>
+                        <Chip label={item} onPress={() => setTerm(item)} />
+                      </Appear>
+                    ))}
                   </View>
-                ))}
-              </View>
-            )}
+                </View>
+              )}
 
-            {!hasQuery && !showHistory && (
-              <Text style={styles.hint}>{t("hint")}</Text>
-            )}
+              {hasQuery && !isLoading && isError && (
+                <Text style={styles.hint}>{t("failed")}</Text>
+              )}
 
-            {hasQuery && isLoading && <Loader />}
-
-            {hasQuery && !isLoading && isError && (
-              <Text style={styles.hint}>{t("failed")}</Text>
-            )}
-
-            {hasQuery && !isLoading && !isError && (
-              <View style={styles.empty}>
-                <Text family="display" style={styles.emptyTitle}>
-                  {t("empty")}
-                </Text>
-                <Text style={styles.hint}>{t("emptyHint")}</Text>
-              </View>
-            )}
-          </View>
+              {hasQuery && !isLoading && !isError && (
+                <Appear index={0} style={styles.empty}>
+                  <Floating>
+                    <MaterialCommunityIcons
+                      name="leaf-off"
+                      size={34}
+                      color={theme.illustration.leaf}
+                    />
+                  </Floating>
+                  <Text
+                    family="display"
+                    style={styles.emptyTitle}
+                    accessibilityRole="header"
+                  >
+                    {t("empty")}
+                  </Text>
+                  <Text style={styles.hint}>{t("emptyHint")}</Text>
+                </Appear>
+              )}
+            </View>
+          )
         }
         renderItem={({ item }) => (
           <View style={styles.content}>
             <RipplePressable
               onPress={() => open(item)}
+              pressScale={0.98}
               style={styles.row}
               accessibilityRole="button"
+              accessibilityLabel={
+                item.common
+                  ? `${item.common}, ${item.scientific}`
+                  : item.scientific
+              }
             >
               <View style={[styles.thumb, styles.thumbEmpty]}>
                 <MaterialCommunityIcons

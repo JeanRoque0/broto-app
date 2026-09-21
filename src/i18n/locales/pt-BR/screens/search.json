@@ -1,7 +1,6 @@
 {
   "title": "Buscar planta",
   "placeholder": "Nome popular ou científico",
-  "hint": "Busque por jiboia, espada-de-são-jorge, Monstera...",
   "empty": "Nada encontrado",
   "emptyHint": "Tente outro nome, ou o nome científico.",
   "failed": "Não deu para buscar agora.",
@@ -21,5 +20,14 @@
   "copyCommon": "Nome",
   "copyScientific": "Espécie",
   "copied": "Copiado",
-  "shareCredit": "Fotos e texto da Wikipédia · Broto"
+  "shareCredit": "Fotos e texto da Wikipédia · Broto",
+  "popular": "Populares",
+  "popularTerms": [
+    "Jiboia",
+    "Espada-de-são-jorge",
+    "Costela-de-adão",
+    "Lírio-da-paz",
+    "Zamioculca",
+    "Samambaia"
+  ]
 }

@@ -73,8 +73,14 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: theme.spacing.s5,
   },
+  popular: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: theme.spacing.s2,
+  },
   empty: {
     alignItems: "center",
+    gap: theme.spacing.s2,
     marginTop: theme.spacing.s6,
   },
   emptyTitle: {

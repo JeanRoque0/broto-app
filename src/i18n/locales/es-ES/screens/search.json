@@ -1,7 +1,6 @@
 {
   "title": "Buscar planta",
   "placeholder": "Nombre común o científico",
-  "hint": "Busca potus, lengua de suegra, Monstera...",
   "empty": "No se encontró nada",
   "emptyHint": "Prueba otro nombre, o el científico.",
   "failed": "No se pudo buscar ahora.",
@@ -21,5 +20,14 @@
   "copyCommon": "Nombre",
   "copyScientific": "Especie",
   "copied": "Copiado",
-  "shareCredit": "Fotos y texto de Wikipedia · Broto"
+  "shareCredit": "Fotos y texto de Wikipedia · Broto",
+  "popular": "Populares",
+  "popularTerms": [
+    "Poto",
+    "Lengua de suegra",
+    "Costilla de Adán",
+    "Espatifilo",
+    "Zamioculca",
+    "Helecho"
+  ]
 }

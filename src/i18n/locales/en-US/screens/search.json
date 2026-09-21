@@ -1,7 +1,6 @@
 {
   "title": "Find a plant",
   "placeholder": "Common or scientific name",
-  "hint": "Search for pothos, snake plant, Monstera...",
   "empty": "Nothing found",
   "emptyHint": "Try another name, or the scientific one.",
   "failed": "Could not search right now.",
@@ -21,5 +20,14 @@
   "copyCommon": "Name",
   "copyScientific": "Species",
   "copied": "Copied",
-  "shareCredit": "Photos and text from Wikipedia · Broto"
+  "shareCredit": "Photos and text from Wikipedia · Broto",
+  "popular": "Popular",
+  "popularTerms": [
+    "Pothos",
+    "Snake plant",
+    "Monstera",
+    "Peace lily",
+    "ZZ plant",
+    "Boston fern"
+  ]
 }
