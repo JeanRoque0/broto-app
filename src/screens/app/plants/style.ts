@@ -4,6 +4,10 @@ import { theme } from "@/style/theme";
 import { fontSize, type } from "@/style/typography";
 
 export const styles = StyleSheet.create({
+  header: {
+    zIndex: 2,
+    overflow: "hidden",
+  },
   pager: {
     flex: 1,
   },

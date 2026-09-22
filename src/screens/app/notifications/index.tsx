@@ -12,7 +12,6 @@ import Animated, {
 import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { Floating } from "@/components/ui/Floating";
 import { Loader } from "@/components/ui/Loader";
 import { Header } from "@/components/ui/Header";
 import { RipplePressable } from "@/components/ui/RipplePressable";
@@ -189,13 +188,11 @@ export default function NotificationsScreen() {
 
         {enabled && !applying && upcoming.length === 0 && (
           <Appear index={1} style={styles.empty}>
-            <Floating>
-              <MaterialCommunityIcons
-                name="bell-sleep-outline"
-                size={30}
-                color={theme.illustration.leaf}
-              />
-            </Floating>
+            <MaterialCommunityIcons
+              name="bell-sleep-outline"
+              size={30}
+              color={theme.illustration.leaf}
+            />
             <Text
               family="display"
               style={styles.emptyTitle}

@@ -19,7 +19,6 @@
   "emptyTitle": "Nada agendado",
   "emptyText": "Cadastre uma planta com rotina de cuidado pra começar a receber.",
   "inboxTitle": "Lembretes",
-  "inboxKeep": "Últimos 14 dias",
   "inboxRemove": "Remover lembrete",
   "inboxClear": "Limpar tudo",
   "inboxEmptyTitle": "Nenhum lembrete ainda",
@@ -31,5 +30,8 @@
   "upcomingLess": "Mostrar menos",
   "waterOnlyTitle": "Só a rega avisa agora",
   "waterOnlyText": "Seu período de teste acabou. Os lembretes de adubo, poda e os outros cuidados voltam quando você assinar.",
-  "waterOnlyAction": "Ver planos"
+  "waterOnlyAction": "Ver planos",
+  "inboxToday": "Hoje",
+  "inboxYesterday": "Ontem",
+  "inboxKeepNote": "Os avisos ficam guardados aqui por 14 dias."
 }

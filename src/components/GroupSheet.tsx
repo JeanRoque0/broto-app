@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 import { Button } from "@/components/ui/Button";
+import { Chip } from "@/components/ui/Chip";
 import { ContainerModal } from "@/components/ui/ContainerModal";
 import { Input } from "@/components/ui/Input";
 import { useModalAutoFocus } from "@/hooks/useModalAutoFocus";
@@ -37,6 +38,9 @@ export function GroupSheet({
 
   const editing = initialName.length > 0;
   const trimmed = name.trim();
+  const suggestions = t("groupSuggestions", {
+    returnObjects: true,
+  }) as unknown as string[];
 
   return (
     <ContainerModal
@@ -62,6 +66,19 @@ export function GroupSheet({
           onSubmitEditing={() => trimmed && onSubmit(trimmed)}
         />
 
+        {!editing && (
+          <View style={styles.suggestions}>
+            {suggestions.map((item) => (
+              <Chip
+                key={item}
+                label={item}
+                selected={trimmed === item}
+                onPress={() => setName(item)}
+              />
+            ))}
+          </View>
+        )}
+
         <Button
           label={editing ? tCommon("save") : t("groupCreate")}
           onPress={() => onSubmit(trimmed)}
@@ -74,6 +91,12 @@ export function GroupSheet({
 }
 
 const styles = StyleSheet.create({
+  suggestions: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: theme.spacing.s2,
+    marginTop: -theme.spacing.s1,
+  },
   form: {
     marginTop: theme.spacing.s5,
     gap: theme.spacing.s4,

@@ -70,12 +70,17 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     gap: theme.spacing.s2,
   },
+  empty: {
+    width: "100%",
+  },
   suggestions: {
-    alignItems: "flex-start",
+    width: "100%",
     gap: theme.spacing.s2,
     paddingLeft: 28 + theme.spacing.s2,
   },
   suggestion: {
+    alignSelf: "flex-start",
+    maxWidth: "100%",
     flexDirection: "row",
     alignItems: "center",
     gap: theme.spacing.s2,
@@ -213,7 +218,24 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.surface.container,
   },
   threadIconTrash: {
-    backgroundColor: theme.functional.dangerSoft,
+    backgroundColor: "transparent",
+  },
+  headerCenter: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.s2,
+  },
+  headerTexts: {
+    gap: 0,
+  },
+  headerTitle: {
+    fontSize: fontSize.s8,
+    fontWeight: "700",
+    color: theme.text.primary,
+  },
+  headerSubtitle: {
+    fontSize: fontSize.s2,
+    color: theme.text.tertiary,
   },
   threadIconDanger: {
     backgroundColor: theme.functional.danger,

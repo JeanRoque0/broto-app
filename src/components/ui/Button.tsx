@@ -8,7 +8,6 @@ import {
 } from "react-native";
 
 import { RipplePressable } from "@/components/ui/RipplePressable";
-import { haptic } from "@/utils/haptics";
 import { theme } from "@/style/theme";
 import { fontSize } from "@/style/typography";
 
@@ -144,7 +143,6 @@ export function Button({
   const isDisabled = disabled || loading;
 
   function handlePress() {
-    if (variant === "primary" || variant === "danger") haptic.tap();
     onPress();
   }
 

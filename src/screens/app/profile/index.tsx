@@ -1,9 +1,12 @@
+import { Feather } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, StyleSheet, View } from "react-native";
-import Animated from "react-native-reanimated";
+import { Pressable, ScrollView, View } from "react-native";
 
+import { withHaptic } from "@/utils/haptics";
+import { DialogIcon } from "@/components/ui/DialogIcon";
+import { PlantPhoto } from "@/components/PlantPhoto";
 import { Appear } from "@/components/ui/Appear";
 import { AvatarSheet } from "@/components/AvatarSheet";
 import { LanguageSheet } from "@/components/LanguageSheet";
@@ -18,6 +21,7 @@ import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { Chip } from "@/components/ui/Chip";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { MenuRow } from "@/components/ui/Row";
+import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { LANGUAGES } from "@/constants/languages";
 import { UnitsSheet } from "@/components/UnitsSheet";
@@ -25,8 +29,6 @@ import { useTemperatureUnit } from "@/hooks/useTemperatureUnit";
 import { useLanguageStore } from "@/store";
 import { theme } from "@/style/theme";
 
-import { IdentityFlyer } from "./components/IdentityFlyer";
-import { ProfileHeader } from "./components/ProfileHeader";
 import { styles } from "./style";
 import { useProfileScreen } from "./useProfileScreen";
 
@@ -44,24 +46,6 @@ export default function ProfileScreen() {
     usedLabel,
     renewsLabel,
     signingOut,
-    scrollRef,
-    scrollY,
-    collapseAt,
-    scrollToTop,
-    onScroll,
-    onIdentityLayout,
-    onNameLayout,
-    onAvatarLayout,
-    onLayerLayout,
-    onHeaderLayout,
-    layerRef,
-    headerRef,
-    avatarRef,
-    nameRef,
-    origin,
-    avatarAt,
-    nameAt,
-    headerAt,
     languageVisible,
     openLanguage,
     closeLanguage,
@@ -98,51 +82,53 @@ export default function ProfileScreen() {
 
   return (
     <Container>
-      <Pressable
-        ref={headerRef}
-        style={styles.header}
-        onLayout={onHeaderLayout}
-        onPress={scrollToTop}
-        accessible={false}
-      >
-        <ProfileHeader
-          title={t("title")}
-          editLabel={t("editProfile")}
-          onEdit={openEditProfile}
-          scrollY={scrollY}
-          collapseAt={collapseAt}
-        />
-      </Pressable>
+      <View style={styles.header}>
+        <Text accessibilityRole="header" family="display" style={styles.title}>
+          {t("title")}
+        </Text>
+      </View>
 
-      <Animated.ScrollView
-        ref={scrollRef}
+      <ScrollView
         contentContainerStyle={[styles.content, { paddingBottom: tabBarSpace }]}
         showsVerticalScrollIndicator={false}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
       >
-        <View style={styles.identity} onLayout={onIdentityLayout}>
+        <View style={styles.identity}>
           <Pressable
-            ref={avatarRef}
-            style={styles.avatarSlot}
-            onLayout={onAvatarLayout}
-            onPress={openPhotoSheet}
+            onPress={withHaptic(openPhotoSheet)}
+            style={styles.avatarTouch}
             accessibilityRole="button"
             accessibilityLabel={t("editPhoto")}
-          />
-          <View ref={nameRef} style={styles.nameWrap} onLayout={onNameLayout}>
-            <Text style={styles.name}>{name}</Text>
-          </View>
-          <Text style={styles.email}>{email}</Text>
+          >
+            <PlantPhoto
+              path={profile?.avatar_path ?? null}
+              style={styles.avatar}
+              fallback={
+                <Text family="display" style={styles.avatarLetter}>
+                  {initial}
+                </Text>
+              }
+            />
+            <View style={styles.avatarBadge}>
+              <Feather name="camera" size={12} color={theme.text.onPrimary} />
+            </View>
+          </Pressable>
 
-          <Button
-            label={t("editProfile")}
-            onPress={openEditProfile}
-            variant="outline"
-            size="md"
-            fullWidth={false}
-            style={styles.editButton}
-          />
+          <View style={styles.identityTexts}>
+            <Text style={styles.name} numberOfLines={1}>
+              {name}
+            </Text>
+            <Text style={styles.email} numberOfLines={1}>
+              {email}
+            </Text>
+            <RipplePressable
+              onPress={openEditProfile}
+              style={styles.editLink}
+              accessibilityRole="button"
+            >
+              <Feather name="edit-2" size={13} color={theme.primary.clay} />
+              <Text style={styles.editLabel}>{t("editProfile")}</Text>
+            </RipplePressable>
+          </View>
         </View>
 
         <Appear index={0}>
@@ -207,11 +193,13 @@ export default function ProfileScreen() {
               <MenuRow
                 label={t("refund")}
                 icon="credit-card"
+                tone="clay"
                 onPress={openRefund}
               />
               <MenuRow
                 label={t("restorePurchase")}
                 icon="refresh-ccw"
+                tone="clay"
                 onPress={handleRestorePurchase}
                 last
               />
@@ -225,6 +213,7 @@ export default function ProfileScreen() {
               <MenuRow
                 label={t("notifications")}
                 icon="bell"
+                tone="moss"
                 hint={
                   profile?.notifications_enabled === false
                     ? t("notificationsOff")
@@ -235,12 +224,14 @@ export default function ProfileScreen() {
               <MenuRow
                 label={t("language")}
                 icon="globe"
+                tone="moss"
                 hint={languageLabel}
                 onPress={openLanguage}
               />
               <MenuRow
                 label={t("temperatureUnit")}
                 icon="thermometer"
+                tone="moss"
                 hint={
                   unit === "celsius" ? t("celsiusLabel") : t("fahrenheitLabel")
                 }
@@ -257,13 +248,23 @@ export default function ProfileScreen() {
               <MenuRow
                 label={t("support")}
                 icon="help-circle"
+                tone="ochre"
                 onPress={openSupport}
               />
               <MenuRow
                 label={t("replayTours")}
                 icon="compass"
+                tone="ochre"
                 onPress={replayTours}
+                last
               />
+            </Card>
+
+            <Text family="mono" style={styles.groupLabel}>
+              {t("groupPrivacy")}
+            </Text>
+
+            <Card style={styles.menuCard}>
               <MenuRow
                 label={t("terms")}
                 icon="file-text"
@@ -312,32 +313,14 @@ export default function ProfileScreen() {
             </Text>
           </View>
         </Appear>
-      </Animated.ScrollView>
-
-      <View
-        ref={layerRef}
-        style={StyleSheet.absoluteFill}
-        onLayout={onLayerLayout}
-        pointerEvents="none"
-      >
-        <IdentityFlyer
-          path={profile?.avatar_path ?? null}
-          initial={initial}
-          name={name}
-          scrollY={scrollY}
-          collapseAt={collapseAt}
-          origin={origin}
-          avatarAt={avatarAt}
-          nameAt={nameAt}
-          headerAt={headerAt}
-        />
-      </View>
+      </ScrollView>
 
       <AvatarSheet visible={photoVisible} onClose={closePhotoSheet} />
 
       <LanguageSheet visible={languageVisible} onClose={closeLanguage} />
 
       <ContainerModalCenter
+        icon={<DialogIcon name="rotate-ccw" tone="danger" />}
         visible={revokeVisible}
         onClose={closeRevoke}
         title={t("revokeTitle")}

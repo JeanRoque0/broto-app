@@ -9,7 +9,6 @@ import {
   View,
 } from "react-native";
 import Animated, {
-  cancelAnimation,
   Easing,
   FadeIn,
   FadeOut,
@@ -18,7 +17,6 @@ import Animated, {
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
-  withRepeat,
   withTiming,
 } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
@@ -64,7 +62,6 @@ export function TourOverlay() {
   const y = useSharedValue(0);
   const w = useSharedValue(0);
   const h = useSharedValue(0);
-  const pulse = useSharedValue(0);
   const width = useSharedValue(0);
   const height = useSharedValue(0);
 
@@ -154,7 +151,7 @@ export function TourOverlay() {
       };
 
       const timing = {
-        duration: reduceMotion || w.value === 0 ? 0 : MOVE,
+        duration: reduceMotion || w.get() === 0 ? 0 : MOVE,
         easing: Easing.bezier(0.22, 1, 0.36, 1),
       };
 
@@ -175,23 +172,6 @@ export function TourOverlay() {
       alive = false;
     };
   }, [step, next, origin, place, reduceMotion, size, w, x, y, h]);
-
-  useEffect(() => {
-    if (!id || reduceMotion) {
-      cancelAnimation(pulse);
-      pulse.set(0);
-      return;
-    }
-
-    pulse.set(0);
-    pulse.set(
-      withRepeat(
-        withTiming(1, { duration: 1400, easing: Easing.out(Easing.quad) }),
-        -1,
-        false,
-      ),
-    );
-  }, [id, reduceMotion, pulse]);
 
   useEffect(() => {
     if (!id) return;
@@ -217,15 +197,15 @@ export function TourOverlay() {
   }, [id, x, y, w, h]);
 
   const hole = useAnimatedProps(() => {
-    const r = Math.min(18, h.value / 2, w.value / 2);
-    const left = x.value;
-    const top = y.value;
-    const right = left + w.value;
-    const bottom = top + h.value;
+    const r = Math.min(18, h.get() / 2, w.get() / 2);
+    const left = x.get();
+    const top = y.get();
+    const right = left + w.get();
+    const bottom = top + h.get();
 
     return {
       d:
-        `M0 0 H${width.value} V${height.value} H0 Z ` +
+        `M0 0 H${width.get()} V${height.get()} H0 Z ` +
         `M${left + r} ${top} H${right - r} ` +
         `A${r} ${r} 0 0 1 ${right} ${top + r} V${bottom - r} ` +
         `A${r} ${r} 0 0 1 ${right - r} ${bottom} H${left + r} ` +
@@ -235,13 +215,11 @@ export function TourOverlay() {
   });
 
   const ring = useAnimatedStyle(() => ({
-    left: x.value,
-    top: y.value,
-    width: w.value,
-    height: h.value,
-    borderRadius: Math.min(18, h.value / 2, w.value / 2),
-    opacity: 1 - pulse.value,
-    transform: [{ scale: 1 + pulse.value * 0.12 }],
+    left: x.get(),
+    top: y.get(),
+    width: w.get(),
+    height: h.get(),
+    borderRadius: Math.min(18, h.get() / 2, w.get() / 2),
   }));
 
   function handleLayout(event: LayoutChangeEvent) {
@@ -298,9 +276,11 @@ export function TourOverlay() {
           entering={FadeIn.duration(260).reduceMotion(ReduceMotion.System)}
           accessibilityLiveRegion="polite"
         >
-          <Text family="mono" style={styles.count}>
-            {t("count", { step: index + 1, total: steps.length })}
-          </Text>
+          {steps.length > 1 && (
+            <Text family="mono" style={styles.count}>
+              {t("count", { step: index + 1, total: steps.length })}
+            </Text>
+          )}
           <Text
             family="display"
             style={styles.title}

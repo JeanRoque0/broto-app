@@ -1,8 +1,11 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 import { PlantPhoto } from "@/components/PlantPhoto";
+import { TourAnchor } from "@/components/tour/TourAnchor";
+import { useScreenTour } from "@/components/tour/useScreenTour";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { FlashListContainer } from "@/components/ui/FlashListContainer";
@@ -16,6 +19,8 @@ import { formatShortDate } from "@/utils/format";
 import { useAnalyses } from "./useAnalyses";
 
 const KEEP_DAYS = 7;
+const WARN_DAYS = 2;
+const DAY = 86400000;
 
 function expiresAt(created: string) {
   const date = new Date(created);
@@ -24,26 +29,50 @@ function expiresAt(created: string) {
 }
 
 const HEALTH = {
-  saudavel: { key: "historyHealthy", color: theme.secondary.moss },
-  atencao: { key: "historyAttention", color: theme.secondary.ochre },
-  problema: { key: "historyIssue", color: theme.primary.clay },
+  saudavel: {
+    key: "historyHealthy",
+    color: theme.secondary.moss,
+    soft: theme.secondary.mossSoft,
+  },
+  atencao: {
+    key: "historyAttention",
+    color: theme.secondary.ochre,
+    soft: theme.secondary.ochreSoft,
+  },
+  problema: {
+    key: "historyIssue",
+    color: theme.primary.clay,
+    soft: theme.primary.claySoft,
+  },
 } as const;
 
+const ANALYSES_TOUR = [
+  { anchor: "analyses.row", copy: "analysesRow" },
+] as const;
+
 type AnalysesPanelProps = {
+  active: boolean;
+  topSpace: number;
   bottomSpace: number;
 };
 
-export function AnalysesPanel({ bottomSpace }: AnalysesPanelProps) {
+export function AnalysesPanel({
+  active,
+  topSpace,
+  bottomSpace,
+}: AnalysesPanelProps) {
   const { t } = useTranslation("analysis");
+  const [now] = useState(() => Date.now());
   const { items, isLoading, isError, refetch, open, startAnalysis } =
     useAnalyses();
 
   const failed = isError && items.length === 0;
+  useScreenTour("analyses", ANALYSES_TOUR, active && items.length > 0);
 
   if (isLoading || failed || items.length === 0) {
     return (
       <View>
-        <View style={styles.panel}>
+        <View style={[styles.panel, { paddingTop: topSpace }]}>
           {isLoading && <Loader />}
 
           {!isLoading && failed && (
@@ -70,13 +99,23 @@ export function AnalysesPanel({ bottomSpace }: AnalysesPanelProps) {
     <FlashListContainer
       data={items}
       keyExtractor={(item) => item.id}
+      ListHeaderComponent={
+        <View style={styles.padded}>
+          <Text style={styles.note}>
+            {t("historyKeepNote", { count: KEEP_DAYS })}
+          </Text>
+        </View>
+      }
       contentContainerStyle={{
-        paddingTop: theme.spacing.s3,
+        paddingTop: topSpace + theme.spacing.s3,
         paddingBottom: bottomSpace,
       }}
       showsVerticalScrollIndicator={false}
-      renderItem={({ item }) => {
+      renderItem={({ item, index }) => {
         const health = HEALTH[item.result?.saude ?? "saudavel"];
+        const expires = expiresAt(item.created_at);
+        const expiringSoon =
+          !item.plant_id && expires.getTime() - now < WARN_DAYS * DAY;
 
         return (
           <View style={styles.padded}>
@@ -85,6 +124,7 @@ export function AnalysesPanel({ bottomSpace }: AnalysesPanelProps) {
               style={styles.row}
               accessibilityRole="button"
             >
+              {index === 0 && <TourAnchor id="analyses.row" />}
               <PlantPhoto
                 path={item.photo_path}
                 style={styles.thumb}
@@ -103,28 +143,30 @@ export function AnalysesPanel({ bottomSpace }: AnalysesPanelProps) {
                 </Text>
 
                 <View style={styles.meta}>
-                  <View
-                    style={[styles.dot, { backgroundColor: health.color }]}
-                  />
-                  <Text style={styles.health}>{t(health.key)}</Text>
-                  <Text family="mono" style={styles.date}>
+                  <View style={[styles.pill, { backgroundColor: health.soft }]}>
+                    <Text style={[styles.health, { color: health.color }]}>
+                      {t(health.key)}
+                    </Text>
+                  </View>
+                  <Text style={styles.date}>
                     {formatShortDate(item.created_at)}
                   </Text>
+                  {item.plant_id && (
+                    <View style={styles.savedTag}>
+                      <Feather
+                        name="check"
+                        size={12}
+                        color={theme.secondary.moss}
+                      />
+                      <Text style={styles.saved}>{t("historySaved")}</Text>
+                    </View>
+                  )}
                 </View>
-
-                <Text
-                  family="mono"
-                  style={[
-                    styles.lifetime,
-                    item.plant_id ? styles.saved : styles.expires,
-                  ]}
-                >
-                  {item.plant_id
-                    ? t("historySaved")
-                    : t("historyExpires", {
-                        date: formatShortDate(expiresAt(item.created_at)),
-                      })}
-                </Text>
+                {expiringSoon && (
+                  <Text style={styles.expires}>
+                    {t("historyExpires", { date: formatShortDate(expires) })}
+                  </Text>
+                )}
               </View>
 
               <Feather
@@ -148,10 +190,15 @@ const styles = StyleSheet.create({
   padded: {
     paddingHorizontal: theme.screenPadding,
   },
+  note: {
+    fontSize: fontSize.s4,
+    color: theme.text.tertiary,
+    marginBottom: theme.spacing.s3,
+  },
   row: {
     flexDirection: "row",
     alignItems: "center",
-    gap: theme.spacing.s4,
+    gap: theme.spacing.s3,
     padding: theme.spacing.s3,
     marginBottom: theme.spacing.s2,
     backgroundColor: theme.surface.card,
@@ -178,27 +225,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
   },
-  dot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
+  pill: {
+    paddingHorizontal: theme.spacing.s2,
+    paddingVertical: 2,
+    borderRadius: theme.radius.pill,
   },
   health: {
     fontSize: fontSize.s3,
-    color: theme.text.secondary,
+    fontWeight: "700",
   },
   date: {
-    fontSize: fontSize.s2,
+    fontSize: fontSize.s4,
     color: theme.text.tertiary,
   },
-  lifetime: {
-    fontSize: fontSize.s3,
-    fontWeight: "500",
+  savedTag: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
   },
   saved: {
+    fontSize: fontSize.s4,
+    fontWeight: "500",
     color: theme.secondary.moss,
   },
   expires: {
+    fontSize: fontSize.s4,
+    fontWeight: "500",
     color: theme.secondary.ochre,
   },
 });

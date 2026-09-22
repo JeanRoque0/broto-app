@@ -52,10 +52,10 @@ function AndroidKeyboardAwareView({
 
   useEffect(() => {
     const onShow = Keyboard.addListener("keyboardDidShow", () => {
-      isVisible.value = true;
+      isVisible.set(true);
     });
     const onHide = Keyboard.addListener("keyboardDidHide", () => {
-      isVisible.value = false;
+      isVisible.set(false);
     });
 
     return () => {
@@ -65,8 +65,8 @@ function AndroidKeyboardAwareView({
   }, [isVisible]);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    paddingBottom: isVisible.value
-      ? Math.max(0, keyboard.height.value - bottom)
+    paddingBottom: isVisible.get()
+      ? Math.max(0, keyboard.height.get() - bottom)
       : 0,
   }));
 

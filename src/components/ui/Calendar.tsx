@@ -40,6 +40,18 @@ export function Calendar({ value, onChange, minDate }: CalendarProps) {
     () => new Date(value.getFullYear(), value.getMonth(), 1),
   );
   const [direction, setDirection] = useState(0);
+  const [shown, setShown] = useState(value);
+
+  if (!isSameDay(shown, value)) {
+    setShown(value);
+    if (
+      value.getMonth() !== month.getMonth() ||
+      value.getFullYear() !== month.getFullYear()
+    ) {
+      setDirection(value.getTime() > month.getTime() ? 1 : -1);
+      setMonth(new Date(value.getFullYear(), value.getMonth(), 1));
+    }
+  }
 
   const today = startOfDay(new Date());
   const floor = minDate ? startOfDay(minDate) : null;
@@ -76,8 +88,10 @@ export function Calendar({ value, onChange, minDate }: CalendarProps) {
           key={month.toISOString()}
           entering={FadeIn.duration(180)}
         >
-          <Text family="mono" style={styles.month}>
-            {formatMonthYear(month)}
+          <Text style={styles.month}>
+            {formatMonthYear(month).replace(/^./, (letter) =>
+              letter.toUpperCase(),
+            )}
           </Text>
         </Animated.View>
 
@@ -121,6 +135,8 @@ export function Calendar({ value, onChange, minDate }: CalendarProps) {
 
           const selected = isSameDay(day, value);
           const disabled = !!floor && day.getTime() < floor.getTime();
+          const isToday = isSameDay(day, today);
+          const past = day.getTime() < today.getTime();
 
           return (
             <RipplePressable
@@ -133,11 +149,19 @@ export function Calendar({ value, onChange, minDate }: CalendarProps) {
               accessibilityRole="button"
               accessibilityState={{ selected, disabled }}
             >
-              <View style={[styles.day, selected && styles.daySelected]}>
+              <View
+                style={[
+                  styles.day,
+                  isToday && styles.dayToday,
+                  selected && styles.daySelected,
+                ]}
+              >
                 <Text
                   family="mono"
                   style={[
                     styles.dayLabel,
+                    past && styles.dayPast,
+                    isToday && styles.dayLabelToday,
                     disabled && styles.dayDisabled,
                     selected && styles.dayLabelSelected,
                   ]}
@@ -145,10 +169,6 @@ export function Calendar({ value, onChange, minDate }: CalendarProps) {
                   {day.getDate()}
                 </Text>
               </View>
-
-              {isSameDay(day, today) && !selected && (
-                <View style={styles.todayDot} />
-              )}
             </RipplePressable>
           );
         })}
@@ -160,9 +180,9 @@ export function Calendar({ value, onChange, minDate }: CalendarProps) {
 const styles = StyleSheet.create({
   calendar: {
     backgroundColor: theme.surface.card,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: theme.functional.line,
-    borderRadius: theme.radius.field,
+    borderRadius: theme.radius.lg,
     paddingHorizontal: theme.spacing.s2,
     paddingBottom: theme.spacing.s3,
   },
@@ -173,17 +193,28 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.s2,
   },
   arrow: {
-    width: 32,
-    height: 32,
+    width: 34,
+    height: 34,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 18,
+    borderRadius: 17,
+    backgroundColor: theme.surface.container,
   },
   month: {
-    fontSize: fontSize.s3,
-    textTransform: "uppercase",
-    letterSpacing: 0.8,
+    fontSize: fontSize.s8,
+    fontWeight: "700",
     color: theme.text.primary,
+  },
+  dayToday: {
+    borderWidth: 1.5,
+    borderColor: theme.primary.clay,
+  },
+  dayLabelToday: {
+    fontWeight: "700",
+    color: theme.primary.clay,
+  },
+  dayPast: {
+    color: theme.text.tertiary,
   },
   week: {
     flexDirection: "row",
@@ -206,9 +237,9 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   day: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -224,13 +255,5 @@ const styles = StyleSheet.create({
   },
   dayLabelSelected: {
     color: theme.text.onPrimary,
-  },
-  todayDot: {
-    position: "absolute",
-    bottom: 1,
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: theme.primary.clay,
   },
 });

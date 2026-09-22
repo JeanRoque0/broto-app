@@ -62,7 +62,7 @@ function Segment({ filled, active }: { filled: boolean; active: boolean }) {
       toValue: active ? 1 : 0,
       useNativeDriver: false,
       isInteraction: false,
-      bounciness: 6,
+      bounciness: 0,
       speed: 12,
     }).start();
   }, [active, emphasis]);
@@ -128,7 +128,7 @@ function Dot({ active }: { active: boolean }) {
       toValue: active ? 1 : 0,
       useNativeDriver: false,
       isInteraction: false,
-      bounciness: 6,
+      bounciness: 0,
       speed: 12,
     }).start();
   }, [active, emphasis]);

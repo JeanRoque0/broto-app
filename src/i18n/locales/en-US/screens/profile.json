@@ -90,7 +90,7 @@
   "usageChat": "Brotinho",
   "groupAccount": "Account",
   "groupPreferences": "Preferences",
-  "groupHelp": "Help and privacy",
+  "groupHelp": "Help",
   "groupSubscription": "Subscription",
   "exportData": "Export my data",
   "exportPreparing": "Preparing…",
@@ -103,5 +103,6 @@
   "freeOnlyWater": "Only watering is still unlocked.",
   "replayTours": "Replay the screen tips",
   "replayToursDone": "Tips turned back on",
-  "replayToursHint": "They show up the next time you open each screen."
+  "replayToursHint": "They show up the next time you open each screen.",
+  "groupPrivacy": "Privacy and data"
 }

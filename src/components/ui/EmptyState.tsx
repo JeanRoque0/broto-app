@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { Floating } from "@/components/ui/Floating";
 import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { theme } from "@/style/theme";
@@ -30,11 +29,7 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <View style={styles.container}>
-      {illustration && (
-        <Appear index={0}>
-          <Floating>{illustration}</Floating>
-        </Appear>
-      )}
+      {illustration && <Appear index={0}>{illustration}</Appear>}
 
       <Appear index={1}>
         <Text family="display" style={styles.title} accessibilityRole="header">

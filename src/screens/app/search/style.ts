@@ -55,8 +55,11 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.primary.claySoft,
   },
   header: {
+    zIndex: 2,
+    overflow: "hidden",
     paddingHorizontal: theme.screenPadding,
     paddingTop: theme.spacing.s2,
+    paddingBottom: theme.spacing.s3,
     gap: theme.spacing.s4,
   },
   title: {
@@ -72,6 +75,37 @@ export const styles = StyleSheet.create({
     ...type.bodySm,
     textAlign: "center",
     marginTop: theme.spacing.s5,
+  },
+  identify: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.s3,
+    marginTop: theme.spacing.s6,
+    padding: theme.spacing.s4,
+    borderRadius: theme.radius.lg,
+    borderWidth: 1,
+    borderColor: theme.primary.clayBorder,
+    backgroundColor: theme.primary.clayTint,
+  },
+  identifyIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: theme.primary.clay,
+  },
+  identifyTexts: {
+    flex: 1,
+    gap: 2,
+  },
+  identifyTitle: {
+    fontSize: fontSize.s7,
+    fontWeight: "700",
+    color: theme.text.primary,
+  },
+  identifyText: {
+    ...type.bodySm,
   },
   popular: {
     flexDirection: "row",

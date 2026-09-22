@@ -2,6 +2,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 
+import { DialogIcon } from "@/components/ui/DialogIcon";
 import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -117,6 +118,7 @@ export default function DeleteAccountScreen() {
       </View>
 
       <ContainerModalCenter
+        icon={<DialogIcon name="trash-2" tone="danger" />}
         visible={confirmVisible}
         onClose={closeConfirm}
         title={t("deleteModalTitle")}

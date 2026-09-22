@@ -1,13 +1,15 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import { useState } from "react";
+import { StyleSheet, View } from "react-native";
 
 import { Appear } from "@/components/ui/Appear";
 import { Chip } from "@/components/ui/Chip";
 import { Container } from "@/components/ui/Container";
 import { FlashListContainer } from "@/components/ui/FlashListContainer";
-import { Floating } from "@/components/ui/Floating";
+import { Glass } from "@/components/ui/Glass";
 import { Input } from "@/components/ui/Input";
 import { PlantListSkeleton } from "@/components/ui/Skeleton";
 import { RipplePressable } from "@/components/ui/RipplePressable";
@@ -19,6 +21,8 @@ import { styles } from "./style";
 import { useSearch } from "./useSearch";
 
 export default function SearchScreen() {
+  const router = useRouter();
+  const [headerHeight, setHeaderHeight] = useState(0);
   const { t } = useTranslation("search");
   const tabBarSpace = useTabBarSpace();
   const {
@@ -36,13 +40,18 @@ export default function SearchScreen() {
     onFocus,
     onBlur,
   } = useSearch();
+  const identify = () => router.push("/(app)/analyze/camera");
   const popular = t("popularTerms", {
     returnObjects: true,
   }) as unknown as string[];
 
   return (
     <Container>
-      <View style={styles.header}>
+      <View
+        style={styles.header}
+        onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}
+      >
+        <Glass tone="base" style={StyleSheet.absoluteFill} />
         <Text family="display" style={styles.title} accessibilityRole="header">
           {t("title")}
         </Text>
@@ -81,7 +90,11 @@ export default function SearchScreen() {
       <FlashListContainer
         data={results}
         keyExtractor={(species) => species.scientific}
-        contentContainerStyle={{ paddingBottom: tabBarSpace }}
+        style={{ marginTop: -headerHeight }}
+        contentContainerStyle={{
+          paddingTop: headerHeight,
+          paddingBottom: tabBarSpace,
+        }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
@@ -145,19 +158,46 @@ export default function SearchScreen() {
                 </View>
               )}
 
+              {!hasQuery && (
+                <RipplePressable
+                  onPress={identify}
+                  pressScale={0.98}
+                  style={styles.identify}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${t("identifyTitle")}. ${t("identifyText")}`}
+                >
+                  <View style={styles.identifyIcon}>
+                    <Feather
+                      name="camera"
+                      size={20}
+                      color={theme.text.onPrimary}
+                    />
+                  </View>
+                  <View style={styles.identifyTexts}>
+                    <Text style={styles.identifyTitle}>
+                      {t("identifyTitle")}
+                    </Text>
+                    <Text style={styles.identifyText}>{t("identifyText")}</Text>
+                  </View>
+                  <Feather
+                    name="chevron-right"
+                    size={18}
+                    color={theme.primary.clay}
+                  />
+                </RipplePressable>
+              )}
+
               {hasQuery && !isLoading && isError && (
                 <Text style={styles.hint}>{t("failed")}</Text>
               )}
 
               {hasQuery && !isLoading && !isError && (
                 <Appear index={0} style={styles.empty}>
-                  <Floating>
-                    <MaterialCommunityIcons
-                      name="leaf-off"
-                      size={34}
-                      color={theme.illustration.leaf}
-                    />
-                  </Floating>
+                  <MaterialCommunityIcons
+                    name="leaf-off"
+                    size={34}
+                    color={theme.illustration.leaf}
+                  />
                   <Text
                     family="display"
                     style={styles.emptyTitle}

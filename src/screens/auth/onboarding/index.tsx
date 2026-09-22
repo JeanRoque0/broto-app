@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
 
+import { withHaptic } from "@/utils/haptics";
 import { LanguageButton } from "@/components/LanguageButton";
 import { Button } from "@/components/ui/Button";
 import { StepDots } from "@/components/ui/ProgressBar";
@@ -26,13 +28,18 @@ export default function OnboardingScreen() {
     handleScroll,
     handleSkip,
   } = useOnboarding();
+  const [height, setHeight] = useState(0);
 
   return (
     <Container style={styles.container}>
       <View style={styles.topbar}>
         <LanguageButton />
 
-        <Pressable onPress={handleSkip} hitSlop={12} accessibilityRole="button">
+        <Pressable
+          onPress={withHaptic(handleSkip)}
+          hitSlop={12}
+          accessibilityRole="button"
+        >
           <Text style={styles.skip}>{t("skip")}</Text>
         </Pressable>
       </View>
@@ -44,7 +51,10 @@ export default function OnboardingScreen() {
         showsHorizontalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}
-        onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
+        onLayout={(event) => {
+          setWidth(event.nativeEvent.layout.width);
+          setHeight(event.nativeEvent.layout.height);
+        }}
       >
         {slides.map((slide, position) => (
           <SlideView
@@ -54,6 +64,7 @@ export default function OnboardingScreen() {
             description={t(`${slide.key}Description` as const)}
             index={position}
             width={width}
+            height={height}
             scrollX={scrollX}
           />
         ))}

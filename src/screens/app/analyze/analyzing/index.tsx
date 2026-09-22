@@ -55,11 +55,13 @@ export default function AnalyzingScreen() {
   useEffect(() => {
     if (!frameHeight || reduceMotion) return;
 
-    offset.value = 0;
-    offset.value = withRepeat(
-      withTiming(frameHeight - SCAN_HEIGHT, { duration: SWEEP }),
-      -1,
-      true,
+    offset.set(0);
+    offset.set(
+      withRepeat(
+        withTiming(frameHeight - SCAN_HEIGHT, { duration: SWEEP }),
+        -1,
+        true,
+      ),
     );
 
     return () => cancelAnimation(offset);
@@ -70,7 +72,7 @@ export default function AnalyzingScreen() {
   }
 
   const scanStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: offset.value }],
+    transform: [{ translateY: offset.get() }],
   }));
 
   if (

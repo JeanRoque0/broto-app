@@ -33,15 +33,17 @@ export function QuotaBar({ label, left, total }: QuotaBarProps) {
         : theme.secondary.moss;
 
   useEffect(() => {
-    progress.value = withTiming(ratio, {
-      duration: FILL,
-      easing: Easing.bezier(0.22, 1, 0.36, 1),
-      reduceMotion: ReduceMotion.System,
-    });
+    progress.set(
+      withTiming(ratio, {
+        duration: FILL,
+        easing: Easing.bezier(0.22, 1, 0.36, 1),
+        reduceMotion: ReduceMotion.System,
+      }),
+    );
   }, [ratio, progress]);
 
   const fill = useAnimatedStyle(() => ({
-    width: `${progress.value * 100}%`,
+    width: `${progress.get() * 100}%`,
   }));
 
   return (

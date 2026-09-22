@@ -2,6 +2,7 @@ import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, View } from "react-native";
 
+import { withHaptic } from "@/utils/haptics";
 import { ForgotPasswordSheet } from "@/components/ForgotPasswordSheet";
 import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
@@ -104,7 +105,7 @@ export default function SignInScreen() {
             />
 
             <Pressable
-              onPress={openForgot}
+              onPress={withHaptic(openForgot)}
               hitSlop={8}
               style={styles.forgot}
               accessibilityRole="button"
@@ -123,7 +124,7 @@ export default function SignInScreen() {
 
           {!keyboardVisible && (
             <Pressable
-              onPress={goToSignUp}
+              onPress={withHaptic(goToSignUp)}
               hitSlop={8}
               accessibilityRole="button"
             >

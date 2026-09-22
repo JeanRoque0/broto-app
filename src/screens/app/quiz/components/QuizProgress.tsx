@@ -20,15 +20,17 @@ export function QuizProgress({ step, total, label }: QuizProgressProps) {
   const progress = useSharedValue(0);
 
   useEffect(() => {
-    progress.value = withTiming(total > 0 ? step / total : 0, {
-      duration: 420,
-      easing: Easing.bezier(0.22, 1, 0.36, 1),
-      reduceMotion: ReduceMotion.System,
-    });
+    progress.set(
+      withTiming(total > 0 ? step / total : 0, {
+        duration: 420,
+        easing: Easing.bezier(0.22, 1, 0.36, 1),
+        reduceMotion: ReduceMotion.System,
+      }),
+    );
   }, [progress, step, total]);
 
   const fill = useAnimatedStyle(() => ({
-    width: `${progress.value * 100}%`,
+    width: `${progress.get() * 100}%`,
   }));
 
   return (

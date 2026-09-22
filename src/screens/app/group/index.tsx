@@ -8,6 +8,7 @@ import { GroupPlantsSheet } from "@/components/GroupPlantsSheet";
 import { GroupSheet } from "@/components/GroupSheet";
 import { EmptyPlantArt } from "@/components/illustrations/OnboardingArt";
 import { PlantCard } from "@/components/PlantCard";
+import { DialogIcon } from "@/components/ui/DialogIcon";
 import { Button } from "@/components/ui/Button";
 import { CircleButton } from "@/components/ui/CircleButton";
 import { Container } from "@/components/ui/Container";
@@ -171,6 +172,7 @@ export default function GroupScreen() {
       />
 
       <ContainerModalCenter
+        icon={<DialogIcon name="trash-2" tone="danger" />}
         visible={removeVisible}
         onClose={closeRemove}
         title={t("groupDeleteTitle")}

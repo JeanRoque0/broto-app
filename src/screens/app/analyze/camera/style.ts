@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 13,
     borderRadius: theme.radius.pill,
-    backgroundColor: theme.surface.scrim,
+    overflow: "hidden",
   },
   creditsLabel: {
     fontSize: fontSize.s2,
@@ -46,9 +46,40 @@ export const styles = StyleSheet.create({
     right: 46,
     top: "22%",
     height: 300,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: theme.functional.white55,
+  },
+  corner: {
+    position: "absolute",
+    width: 34,
+    height: 34,
+    borderColor: theme.text.onDark,
+  },
+  cornerTopLeft: {
+    top: 0,
+    left: 0,
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderTopLeftRadius: 18,
+  },
+  cornerTopRight: {
+    top: 0,
+    right: 0,
+    borderTopWidth: 3,
+    borderRightWidth: 3,
+    borderTopRightRadius: 18,
+  },
+  cornerBottomLeft: {
+    bottom: 0,
+    left: 0,
+    borderBottomWidth: 3,
+    borderLeftWidth: 3,
+    borderBottomLeftRadius: 18,
+  },
+  cornerBottomRight: {
+    bottom: 0,
+    right: 0,
+    borderBottomWidth: 3,
+    borderRightWidth: 3,
+    borderBottomRightRadius: 18,
   },
   hint: {
     position: "absolute",
@@ -140,10 +171,6 @@ export const styles = StyleSheet.create({
     fontWeight: "500",
     color: theme.functional.white72,
     textAlign: "center",
-  },
-  actionPlaceholder: {
-    width: 48,
-    height: 48,
   },
   shutter: {
     width: 74,

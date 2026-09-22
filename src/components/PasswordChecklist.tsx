@@ -46,7 +46,7 @@ function Rule({ met, label }: { met: boolean; label: string }) {
       toValue: met ? 1 : 0,
       useNativeDriver: true,
       isInteraction: false,
-      bounciness: 8,
+      bounciness: 0,
       speed: 20,
     }).start();
   }, [met, anim]);

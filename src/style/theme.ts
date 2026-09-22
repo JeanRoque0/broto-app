@@ -9,7 +9,9 @@ export const theme = {
   secondary: {
     moss: "#3E6B4A",
     mossSoft: "#E1EBE0",
+    mossDeep: "#2C5036",
     ochre: "#855C13",
+    ochreSoft: "#F3EAD7",
   },
   surface: {
     base: "#F7F4ED",
@@ -23,6 +25,11 @@ export const theme = {
     dark: "#141A14",
     darkViewfinder: "#2E3A2C",
     scrim: "rgba(10,14,10,0.55)",
+    glass: "rgba(255,253,248,0.62)",
+    glassDark: "rgba(10,14,10,0.32)",
+    glassBase: "rgba(247,244,237,0.74)",
+    glassSolid: "rgba(255,253,248,0.97)",
+    toast: "rgba(23,37,26,0.78)",
   },
   text: {
     primary: "#17251A",

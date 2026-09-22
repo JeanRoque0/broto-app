@@ -1,7 +1,8 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 import { Appear } from "@/components/ui/Appear";
 import { ChatSuggestions } from "@/components/ChatSuggestions";
@@ -11,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { CircleButton } from "@/components/ui/CircleButton";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Glass } from "@/components/ui/Glass";
 import { Header } from "@/components/ui/Header";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
@@ -18,6 +20,9 @@ import { theme } from "@/style/theme";
 
 import { styles } from "./style";
 import { useSpecies } from "./useSpecies";
+
+const EXTRACT_LINES = 6;
+const LONG_EXTRACT = 280;
 
 export default function SpeciesScreen() {
   const { t } = useTranslation("search");
@@ -36,6 +41,7 @@ export default function SpeciesScreen() {
     openPhoto,
     closePhoto,
   } = useSpecies();
+  const [expanded, setExpanded] = useState(false);
 
   if (!species) {
     return (
@@ -108,31 +114,60 @@ export default function SpeciesScreen() {
               {title}
             </Text>
 
-            {species.common && (
-              <Text style={styles.scientific}>{species.scientific}</Text>
-            )}
+            <View style={styles.nameRow}>
+              {species.common && (
+                <Text style={styles.scientific}>{species.scientific}</Text>
+              )}
+              <RipplePressable
+                onPress={copy}
+                style={styles.copy}
+                accessibilityRole="button"
+                accessibilityLabel={t("copyAction")}
+              >
+                <Feather name="copy" size={13} color={theme.primary.clay} />
+                <Text style={styles.copyLabel}>{t("copyAction")}</Text>
+              </RipplePressable>
+            </View>
 
             {species.extract && (
-              <Text selectable style={styles.extract}>
-                {species.extract}
-              </Text>
+              <>
+                <Text
+                  selectable
+                  style={styles.extract}
+                  numberOfLines={expanded ? undefined : EXTRACT_LINES}
+                >
+                  {species.extract}
+                </Text>
+                {species.extract.length > LONG_EXTRACT && (
+                  <RipplePressable
+                    onPress={() => setExpanded((open) => !open)}
+                    style={styles.more}
+                    accessibilityRole="button"
+                    accessibilityState={{ expanded }}
+                  >
+                    <Text style={styles.moreLabel}>
+                      {expanded ? t("readLess") : t("readMore")}
+                    </Text>
+                    <Feather
+                      name={expanded ? "chevron-up" : "chevron-down"}
+                      size={15}
+                      color={theme.primary.clay}
+                    />
+                  </RipplePressable>
+                )}
+              </>
             )}
 
-            <RipplePressable
-              onPress={copy}
-              style={styles.copy}
-              accessibilityRole="button"
-              accessibilityLabel={t("copyAction")}
-            >
-              <Feather name="copy" size={14} color={theme.primary.clay} />
-              <Text style={styles.copyLabel}>{t("copyAction")}</Text>
-            </RipplePressable>
+            <Text style={styles.credit}>{t("photoCredit")}</Text>
 
-            <Text family="mono" style={styles.credit}>
-              {t("photoCredit")}
-            </Text>
-
-            <Text style={styles.careHint}>{t("careHint")}</Text>
+            <View style={styles.careHint}>
+              <MaterialCommunityIcons
+                name="sprout-outline"
+                size={20}
+                color={theme.secondary.moss}
+              />
+              <Text style={styles.careHintText}>{t("careHint")}</Text>
+            </View>
 
             <View style={styles.suggestions}>
               <ChatSuggestions
@@ -147,6 +182,7 @@ export default function SpeciesScreen() {
       </ScrollView>
 
       <View style={styles.footer} onLayout={onFooterLayout}>
+        <Glass style={StyleSheet.absoluteFill} />
         <Button label={t("add")} onPress={add} loading={adding} />
       </View>
 

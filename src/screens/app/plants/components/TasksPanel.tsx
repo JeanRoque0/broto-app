@@ -1,4 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
@@ -12,18 +14,33 @@ import { formatLongDate } from "@/utils/format";
 import { theme } from "@/style/theme";
 import { fontSize, type } from "@/style/typography";
 
+import { TourAnchor } from "@/components/tour/TourAnchor";
+import { useScreenTour } from "@/components/tour/useScreenTour";
+
 import { DayStrip } from "./DayStrip";
 import { TaskEditSheet } from "@/components/TaskEditSheet";
 
-import { TaskRow } from "./TaskRow";
+import { TaskGroup } from "./TaskGroup";
 import { useTasks } from "./useTasks";
 
+const TASKS_TOUR = [
+  { anchor: "tasks.days", copy: "tasksDays" },
+  { anchor: "tasks.group", copy: "tasksGroup" },
+] as const;
+
 type TasksPanelProps = {
+  active: boolean;
+  topSpace: number;
   bottomSpace: number;
   onSwipeLock?: (locked: boolean) => void;
 };
 
-export function TasksPanel({ bottomSpace, onSwipeLock }: TasksPanelProps) {
+export function TasksPanel({
+  active,
+  topSpace,
+  bottomSpace,
+  onSwipeLock,
+}: TasksPanelProps) {
   const { t } = useTranslation("plants");
   const {
     days,
@@ -44,10 +61,23 @@ export function TasksPanel({ bottomSpace, onSwipeLock }: TasksPanelProps) {
     toggleTask,
     openPaywall,
   } = useTasks();
+  const router = useRouter();
+  useScreenTour("tasks", TASKS_TOUR, active && tasks.length > 0);
+
+  const groups = useMemo(() => {
+    const byPlant = new Map<string, typeof tasks>();
+    for (const task of tasks) {
+      const list = byPlant.get(task.plant.id) ?? [];
+      list.push(task);
+      byPlant.set(task.plant.id, list);
+    }
+    return [...byPlant.values()];
+  }, [tasks]);
 
   const listHeader = (
     <>
       <View>
+        <TourAnchor id="tasks.days" />
         <DayStrip
           days={days}
           selected={selected}
@@ -90,8 +120,8 @@ export function TasksPanel({ bottomSpace, onSwipeLock }: TasksPanelProps) {
   return (
     <>
       <FlashListContainer
-        data={tasks}
-        keyExtractor={(task) => `${task.plant.id}:${task.kind}`}
+        data={groups}
+        keyExtractor={(group) => group[0].plant.id}
         ListHeaderComponent={listHeader}
         ListHeaderComponentStyle={
           tasks.length > 0 ? styles.headSpace : undefined
@@ -120,17 +150,19 @@ export function TasksPanel({ bottomSpace, onSwipeLock }: TasksPanelProps) {
           ) : null
         }
         contentContainerStyle={{
-          paddingTop: theme.spacing.s3,
+          paddingTop: topSpace + theme.spacing.s3,
           paddingBottom: bottomSpace,
         }}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View style={styles.padded}>
-            <TaskRow
-              task={item}
-              loading={pending === `${item.plant.id}:${item.kind}`}
-              onComplete={() => complete(item.plant.id, item.kind)}
-              onEdit={() => edit(item)}
+            <TaskGroup
+              tourId={index === 0 ? "tasks.group" : undefined}
+              tasks={item}
+              pending={pending}
+              onComplete={(task) => complete(task.plant.id, task.kind)}
+              onEdit={edit}
+              onOpenPlant={(id) => router.push(`/(app)/plant/${id}`)}
             />
           </View>
         )}

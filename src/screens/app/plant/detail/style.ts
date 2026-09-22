@@ -48,7 +48,7 @@ export const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    backgroundColor: theme.surface.baseTranslucent,
+    overflow: "hidden",
     borderBottomWidth: 1,
     borderBottomColor: theme.functional.line,
   },
@@ -71,10 +71,6 @@ export const styles = StyleSheet.create({
   },
   backOverlay: {
     ...StyleSheet.absoluteFill,
-  },
-  backOnPhoto: {
-    backgroundColor: theme.functional.black35,
-    borderWidth: 0,
   },
   heroTouch: {
     height: HEADER_PHOTO - 24,
@@ -120,6 +116,36 @@ export const styles = StyleSheet.create({
   },
   waterValue: {
     ...type.displayXs,
+  },
+  badges: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: theme.spacing.s2,
+    marginTop: theme.spacing.s3,
+  },
+  badge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingVertical: 5,
+    paddingHorizontal: theme.spacing.s3,
+    borderRadius: theme.radius.pill,
+  },
+  badgeWater: {
+    backgroundColor: theme.secondary.mossSoft,
+  },
+  badgeToxic: {
+    backgroundColor: theme.functional.dangerSoft,
+  },
+  badgeText: {
+    fontSize: fontSize.s4,
+    fontWeight: "700",
+  },
+  badgeTextWater: {
+    color: theme.secondary.moss,
+  },
+  badgeTextToxic: {
+    color: theme.functional.danger,
   },
   section: {
     marginTop: theme.spacing.s6,

@@ -5,14 +5,13 @@ import { AccessibilityInfo, ScrollView, View } from "react-native";
 import Animated, {
   FadeInDown,
   ReduceMotion,
-  ZoomIn,
+  FadeIn,
 } from "react-native-reanimated";
 
 import { BrotinhoArt } from "@/components/illustrations/BrotinhoArt";
 import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { Floating } from "@/components/ui/Floating";
 import { Header } from "@/components/ui/Header";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
@@ -101,9 +100,7 @@ export default function QuizScreen() {
 
         <View style={styles.over}>
           <Appear index={0}>
-            <Floating>
-              <BrotinhoArt size={128} />
-            </Floating>
+            <BrotinhoArt size={128} />
           </Appear>
 
           <Appear index={1} style={styles.overCopy}>
@@ -155,9 +152,7 @@ export default function QuizScreen() {
           {streak > 1 && (
             <Animated.View
               key={streak}
-              entering={ZoomIn.springify()
-                .damping(12)
-                .reduceMotion(ReduceMotion.System)}
+              entering={FadeIn.duration(180).reduceMotion(ReduceMotion.System)}
             >
               <Text family="mono" style={styles.streakChip}>
                 {t("combo", { count: streak })}
@@ -216,9 +211,9 @@ export default function QuizScreen() {
 
                   {reveal && (right || chosen) && (
                     <Animated.View
-                      entering={ZoomIn.springify()
-                        .damping(11)
-                        .reduceMotion(ReduceMotion.System)}
+                      entering={FadeIn.duration(180).reduceMotion(
+                        ReduceMotion.System,
+                      )}
                     >
                       <Feather
                         name={right ? "check" : "x"}

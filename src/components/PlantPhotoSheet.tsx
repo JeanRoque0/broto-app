@@ -70,12 +70,14 @@ export function PlantPhotoSheet({
         <MenuRow
           label={t("takePhoto")}
           icon="camera"
+          tone="clay"
           onPress={takePhoto}
           right={<View />}
         />
         <MenuRow
           label={t("chooseGallery")}
           icon="image"
+          tone="moss"
           onPress={chooseFromGallery}
           right={<View />}
           last={!onRemove}

@@ -9,6 +9,7 @@ import { GroupSheet } from "@/components/GroupSheet";
 import { PlantPhoto } from "@/components/PlantPhoto";
 import { PlantPhotoSheet } from "@/components/PlantPhotoSheet";
 import { TaskEditSheet } from "@/components/TaskEditSheet";
+import { DialogIcon } from "@/components/ui/DialogIcon";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
@@ -518,6 +519,7 @@ export default function PlantFormScreen() {
       />
 
       <ContainerModalCenter
+        icon={<DialogIcon name="image" tone="ochre" />}
         visible={photoWarning}
         onClose={cancelPhotoChange}
         title={t("photoChangeTitle")}

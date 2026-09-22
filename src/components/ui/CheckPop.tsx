@@ -1,13 +1,11 @@
 import { Feather } from "@expo/vector-icons";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
   interpolateColor,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
-  withSequence,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
 
@@ -18,40 +16,26 @@ const SIZE = 26;
 export function CheckPop({ checked }: { checked: boolean }) {
   const reduceMotion = useReducedMotion();
   const fill = useSharedValue(checked ? 1 : 0);
-  const scale = useSharedValue(1);
-  const was = useRef(checked);
 
   useEffect(() => {
-    const turnedOn = checked && !was.current;
-    was.current = checked;
-
-    fill.value = withTiming(checked ? 1 : 0, { duration: reduceMotion ? 0 : 180 });
-
-    if (turnedOn && !reduceMotion) {
-      scale.value = withSequence(
-        withTiming(1.28, { duration: 120 }),
-        withSpring(1, { damping: 9, stiffness: 260 }),
-      );
-    }
-  }, [checked, reduceMotion, fill, scale]);
+    fill.set(withTiming(checked ? 1 : 0, { duration: reduceMotion ? 0 : 180 }));
+  }, [checked, reduceMotion, fill]);
 
   const circle = useAnimatedStyle(() => ({
     backgroundColor: interpolateColor(
-      fill.value,
+      fill.get(),
       [0, 1],
       [theme.surface.card, theme.secondary.moss],
     ),
     borderColor: interpolateColor(
-      fill.value,
+      fill.get(),
       [0, 1],
       [theme.functional.lineStrong, theme.secondary.moss],
     ),
-    transform: [{ scale: scale.value }],
   }));
 
   const mark = useAnimatedStyle(() => ({
-    opacity: fill.value,
-    transform: [{ scale: 0.6 + fill.value * 0.4 }],
+    opacity: fill.get(),
   }));
 
   return (

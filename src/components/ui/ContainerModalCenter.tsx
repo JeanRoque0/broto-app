@@ -9,6 +9,7 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { Glass } from "@/components/ui/Glass";
 import { Text } from "@/components/ui/Text";
 import i18n from "@/i18n";
 import { theme } from "@/style/theme";
@@ -51,6 +52,7 @@ export function ContainerModalCenter({
         accessible={false}
         importantForAccessibility="no"
       >
+        <Glass tone="dark" intensity={22} style={styles.blur} />
         <Pressable
           style={[styles.dialog, dialogStyle]}
           accessible={false}
@@ -100,7 +102,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: theme.screenPadding,
-    backgroundColor: theme.surface.scrim,
+  },
+  blur: {
+    ...StyleSheet.absoluteFill,
   },
   dialog: {
     width: "100%",

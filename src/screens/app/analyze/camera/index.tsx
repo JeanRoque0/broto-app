@@ -8,23 +8,20 @@ import {
 } from "react-native-safe-area-context";
 
 import { CameraPlantArt } from "@/components/illustrations/CameraPlantArt";
+import { DialogIcon } from "@/components/ui/DialogIcon";
 import { Button } from "@/components/ui/Button";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { PhotoTipsSheet } from "@/components/PhotoTipsSheet";
-import { TourAnchor } from "@/components/tour/TourAnchor";
-import { Floating } from "@/components/ui/Floating";
 import { CircleButton } from "@/components/ui/CircleButton";
+import { Glass } from "@/components/ui/Glass";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { useStatusBarStyle } from "@/hooks/useStatusBarStyle";
 import { theme } from "@/style/theme";
-import { haptic } from "@/utils/haptics";
 
-import { GuideFrame } from "./components/GuideFrame";
 import { PhotoReview } from "./components/PhotoReview";
 import { styles } from "./style";
 import { useCamera } from "./useCamera";
-import { useCameraTour } from "./useCameraTour";
 
 const CREDITS_TOP = 56;
 
@@ -65,17 +62,13 @@ export default function CameraScreen() {
     closeTips,
   } = useCamera();
 
-  useCameraTour(!!permission?.granted && photos.length === 0);
-
   if (!permission?.granted) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.permission}>
           {canAskAgain ? (
             <View style={styles.permissionArt}>
-              <Floating>
-                <CameraPlantArt size={152} />
-              </Floating>
+              <CameraPlantArt size={152} />
             </View>
           ) : (
             <View style={styles.permissionIcon}>
@@ -148,41 +141,30 @@ export default function CameraScreen() {
           flash={flash}
         />
 
-        <GuideFrame />
+        <View style={styles.guide} pointerEvents="none">
+          <View style={[styles.corner, styles.cornerTopLeft]} />
+          <View style={[styles.corner, styles.cornerTopRight]} />
+          <View style={[styles.corner, styles.cornerBottomLeft]} />
+          <View style={[styles.corner, styles.cornerBottomRight]} />
+        </View>
 
         <View
           style={[styles.topbar, { paddingTop: insets.top + theme.spacing.s2 }]}
         >
           <CircleButton
             onPress={handleClose}
-            tone="light"
+            tone="glass"
             accessibilityLabel={t("close")}
           >
             <Feather name="x" size={18} color={theme.text.onDark} />
           </CircleButton>
 
           <View style={styles.topActions}>
-            <View>
-              <CircleButton
-                onPress={openTips}
-                tone="light"
-                accessibilityLabel={t("tipsOpen")}
-              >
-                <Feather
-                  name="help-circle"
-                  size={17}
-                  color={theme.text.onDark}
-                />
-              </CircleButton>
-              <TourAnchor id="camera.tips" />
-            </View>
-
             <CircleButton
               onPress={() => {
-                haptic.select();
                 toggleFlash();
               }}
-              tone="light"
+              tone="glass"
               accessibilityLabel={t("flash")}
               accessibilityRole="switch"
               accessibilityState={{ checked: flash === "on" }}
@@ -199,13 +181,17 @@ export default function CameraScreen() {
         <PhotoTipsSheet visible={tipsVisible} onClose={closeTips} />
 
         {!credits.isPro && (
-          <View style={[styles.credits, { top: insets.top + CREDITS_TOP }]}>
+          <Glass
+            tone="dark"
+            intensity={30}
+            style={[styles.credits, { top: insets.top + CREDITS_TOP }]}
+          >
             <Text family="mono" style={styles.creditsLabel}>
               {credits.inTrial && trialLabel
                 ? t("trialChip", { date: trialLabel })
                 : t("credits", { count: credits.total })}
             </Text>
-          </View>
+          </Glass>
         )}
 
         <View style={styles.hint} pointerEvents="none">
@@ -219,26 +205,22 @@ export default function CameraScreen() {
       <View style={styles.bottom}>
         <View style={styles.shutterbar}>
           <View style={styles.action}>
-            <View>
-              <RipplePressable
-                onPress={handlePickFromGallery}
-                disabled={blocked}
-                pressScale={0.92}
-                style={styles.sideButton}
-                accessibilityRole="button"
-                accessibilityLabel={t("gallery")}
-              >
-                <Feather name="image" size={19} color={theme.text.onDark} />
-              </RipplePressable>
-              <TourAnchor id="camera.gallery" />
-            </View>
+            <RipplePressable
+              onPress={handlePickFromGallery}
+              disabled={blocked}
+              pressScale={0.92}
+              style={styles.sideButton}
+              accessibilityRole="button"
+              accessibilityLabel={t("gallery")}
+            >
+              <Feather name="image" size={19} color={theme.text.onDark} />
+            </RipplePressable>
             <Text style={styles.actionLabel}>{t("galleryLabel")}</Text>
           </View>
 
           <View style={styles.action}>
             <RipplePressable
               onPress={() => {
-                haptic.tap();
                 handleCapture();
               }}
               disabled={capturing || blocked}
@@ -255,12 +237,22 @@ export default function CameraScreen() {
           </View>
 
           <View style={styles.action}>
-            <View style={styles.actionPlaceholder} />
+            <RipplePressable
+              onPress={openTips}
+              pressScale={0.92}
+              style={styles.sideButton}
+              accessibilityRole="button"
+              accessibilityLabel={t("tipsOpen")}
+            >
+              <Feather name="help-circle" size={19} color={theme.text.onDark} />
+            </RipplePressable>
+            <Text style={styles.actionLabel}>{t("tipsLabel")}</Text>
           </View>
         </View>
       </View>
 
       <ContainerModalCenter
+        icon={<DialogIcon name="lock" tone="clay" />}
         visible={blockedVisible}
         onClose={closeBlocked}
         title={atMonthCap ? t("capTitle") : t("blockedTitle")}

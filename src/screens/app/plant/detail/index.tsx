@@ -6,6 +6,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  StyleSheet,
   View,
 } from "react-native";
 import Animated, {
@@ -19,18 +20,21 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
 import {
   DIAGNOSIS_CARD_WIDTH,
   DiagnosisCard,
 } from "@/components/DiagnosisCard";
-import { TourAnchor } from "@/components/tour/TourAnchor";
+import { withHaptic } from "@/utils/haptics";
 import { ConfirmCard } from "@/components/ConfirmCard";
+import { InfoNote } from "@/components/InfoNote";
 import { CareRoutine } from "@/components/CareRoutine";
 import { CopyableName } from "@/components/CopyableName";
 import { PlantShareCard } from "@/components/PlantShareCard";
 import { Section, SectionTabs } from "@/components/SectionTabs";
 
+import { CareGrid, CareItem } from "@/components/CareGrid";
 import { TodayCard } from "./components/TodayCard";
 import { PhotoZoom } from "@/components/PhotoZoom";
 import { TaskEditSheet } from "@/components/TaskEditSheet";
@@ -38,6 +42,7 @@ import { ChatSuggestions } from "@/components/ChatSuggestions";
 import { QuizCard } from "@/components/QuizCard";
 import { PlantPhoto } from "@/components/PlantPhoto";
 import { PlantTimeline } from "./components/PlantTimeline";
+import { DialogIcon } from "@/components/ui/DialogIcon";
 import { BackIcon } from "@/components/ui/BackIcon";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -46,6 +51,7 @@ import { ContainerModal } from "@/components/ui/ContainerModal";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Glass } from "@/components/ui/Glass";
 import { Loader } from "@/components/ui/Loader";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { MenuRow } from "@/components/ui/Row";
@@ -55,13 +61,13 @@ import { useSpeciesFacts } from "@/hooks/useSpeciesFacts";
 import { useStatusBarStyle } from "@/hooks/useStatusBarStyle";
 import { useTemperatureUnit } from "@/hooks/useTemperatureUnit";
 import { convertRange } from "@/utils/temperature";
+import { getWateringInfo } from "@/utils/watering";
 import { theme } from "@/style/theme";
 import { Diagnosis, SymptomMark } from "@/types/identification";
 import { formatShortDate } from "@/utils/format";
 
 import { HEADER_PHOTO, styles } from "./style";
 import { usePlantDetail } from "./usePlantDetail";
-import { usePlantTour } from "./usePlantTour";
 
 const SNAP = DIAGNOSIS_CARD_WIDTH + theme.spacing.s3;
 type SectionLayout = { y: number; parent?: string; chip: boolean };
@@ -83,6 +89,7 @@ export default function PlantDetailScreen() {
   const { t: tAnalysis } = useTranslation("analysis");
   const { t: tCommon } = useTranslation();
   const { t: tChat } = useTranslation("chat");
+  const { t: tWatering } = useTranslation("watering");
   const insets = useSafeAreaInsets();
   const scrollY = useSharedValue(0);
   const [darkBar, setDarkBar] = useState(false);
@@ -140,8 +147,6 @@ export default function PlantDetailScreen() {
     edit,
     goBack,
   } = usePlantDetail();
-
-  usePlantTour(!isLoading && !!plant, goToSection);
 
   const { facts } = useSpeciesFacts(plant?.species_scientific);
   const { shot, share } = useShareCard();
@@ -224,12 +229,12 @@ export default function PlantDetailScreen() {
   }
 
   const onScroll = useAnimatedScrollHandler((event) => {
-    scrollY.value = event.contentOffset.y;
+    scrollY.set(event.contentOffset.y);
     runOnJS(syncActive)(event.contentOffset.y);
   });
 
   useAnimatedReaction(
-    () => scrollY.value > (BAR_IN + BAR_OUT) / 2,
+    () => scrollY.get() > (BAR_IN + BAR_OUT) / 2,
     (isDark, previous) => {
       if (isDark !== previous) runOnJS(setDarkBar)(isDark);
     },
@@ -239,7 +244,7 @@ export default function PlantDetailScreen() {
     transform: [
       {
         translateY: interpolate(
-          scrollY.value,
+          scrollY.get(),
           [-HEADER_PHOTO, 0, HEADER_PHOTO],
           [0, 0, -HEADER_PHOTO * 0.4],
           Extrapolation.CLAMP,
@@ -247,7 +252,7 @@ export default function PlantDetailScreen() {
       },
       {
         scale: interpolate(
-          scrollY.value,
+          scrollY.get(),
           [-HEADER_PHOTO, 0],
           [2, 1],
           Extrapolation.CLAMP,
@@ -258,7 +263,7 @@ export default function PlantDetailScreen() {
 
   const barStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
-      scrollY.value,
+      scrollY.get(),
       [BAR_IN, BAR_OUT],
       [0, 1],
       Extrapolation.CLAMP,
@@ -267,7 +272,7 @@ export default function PlantDetailScreen() {
 
   const overPhotoStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
-      scrollY.value,
+      scrollY.get(),
       [BAR_IN, BAR_OUT],
       [1, 0],
       Extrapolation.CLAMP,
@@ -301,9 +306,9 @@ export default function PlantDetailScreen() {
   const openDiagnosis = diagnoses.find((item) => !item.resolved_at);
 
   const sections: Section[] = [
-    { id: "brotinho", label: tChat("suggestionsEyebrow") },
     { id: "care", label: t("careEyebrow") },
     careTasks.length > 0 && { id: "routine", label: t("careEyebrowTasks") },
+    { id: "brotinho", label: tChat("suggestionsEyebrow") },
     facts?.cultivo && { id: "grow", label: tAnalysis("growTitle") },
     facts?.simbolismo && { id: "lore", label: tAnalysis("loreTitle") },
     diagnoses.length > 0 && { id: "diagnoses", label: t("diagEyebrow") },
@@ -326,43 +331,46 @@ export default function PlantDetailScreen() {
 
   const care = [
     {
-      icon: "water-outline" as const,
+      icon: "water-outline",
       label: t("intervalLabel"),
       value: plant.watering_interval_days
         ? t("interval", { count: plant.watering_interval_days })
         : t("noInterval"),
       note: "",
+      tone: "moss",
     },
     plant.light && {
-      icon: "white-balance-sunny" as const,
+      icon: "white-balance-sunny",
       label: t("lightLabel"),
       value: tAnalysis(`luz_${plant.light}`, plant.light),
       note: plant.light_note ?? "",
+      tone: "ochre",
     },
     plant.fertilizer && {
-      icon: "sprout-outline" as const,
+      icon: "sprout-outline",
       label: t("fertilizerLabel"),
       value: tAnalysis(`adubo_${plant.fertilizer}`, plant.fertilizer),
       note: plant.fertilizer_note ?? "",
+      tone: "clay",
     },
     temperature && {
-      icon: "thermometer" as const,
+      icon: "thermometer",
       label: tAnalysis("temperatureLabel"),
       value: tAnalysis("temperatureRange", convertRange(temperature, unit)),
       note: temperature.nota,
+      tone: "neutral",
     },
     plant.care_notes && {
-      icon: "note-text-outline" as const,
+      icon: "note-text-outline",
       label: t("notesLabel"),
       value: plant.care_notes,
       note: "",
+      tone: "neutral",
+      wide: true,
     },
-  ].filter(Boolean) as {
-    icon: "water-outline";
-    label: string;
-    value: string;
-    note: string;
-  }[];
+  ].filter(Boolean) as CareItem[];
+
+  const watering = getWateringInfo(plant);
 
   return (
     <View style={styles.flex}>
@@ -378,6 +386,17 @@ export default function PlantDetailScreen() {
             />
           }
         />
+        <LinearGradient
+          colors={[
+            theme.functional.black35,
+            "transparent",
+            "transparent",
+            theme.functional.black35,
+          ]}
+          locations={[0, 0.3, 0.65, 1]}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
       </Animated.View>
 
       <Animated.ScrollView
@@ -390,11 +409,11 @@ export default function PlantDetailScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Pressable
-          onPress={() =>
+          onPress={withHaptic(() =>
             plant.photo_path
               ? setZoom({ mark: null, path: plant.photo_path, index: null })
-              : edit()
-          }
+              : edit(),
+          )}
           style={styles.heroTouch}
           accessibilityRole="imagebutton"
           accessibilityLabel={
@@ -420,6 +439,31 @@ export default function PlantDetailScreen() {
               <Text style={styles.species}>{plant.species_scientific}</Text>
             )}
 
+            <View style={styles.badges}>
+              <View style={[styles.badge, styles.badgeWater]}>
+                <MaterialCommunityIcons
+                  name="water-outline"
+                  size={14}
+                  color={theme.secondary.moss}
+                />
+                <Text style={[styles.badgeText, styles.badgeTextWater]}>
+                  {tWatering(watering.labelKey, watering.labelParams)}
+                </Text>
+              </View>
+              {plant.toxic_to_pets && (
+                <View style={[styles.badge, styles.badgeToxic]}>
+                  <MaterialCommunityIcons
+                    name="paw"
+                    size={14}
+                    color={theme.functional.danger}
+                  />
+                  <Text style={[styles.badgeText, styles.badgeTextToxic]}>
+                    {t("toxicBadge")}
+                  </Text>
+                </View>
+              )}
+            </View>
+
             <View onLayout={registerAnchor("today")}>
               <TodayCard
                 tasks={todayTasks}
@@ -427,33 +471,8 @@ export default function PlantDetailScreen() {
                 pending={pendingTask}
                 onComplete={complete}
               />
-              <TourAnchor id="plant.today" />
             </View>
           </View>
-          <View
-            style={[styles.section, styles.padded]}
-            onLayout={registerSection("brotinho")}
-          >
-            <ChatSuggestions
-              seed={plant.id}
-              scopes={["plant", "diagnosis"]}
-              plantId={plant.id}
-              plantName={plant.nickname}
-              speciesName={plant.species_common}
-              met={[
-                ...(plant.toxic_to_pets ? (["toxic"] as const) : []),
-                ...(diagnoses.some((item) => !item.resolved_at)
-                  ? (["hasDiagnosis"] as const)
-                  : []),
-                ...(events.length === 0 ? (["neverWatered"] as const) : []),
-              ]}
-            />
-          </View>
-
-          <View style={[styles.quizBlock, styles.padded]}>
-            <QuizCard />
-          </View>
-
           <View
             style={[styles.section, styles.padded]}
             onLayout={registerSection("care")}
@@ -465,34 +484,7 @@ export default function PlantDetailScreen() {
             >
               {t("careEyebrow")}
             </Text>
-            <Card style={styles.careCard}>
-              {care.map((item, index) => (
-                <View
-                  key={item.label}
-                  style={[
-                    styles.careRow,
-                    index === care.length - 1 && styles.careRowLast,
-                  ]}
-                >
-                  <View style={styles.careIcon}>
-                    <MaterialCommunityIcons
-                      name={item.icon}
-                      size={18}
-                      color={theme.primary.clay}
-                    />
-                  </View>
-                  <View style={styles.careTexts}>
-                    <Text family="mono" style={styles.careLabel}>
-                      {item.label}
-                    </Text>
-                    <Text style={styles.careValue}>{item.value}</Text>
-                    {!!item.note && (
-                      <Text style={styles.careNote}>{item.note}</Text>
-                    )}
-                  </View>
-                </View>
-              ))}
-            </Card>
+            <CareGrid items={care} />
           </View>
 
           {plant.toxic_to_pets && (
@@ -526,7 +518,6 @@ export default function PlantDetailScreen() {
               <Text style={styles.sectionHint}>{t("careTasksHint")}</Text>
 
               <View style={styles.routine}>
-                <TourAnchor id="plant.care" />
                 <CareRoutine
                   tasks={careTasks}
                   onEdit={editTask}
@@ -559,6 +550,30 @@ export default function PlantDetailScreen() {
             </View>
           )}
 
+          <View
+            style={[styles.section, styles.padded]}
+            onLayout={registerSection("brotinho")}
+          >
+            <ChatSuggestions
+              seed={plant.id}
+              scopes={["plant", "diagnosis"]}
+              plantId={plant.id}
+              plantName={plant.nickname}
+              speciesName={plant.species_common}
+              met={[
+                ...(plant.toxic_to_pets ? (["toxic"] as const) : []),
+                ...(diagnoses.some((item) => !item.resolved_at)
+                  ? (["hasDiagnosis"] as const)
+                  : []),
+                ...(events.length === 0 ? (["neverWatered"] as const) : []),
+              ]}
+            />
+          </View>
+
+          <View style={[styles.quizBlock, styles.padded]}>
+            <QuizCard />
+          </View>
+
           {facts?.cultivo ? (
             <View
               style={[styles.section, styles.padded]}
@@ -571,9 +586,7 @@ export default function PlantDetailScreen() {
               >
                 {tAnalysis("growTitle")}
               </Text>
-              <Card style={styles.infoCard}>
-                <Text style={styles.cardText}>{facts.cultivo}</Text>
-              </Card>
+              <InfoNote icon="shovel" tone="moss" text={facts.cultivo} />
             </View>
           ) : null}
 
@@ -589,9 +602,11 @@ export default function PlantDetailScreen() {
               >
                 {tAnalysis("loreTitle")}
               </Text>
-              <Card style={styles.infoCard}>
-                <Text style={styles.cardText}>{facts.simbolismo}</Text>
-              </Card>
+              <InfoNote
+                icon="star-four-points-outline"
+                tone="ochre"
+                text={facts.simbolismo}
+              />
             </View>
           ) : null}
 
@@ -832,6 +847,7 @@ export default function PlantDetailScreen() {
           barHeight.current = event.nativeEvent.layout.height;
         }}
       >
+        <Glass tone="base" style={StyleSheet.absoluteFill} />
         <View style={styles.barInner} pointerEvents="none">
           <Text style={styles.barTitle} numberOfLines={1}>
             {plant.nickname}
@@ -860,7 +876,7 @@ export default function PlantDetailScreen() {
         >
           <CircleButton
             onPress={goBack}
-            style={styles.backOnPhoto}
+            tone="glass"
             accessibilityLabel={tCommon("back")}
           >
             <BackIcon color={theme.text.onDark} />
@@ -869,7 +885,6 @@ export default function PlantDetailScreen() {
       </View>
       <View style={[styles.share, { top: insets.top + theme.spacing.s2 }]}>
         <Animated.View style={barStyle}>
-          <TourAnchor id="plant.menu" />
           <CircleButton onPress={openMenu} accessibilityLabel={t("plantMenu")}>
             <Feather
               name="more-horizontal"
@@ -885,7 +900,7 @@ export default function PlantDetailScreen() {
         >
           <CircleButton
             onPress={openMenu}
-            style={styles.backOnPhoto}
+            tone="glass"
             accessibilityLabel={t("plantMenu")}
           >
             <Feather
@@ -937,6 +952,7 @@ export default function PlantDetailScreen() {
           <MenuRow
             label={t("menuShare")}
             icon={Platform.OS === "ios" ? "share" : "share-2"}
+            tone="moss"
             onPress={() => {
               closeMenu();
               share();
@@ -945,6 +961,7 @@ export default function PlantDetailScreen() {
           <MenuRow
             label={t("editPlant")}
             icon="edit-2"
+            tone="ochre"
             onPress={() => {
               closeMenu();
               edit();
@@ -964,6 +981,7 @@ export default function PlantDetailScreen() {
       </ContainerModal>
 
       <ContainerModalCenter
+        icon={<DialogIcon name="trash-2" tone="danger" />}
         visible={removeVisible}
         onClose={closeRemove}
         title={t("removeTitle")}

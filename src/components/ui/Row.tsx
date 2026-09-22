@@ -51,7 +51,17 @@ type MenuRowProps = {
   onPress?: () => void;
   right?: React.ReactNode;
   danger?: boolean;
+  tone?: MenuTone;
   last?: boolean;
+};
+
+type MenuTone = "neutral" | "clay" | "moss" | "ochre";
+
+const TONES: Record<MenuTone, { bg: string; fg: string }> = {
+  neutral: { bg: theme.surface.container, fg: theme.text.primary },
+  clay: { bg: theme.primary.claySoft, fg: theme.primary.clay },
+  moss: { bg: theme.secondary.mossSoft, fg: theme.secondary.moss },
+  ochre: { bg: theme.secondary.ochreSoft, fg: theme.secondary.ochre },
 };
 
 export function MenuRow({
@@ -62,18 +72,28 @@ export function MenuRow({
   onPress,
   right,
   danger = false,
+  tone = "neutral",
   last = false,
 }: MenuRowProps) {
+  const palette = TONES[tone];
   const color = danger ? theme.functional.danger : theme.text.primary;
 
   const content = (
     <>
       {icon && (
-        <Feather
-          name={icon}
-          size={18}
-          color={danger ? theme.functional.danger : theme.text.secondary}
-        />
+        <View
+          style={[
+            styles.menuIcon,
+            { backgroundColor: palette.bg },
+            danger && styles.menuIconDanger,
+          ]}
+        >
+          <Feather
+            name={icon}
+            size={16}
+            color={danger ? theme.functional.danger : palette.fg}
+          />
+        </View>
       )}
       <View style={styles.menuTexts}>
         <Text style={[styles.menuLabel, { color }]}>{label}</Text>
@@ -136,11 +156,22 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     textAlign: "right",
   },
+  menuIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 9,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: theme.surface.container,
+  },
+  menuIconDanger: {
+    backgroundColor: theme.functional.dangerSoft,
+  },
   menuRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: theme.spacing.s4,
-    paddingVertical: 15,
+    gap: theme.spacing.s3,
+    paddingVertical: 12,
     paddingHorizontal: theme.spacing.s4,
     borderBottomWidth: 1,
     borderBottomColor: theme.functional.line,

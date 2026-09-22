@@ -3,7 +3,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  BackHandler,
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
@@ -18,6 +17,7 @@ import Animated, {
   FadeOut,
   LinearTransition,
   runOnJS,
+  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -25,7 +25,8 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MarkedPhoto } from "@/components/MarkedPhoto";
-import { CircleButton } from "@/components/ui/CircleButton";
+import { ViewerShell } from "@/components/ViewerShell";
+import { Glass } from "@/components/ui/Glass";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
@@ -85,19 +86,19 @@ function ZoomStage({
   }, [scale, saved, x, y, savedX, savedY, onZoomChange]);
 
   useEffect(() => {
-    if (!active && saved.value > MIN_SCALE) reset();
+    if (!active && saved.get() > MIN_SCALE) reset();
   }, [active, reset, saved]);
 
   const gesture = useMemo(() => {
     const pinch = Gesture.Pinch()
       .onUpdate((event) => {
         scale.set(
-          Math.min(MAX_SCALE, Math.max(MIN_SCALE, saved.value * event.scale)),
+          Math.min(MAX_SCALE, Math.max(MIN_SCALE, saved.get() * event.scale)),
         );
       })
       .onEnd(() => {
-        saved.set(scale.value);
-        const isZoomed = scale.value > MIN_SCALE;
+        saved.set(scale.get());
+        const isZoomed = scale.get() > MIN_SCALE;
 
         if (!isZoomed) {
           x.set(withTiming(0));
@@ -113,18 +114,18 @@ function ZoomStage({
       .enabled(zoomed)
       .averageTouches(true)
       .onUpdate((event) => {
-        x.set(savedX.value + event.translationX);
-        y.set(savedY.value + event.translationY);
+        x.set(savedX.get() + event.translationX);
+        y.set(savedY.get() + event.translationY);
       })
       .onEnd(() => {
-        savedX.set(x.value);
-        savedY.set(y.value);
+        savedX.set(x.get());
+        savedY.set(y.get());
       });
 
     const doubleTap = Gesture.Tap()
       .numberOfTaps(2)
       .onEnd(() => {
-        const next = scale.value > MIN_SCALE ? MIN_SCALE : TAP_SCALE;
+        const next = scale.get() > MIN_SCALE ? MIN_SCALE : TAP_SCALE;
         scale.set(withTiming(next));
         saved.set(next);
 
@@ -143,9 +144,9 @@ function ZoomStage({
 
   const stageStyle = useAnimatedStyle(() => ({
     transform: [
-      { translateX: x.value },
-      { translateY: y.value },
-      { scale: scale.value },
+      { translateX: x.get() },
+      { translateY: y.get() },
+      { scale: scale.get() },
     ],
   }));
 
@@ -165,6 +166,18 @@ function ZoomStage({
     </GestureDetector>
   );
 }
+
+type ZoomPanelProps = {
+  active: Diagnosis | null;
+  pages: Diagnosis[];
+  index: number;
+  carousel: boolean;
+  expanded: boolean;
+  onToggle: () => void;
+  dim: SharedValue<number>;
+  bottom: number;
+  maxHeight: number;
+};
 
 type PhotoZoomProps = {
   visible: boolean;
@@ -187,7 +200,6 @@ export function PhotoZoom({
   onClose,
   closeLabel,
 }: PhotoZoomProps) {
-  const { t } = useTranslation("analysis");
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
 
@@ -220,20 +232,6 @@ export function PhotoZoom({
     dim.set(withTiming(expanded ? 0.6 : 0, { duration: MOTION }));
   }, [expanded, dim]);
 
-  useEffect(() => {
-    if (!visible) return;
-
-    const subscription = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        onClose();
-        return true;
-      },
-    );
-
-    return () => subscription.remove();
-  }, [visible, onClose]);
-
   function onPage(event: NativeSyntheticEvent<NativeScrollEvent>) {
     const next = Math.round(event.nativeEvent.contentOffset.x / width);
     if (next === index) return;
@@ -241,83 +239,99 @@ export function PhotoZoom({
     setExpanded(false);
   }
 
-  const dimStyle = useAnimatedStyle(() => ({ opacity: dim.value }));
-  const chevronStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${dim.value * (180 / 0.6)}deg` }],
-  }));
-
   if (!visible) return null;
 
   const active = pages[index] ?? null;
 
+  const footer = zoomed ? null : (
+    <ZoomPanel
+      active={active}
+      pages={pages}
+      index={index}
+      carousel={carousel}
+      expanded={expanded}
+      onToggle={() => setExpanded((previous) => !previous)}
+      dim={dim}
+      bottom={insets.bottom + theme.spacing.s4}
+      maxHeight={height * 0.4}
+    />
+  );
+
   return (
-    <Animated.View
-      style={styles.root}
-      entering={FadeIn.duration(160)}
-      exiting={FadeOut.duration(140)}
-    >
+    <View style={styles.root}>
       <StatusBar hidden />
 
-      {carousel ? (
-        <ScrollView
-          ref={pager}
-          horizontal
-          pagingEnabled
-          scrollEnabled={!zoomed}
-          showsHorizontalScrollIndicator={false}
-          onMomentumScrollEnd={onPage}
-          contentOffset={{ x: initialIndex * width, y: 0 }}
-        >
-          {pages.map((item, position) => (
-            <ZoomStage
-              key={item.causa}
-              uri={uri}
-              path={path}
-              mark={item.marcacao}
-              width={width}
-              height={height}
-              active={position === index}
-              zoomed={zoomed}
-              onZoomChange={setZoomed}
-            />
-          ))}
-        </ScrollView>
-      ) : (
-        <ZoomStage
-          uri={uri}
-          path={path}
-          mark={active?.marcacao ?? mark}
-          width={width}
-          height={height}
-          active
-          zoomed={zoomed}
-          onZoomChange={setZoomed}
-        />
-      )}
-
-      <Animated.View style={[styles.scrim, dimStyle]} pointerEvents="none" />
-
-      <View
-        style={[
-          styles.close,
-          { top: insets.top + theme.spacing.s3, left: theme.screenPadding },
-        ]}
+      <ViewerShell
+        onClose={onClose}
+        closeLabel={closeLabel}
+        counter={carousel ? `${index + 1} / ${pages.length}` : undefined}
+        draggable={!zoomed && !expanded}
+        footer={footer}
       >
-        <CircleButton
-          onPress={onClose}
-          tone="light"
-          accessibilityLabel={closeLabel}
-        >
-          <Feather name="x" size={18} color={theme.text.onDark} />
-        </CircleButton>
-      </View>
+        {carousel ? (
+          <ScrollView
+            ref={pager}
+            horizontal
+            pagingEnabled
+            scrollEnabled={!zoomed}
+            showsHorizontalScrollIndicator={false}
+            onMomentumScrollEnd={onPage}
+            contentOffset={{ x: initialIndex * width, y: 0 }}
+          >
+            {pages.map((item, position) => (
+              <ZoomStage
+                key={item.causa}
+                uri={uri}
+                path={path}
+                mark={item.marcacao}
+                width={width}
+                height={height}
+                active={position === index}
+                zoomed={zoomed}
+                onZoomChange={setZoomed}
+              />
+            ))}
+          </ScrollView>
+        ) : (
+          <ZoomStage
+            uri={uri}
+            path={path}
+            mark={active?.marcacao ?? mark}
+            width={width}
+            height={height}
+            active
+            zoomed={zoomed}
+            onZoomChange={setZoomed}
+          />
+        )}
+      </ViewerShell>
+    </View>
+  );
+}
 
-      {active && !zoomed && (
+function ZoomPanel({
+  active,
+  pages,
+  index,
+  carousel,
+  expanded,
+  onToggle,
+  dim,
+  bottom,
+  maxHeight,
+}: ZoomPanelProps) {
+  const { t } = useTranslation("analysis");
+  const dimStyle = useAnimatedStyle(() => ({ opacity: dim.get() }));
+  const chevronStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${dim.get() * (180 / 0.6)}deg` }],
+  }));
+
+  return (
+    <>
+      <Animated.View style={[styles.scrim, dimStyle]} pointerEvents="none" />
+      {active && (
         <Animated.View
-          style={[
-            styles.panel,
-            { paddingBottom: insets.bottom + theme.spacing.s5 },
-          ]}
+          style={[styles.panel, { paddingBottom: bottom }]}
           layout={LinearTransition.duration(MOTION)}
         >
           <LinearGradient
@@ -330,69 +344,72 @@ export function PhotoZoom({
           {carousel && (
             <View style={styles.dots}>
               {pages.map((item, position) => (
-                <View
+                <Animated.View
                   key={item.causa}
+                  layout={LinearTransition.duration(MOTION)}
                   style={[styles.dot, position === index && styles.dotActive]}
                 />
               ))}
             </View>
           )}
 
-          <RipplePressable
-            onPress={() => setExpanded((previous) => !previous)}
-            style={styles.panelTouch}
-            accessibilityRole="button"
-            accessibilityState={{ expanded }}
-          >
-            <View style={styles.panelHead}>
-              <Text family="display" style={styles.cause}>
-                {active.causa}
-              </Text>
-              <Animated.View style={chevronStyle}>
-                <Feather
-                  name="chevron-up"
-                  size={18}
-                  color={theme.text.onDark}
-                />
-              </Animated.View>
-            </View>
+          <Glass tone="dark" intensity={40} style={styles.card}>
+            <RipplePressable
+              onPress={onToggle}
+              style={styles.panelTouch}
+              accessibilityRole="button"
+              accessibilityState={{ expanded }}
+            >
+              <View style={styles.panelHead}>
+                <Text family="display" style={styles.cause}>
+                  {active.causa}
+                </Text>
+                <Animated.View style={chevronStyle}>
+                  <Feather
+                    name="chevron-up"
+                    size={18}
+                    color={theme.text.onDark}
+                  />
+                </Animated.View>
+              </View>
 
-            <Animated.View layout={LinearTransition.duration(MOTION)}>
-              {expanded ? (
-                <Animated.View
-                  key="full"
-                  entering={FadeIn.duration(MOTION)}
-                  exiting={FadeOut.duration(120)}
-                >
-                  <ScrollView
-                    style={{ maxHeight: height * 0.4 }}
-                    showsVerticalScrollIndicator={false}
+              <Animated.View layout={LinearTransition.duration(MOTION)}>
+                {expanded ? (
+                  <Animated.View
+                    key="full"
+                    entering={FadeIn.duration(MOTION)}
+                    exiting={FadeOut.duration(120)}
                   >
-                    <Text style={styles.label}>{t("signsLabel")}</Text>
-                    <Text style={styles.body}>{active.sinais}</Text>
+                    <ScrollView
+                      style={{ maxHeight }}
+                      showsVerticalScrollIndicator={false}
+                    >
+                      <Text style={styles.label}>{t("signsLabel")}</Text>
+                      <Text style={styles.body}>{active.sinais}</Text>
 
-                    <Text style={[styles.label, styles.labelSpaced]}>
-                      {t("actionLabel")}
+                      <Text style={[styles.label, styles.labelSpaced]}>
+                        {t("actionLabel")}
+                      </Text>
+                      <Text style={styles.body}>{active.acao}</Text>
+                    </ScrollView>
+                  </Animated.View>
+                ) : (
+                  <Animated.View
+                    key="short"
+                    entering={FadeIn.duration(MOTION)}
+                    exiting={FadeOut.duration(120)}
+                  >
+                    <Text style={styles.body} numberOfLines={3}>
+                      {active.sinais}
                     </Text>
-                    <Text style={styles.body}>{active.acao}</Text>
-                  </ScrollView>
-                </Animated.View>
-              ) : (
-                <Animated.View
-                  key="short"
-                  entering={FadeIn.duration(MOTION)}
-                  exiting={FadeOut.duration(120)}
-                >
-                  <Text style={styles.body} numberOfLines={3}>
-                    {active.sinais}
-                  </Text>
-                </Animated.View>
-              )}
-            </Animated.View>
-          </RipplePressable>
+                  </Animated.View>
+                )}
+              </Animated.View>
+            </RipplePressable>
+          </Glass>
         </Animated.View>
       )}
-    </Animated.View>
+    </>
   );
 }
 
@@ -401,9 +418,11 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
     zIndex: 30,
     elevation: 30,
-    backgroundColor: theme.surface.dark,
-    alignItems: "center",
-    justifyContent: "center",
+  },
+  card: {
+    marginHorizontal: theme.spacing.s3,
+    paddingBottom: theme.spacing.s4,
+    borderRadius: theme.radius.lg,
   },
   stage: {
     alignItems: "center",
@@ -430,7 +449,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    top: -140,
+    top: -80,
     bottom: 0,
   },
   dots: {
@@ -447,6 +466,7 @@ const styles = StyleSheet.create({
     opacity: 0.32,
   },
   dotActive: {
+    width: 20,
     opacity: 1,
   },
   panelTouch: {

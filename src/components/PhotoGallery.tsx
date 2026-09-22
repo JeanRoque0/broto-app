@@ -1,9 +1,7 @@
-import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { setStatusBarStyle } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  BackHandler,
   Modal,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -26,7 +24,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { CircleButton } from "@/components/ui/CircleButton";
+import { ViewerShell } from "@/components/ViewerShell";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import i18n from "@/i18n";
 import { theme } from "@/style/theme";
@@ -68,19 +66,19 @@ function GalleryPage({
   }, [scale, saved, x, y, savedX, savedY, onZoomChange]);
 
   useEffect(() => {
-    if (!active && saved.value > MIN_SCALE) reset();
+    if (!active && saved.get() > MIN_SCALE) reset();
   }, [active, reset, saved]);
 
   const gesture = useMemo(() => {
     const pinch = Gesture.Pinch()
       .onUpdate((event) => {
         scale.set(
-          Math.min(MAX_SCALE, Math.max(MIN_SCALE, saved.value * event.scale)),
+          Math.min(MAX_SCALE, Math.max(MIN_SCALE, saved.get() * event.scale)),
         );
       })
       .onEnd(() => {
-        saved.set(scale.value);
-        const isZoomed = scale.value > MIN_SCALE;
+        saved.set(scale.get());
+        const isZoomed = scale.get() > MIN_SCALE;
 
         if (!isZoomed) {
           x.set(withTiming(0));
@@ -96,18 +94,18 @@ function GalleryPage({
       .enabled(zoomed)
       .averageTouches(true)
       .onUpdate((event) => {
-        x.set(savedX.value + event.translationX);
-        y.set(savedY.value + event.translationY);
+        x.set(savedX.get() + event.translationX);
+        y.set(savedY.get() + event.translationY);
       })
       .onEnd(() => {
-        savedX.set(x.value);
-        savedY.set(y.value);
+        savedX.set(x.get());
+        savedY.set(y.get());
       });
 
     const doubleTap = Gesture.Tap()
       .numberOfTaps(2)
       .onEnd(() => {
-        const next = scale.value > MIN_SCALE ? MIN_SCALE : TAP_SCALE;
+        const next = scale.get() > MIN_SCALE ? MIN_SCALE : TAP_SCALE;
         scale.set(withTiming(next));
         saved.set(next);
 
@@ -126,9 +124,9 @@ function GalleryPage({
 
   const style = useAnimatedStyle(() => ({
     transform: [
-      { translateX: x.value },
-      { translateY: y.value },
-      { scale: scale.value },
+      { translateX: x.get() },
+      { translateY: y.get() },
+      { scale: scale.get() },
     ],
   }));
 
@@ -182,16 +180,10 @@ export function PhotoGallery({
 
     setStatusBarStyle("light");
 
-    const listener = BackHandler.addEventListener("hardwareBackPress", () => {
-      onClose();
-      return true;
-    });
-
     return () => {
-      listener.remove();
       setStatusBarStyle("dark");
     };
-  }, [visible, onClose]);
+  }, [visible]);
 
   function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
     setIndex(Math.round(event.nativeEvent.contentOffset.x / width));
@@ -202,11 +194,42 @@ export function PhotoGallery({
     pager.current?.scrollTo({ x: position * width, animated: true });
   }
 
+  const strip =
+    images.length > 1 && !zoomed ? (
+      <View style={[styles.strip, { bottom: insets.bottom + 20 }]}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.stripContent}
+        >
+          {images.map((source, position) => (
+            <RipplePressable
+              key={source}
+              onPress={() => goTo(position)}
+              style={[styles.thumb, position === index && styles.thumbActive]}
+              accessibilityRole="button"
+              accessibilityLabel={i18n.t("photoOf", {
+                index: position + 1,
+                total: images.length,
+              })}
+              accessibilityState={{ selected: position === index }}
+            >
+              <Image
+                source={{ uri: source }}
+                style={styles.thumbImage}
+                contentFit="cover"
+              />
+            </RipplePressable>
+          ))}
+        </ScrollView>
+      </View>
+    ) : null;
+
   return (
     <Modal
       visible={visible}
       transparent
-      animationType="fade"
+      animationType="none"
       onRequestClose={onClose}
       statusBarTranslucent
       navigationBarTranslucent
@@ -214,74 +237,36 @@ export function PhotoGallery({
       <GestureHandlerRootView style={styles.root}>
         <StatusBar hidden />
 
-        <ScrollView
-          ref={pager}
-          horizontal
-          pagingEnabled
-          scrollEnabled={!zoomed}
-          showsHorizontalScrollIndicator={false}
-          onMomentumScrollEnd={onScroll}
-          contentOffset={{ x: initialIndex * width, y: 0 }}
+        <ViewerShell
+          onClose={onClose}
+          closeLabel={closeLabel}
+          counter={
+            images.length > 1 ? `${index + 1} / ${images.length}` : undefined
+          }
+          draggable={!zoomed}
+          footer={strip}
         >
-          {images.map((source, position) => (
-            <GalleryPage
-              key={source}
-              uri={source}
-              width={width}
-              active={position === index}
-              zoomed={zoomed}
-              onZoomChange={setZoomed}
-            />
-          ))}
-        </ScrollView>
-
-        {images.length > 1 && !zoomed && (
-          <View style={[styles.strip, { bottom: insets.bottom + 20 }]}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.stripContent}
-            >
-              {images.map((source, position) => (
-                <RipplePressable
-                  key={source}
-                  onPress={() => goTo(position)}
-                  style={[
-                    styles.thumb,
-                    position === index && styles.thumbActive,
-                  ]}
-                  accessibilityRole="button"
-                  accessibilityLabel={i18n.t("photoOf", {
-                    index: position + 1,
-                    total: images.length,
-                  })}
-                  accessibilityState={{ selected: position === index }}
-                >
-                  <Image
-                    source={{ uri: source }}
-                    style={styles.thumbImage}
-                    contentFit="cover"
-                  />
-                </RipplePressable>
-              ))}
-            </ScrollView>
-          </View>
-        )}
-
-        <View
-          style={[
-            styles.close,
-            { top: insets.top + theme.spacing.s3, left: theme.screenPadding },
-          ]}
-        >
-          <CircleButton
-            onPress={onClose}
-            tone="light"
-            accessibilityLabel={closeLabel}
+          <ScrollView
+            ref={pager}
+            horizontal
+            pagingEnabled
+            scrollEnabled={!zoomed}
+            showsHorizontalScrollIndicator={false}
+            onMomentumScrollEnd={onScroll}
+            contentOffset={{ x: initialIndex * width, y: 0 }}
           >
-            <Feather name="x" size={18} color={theme.text.onDark} />
-          </CircleButton>
-        </View>
+            {images.map((source, position) => (
+              <GalleryPage
+                key={source}
+                uri={source}
+                width={width}
+                active={position === index}
+                zoomed={zoomed}
+                onZoomChange={setZoomed}
+              />
+            ))}
+          </ScrollView>
+        </ViewerShell>
       </GestureHandlerRootView>
     </Modal>
   );
@@ -290,7 +275,6 @@ export function PhotoGallery({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: theme.surface.dark,
   },
   page: {
     flex: 1,
@@ -326,8 +310,5 @@ const styles = StyleSheet.create({
   thumbImage: {
     width: "100%",
     height: "100%",
-  },
-  close: {
-    position: "absolute",
   },
 });

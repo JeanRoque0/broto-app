@@ -4,9 +4,7 @@ import { theme } from "@/style/theme";
 import { type } from "@/style/typography";
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: {},
   topbar: {
     flexDirection: "row",
     alignItems: "center",
@@ -21,8 +19,9 @@ export const styles = StyleSheet.create({
   },
   slide: {
     alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: theme.screenPadding,
-    paddingTop: 40,
+    paddingBottom: theme.spacing.s6,
   },
   copy: {
     alignItems: "center",

@@ -23,7 +23,9 @@ const CEILING = 0.92;
 export function ReadingStatus() {
   const { t } = useTranslation("analysis");
   const reduceMotion = useReducedMotion();
-  const steps = t("readingSteps", { returnObjects: true }) as unknown as string[];
+  const steps = t("readingSteps", {
+    returnObjects: true,
+  }) as unknown as string[];
   const [index, setIndex] = useState(0);
   const progress = useSharedValue(0);
 
@@ -34,14 +36,16 @@ export function ReadingStatus() {
   }, [index, steps.length]);
 
   useEffect(() => {
-    progress.value = withTiming(CEILING, {
-      duration: reduceMotion ? 0 : CREEP,
-      easing: Easing.out(Easing.cubic),
-    });
+    progress.set(
+      withTiming(CEILING, {
+        duration: reduceMotion ? 0 : CREEP,
+        easing: Easing.out(Easing.cubic),
+      }),
+    );
   }, [progress, reduceMotion]);
 
   const fill = useAnimatedStyle(() => ({
-    width: `${progress.value * 100}%`,
+    width: `${progress.get() * 100}%`,
   }));
 
   return (

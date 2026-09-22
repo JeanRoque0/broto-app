@@ -18,6 +18,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { TourAnchor } from "@/components/tour/TourAnchor";
+import { Glass } from "@/components/ui/Glass";
 import { BrotinhoFace } from "@/components/illustrations/BrotinhoArt";
 import { useAnalysisStore } from "@/store";
 import { theme } from "@/style/theme";
@@ -78,20 +79,20 @@ function TabItem({ config, label, focused, onPress }: TabItemProps) {
   const progress = useSharedValue(focused ? 1 : 0);
 
   useEffect(() => {
-    progress.value = withTiming(focused ? 1 : 0, { duration: DURATION });
+    progress.set(withTiming(focused ? 1 : 0, { duration: DURATION }));
   }, [focused, progress]);
 
   const pillStyle = useAnimatedStyle(() => ({
-    opacity: progress.value,
-    transform: [{ scale: interpolate(progress.value, [0, 1], [0.8, 1]) }],
+    opacity: progress.get(),
+    transform: [{ scale: interpolate(progress.get(), [0, 1], [0.8, 1]) }],
   }));
 
   const restingIconStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0, 1], [1, 0]),
+    opacity: interpolate(progress.get(), [0, 1], [1, 0]),
   }));
 
   const activeIconStyle = useAnimatedStyle(() => ({
-    opacity: progress.value,
+    opacity: progress.get(),
     ...StyleSheet.absoluteFill,
     alignItems: "center",
     justifyContent: "center",
@@ -99,7 +100,7 @@ function TabItem({ config, label, focused, onPress }: TabItemProps) {
 
   const labelStyle = useAnimatedStyle(() => ({
     color: interpolateColor(
-      progress.value,
+      progress.get(),
       [0, 1],
       [theme.text.secondary, theme.primary.clay],
     ),
@@ -173,6 +174,7 @@ export function AppTabBar({ state, navigation }: BottomTabBarProps) {
       pointerEvents="box-none"
     >
       <View style={styles.bar}>
+        <Glass style={styles.glass} />
         {state.routes.map((route, index) => {
           const config = TABS.find((tab) => tab.name === route.name);
           if (!config) return null;
@@ -230,7 +232,6 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     padding: theme.spacing.s2,
     gap: theme.spacing.s1,
-    backgroundColor: theme.surface.card,
     borderWidth: 1,
     borderColor: theme.functional.line,
     borderRadius: theme.radius.sheet,
@@ -239,6 +240,10 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     shadowOffset: { width: 0, height: 8 },
     elevation: 12,
+  },
+  glass: {
+    ...StyleSheet.absoluteFill,
+    borderRadius: theme.radius.sheet,
   },
   tab: {
     flex: 1,

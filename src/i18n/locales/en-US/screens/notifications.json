@@ -19,7 +19,6 @@
   "emptyTitle": "Nothing scheduled",
   "emptyText": "Add a plant with a watering routine to start receiving reminders.",
   "inboxTitle": "Reminders",
-  "inboxKeep": "Last 14 days",
   "inboxRemove": "Remove reminder",
   "inboxClear": "Clear all",
   "inboxEmptyTitle": "No reminders yet",
@@ -31,5 +30,8 @@
   "upcomingLess": "Show less",
   "waterOnlyTitle": "Only watering reminders for now",
   "waterOnlyText": "Your trial has ended. Fertilizing, pruning and other care reminders come back when you subscribe.",
-  "waterOnlyAction": "See plans"
+  "waterOnlyAction": "See plans",
+  "inboxToday": "Today",
+  "inboxYesterday": "Yesterday",
+  "inboxKeepNote": "Reminders stay here for 14 days."
 }

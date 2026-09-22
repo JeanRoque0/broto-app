@@ -2,12 +2,12 @@ import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, View } from "react-native";
 
+import { withHaptic } from "@/utils/haptics";
 import { MailArt } from "@/components/illustrations/OnboardingArt";
 import { PasswordChecklist } from "@/components/PasswordChecklist";
 import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { Floating } from "@/components/ui/Floating";
 import { Header } from "@/components/ui/Header";
 import { Input } from "@/components/ui/Input";
 import { KeyboardAwareView } from "@/components/ui/KeyboardAwareView";
@@ -50,9 +50,7 @@ export default function SignUpScreen() {
 
         <View style={styles.confirm}>
           <Appear index={0}>
-            <Floating>
-              <MailArt size={132} />
-            </Floating>
+            <MailArt size={132} />
           </Appear>
 
           <Appear index={1} style={styles.confirmCopy}>
@@ -226,7 +224,7 @@ export default function SignUpScreen() {
 
           {!keyboardVisible && (
             <Pressable
-              onPress={goToSignIn}
+              onPress={withHaptic(goToSignIn)}
               hitSlop={8}
               accessibilityRole="button"
             >

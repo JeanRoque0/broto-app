@@ -2,8 +2,16 @@ import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 
+import { withHaptic } from "@/utils/haptics";
+import { DialogIcon } from "@/components/ui/DialogIcon";
 import { Button } from "@/components/ui/Button";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
 import { RipplePressable } from "@/components/ui/RipplePressable";
@@ -35,7 +43,7 @@ export function AnnouncementBanner({ style }: AnnouncementBannerProps) {
   return (
     <>
       <Pressable
-        onPress={() => setOpen(true)}
+        onPress={withHaptic(() => setOpen(true))}
         style={[styles.container, price && styles.price, style]}
         accessibilityRole="button"
         accessibilityLabel={title}
@@ -65,6 +73,12 @@ export function AnnouncementBanner({ style }: AnnouncementBannerProps) {
       </Pressable>
 
       <ContainerModalCenter
+        icon={
+          <DialogIcon
+            name={price ? "tag" : "info"}
+            tone={price ? "clay" : "moss"}
+          />
+        }
         visible={open}
         onClose={() => setOpen(false)}
         title={title}

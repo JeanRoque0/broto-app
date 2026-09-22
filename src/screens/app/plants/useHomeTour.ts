@@ -35,8 +35,22 @@ export function useHomeTour(hasPlants: boolean, ready: boolean) {
         title: t("homeTabsTitle"),
         body: t("homeTabsBody"),
       },
+      {
+        anchor: "plants.card",
+        title: t("plantsCardTitle"),
+        body: t("plantsCardBody"),
+      },
+      {
+        anchor: "plants.group",
+        title: t("plantsGroupTitle"),
+        body: t("plantsGroupBody"),
+      },
       ...(sawEmpty ? [] : tabs),
-      { anchor: "home.bell", title: t("homeBellTitle"), body: t("homeBellBody") },
+      {
+        anchor: "home.bell",
+        title: t("homeBellTitle"),
+        body: t("homeBellBody"),
+      },
     ],
     [t, tabs, sawEmpty],
   );

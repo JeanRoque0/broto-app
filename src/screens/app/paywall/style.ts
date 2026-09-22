@@ -168,11 +168,19 @@ export const styles = StyleSheet.create({
   singleText: {
     ...type.bodySm,
   },
-  action: {
-    marginTop: theme.spacing.s5,
+  footer: {
+    paddingHorizontal: theme.screenPadding,
+    paddingTop: theme.spacing.s3,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: theme.functional.line,
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    overflow: "hidden",
   },
   restore: {
-    marginTop: theme.spacing.s3,
+    marginTop: theme.spacing.s5,
   },
   storeNote: {
     ...type.bodySm,

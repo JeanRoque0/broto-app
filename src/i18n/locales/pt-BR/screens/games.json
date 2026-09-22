@@ -14,5 +14,7 @@
   "quizCardHint": "Oito perguntas rápidas sobre cuidar de planta",
   "quizRight": "Resposta certa",
   "quizWrong": "Resposta errada",
-  "quizScore": "{{hits}} acertos de {{total}}"
+  "quizScore": "{{hits}} acertos de {{total}}",
+  "quizCardEyebrow": "Jogo rápido",
+  "quizCardBest": "Seu recorde: {{best}} de {{total}}"
 }

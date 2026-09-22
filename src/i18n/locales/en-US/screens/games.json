@@ -14,5 +14,7 @@
   "quizCardHint": "Eight quick questions about plant care",
   "quizRight": "Correct answer",
   "quizWrong": "Wrong answer",
-  "quizScore": "{{hits}} right out of {{total}}"
+  "quizScore": "{{hits}} right out of {{total}}",
+  "quizCardEyebrow": "Quick game",
+  "quizCardBest": "Your best: {{best}} of {{total}}"
 }

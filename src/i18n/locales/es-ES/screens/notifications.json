@@ -19,7 +19,6 @@
   "emptyTitle": "Nada programado",
   "emptyText": "Agrega una planta con rutina de riego para empezar a recibir.",
   "inboxTitle": "Recordatorios",
-  "inboxKeep": "Últimos 14 días",
   "inboxRemove": "Quitar recordatorio",
   "inboxClear": "Borrar todo",
   "inboxEmptyTitle": "Todavía no hay recordatorios",
@@ -31,5 +30,8 @@
   "upcomingLess": "Mostrar menos",
   "waterOnlyTitle": "Por ahora solo avisa el riego",
   "waterOnlyText": "Tu prueba terminó. Los recordatorios de abono, poda y los demás cuidados vuelven cuando te suscribas.",
-  "waterOnlyAction": "Ver planes"
+  "waterOnlyAction": "Ver planes",
+  "inboxToday": "Hoy",
+  "inboxYesterday": "Ayer",
+  "inboxKeepNote": "Los avisos quedan guardados aquí 14 días."
 }

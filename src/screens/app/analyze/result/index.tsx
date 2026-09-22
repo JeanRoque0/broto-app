@@ -8,6 +8,7 @@ import {
   Pressable,
   ScrollView,
   View,
+  StyleSheet,
 } from "react-native";
 import Animated, {
   Extrapolation,
@@ -20,12 +21,13 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
 import {
   DIAGNOSIS_CARD_WIDTH,
   DiagnosisCard,
 } from "@/components/DiagnosisCard";
-import { TourAnchor } from "@/components/tour/TourAnchor";
+import { withHaptic } from "@/utils/haptics";
 import { CareRoutine } from "@/components/CareRoutine";
 import { ConfirmCard } from "@/components/ConfirmCard";
 import { CopyableName } from "@/components/CopyableName";
@@ -34,7 +36,10 @@ import { Section, SectionTabs } from "@/components/SectionTabs";
 import { GroupSheet } from "@/components/GroupSheet";
 import { ChatSuggestions } from "@/components/ChatSuggestions";
 import { QuizCard } from "@/components/QuizCard";
+import { InfoNote } from "@/components/InfoNote";
 import { ResultFeedback } from "@/components/ResultFeedback";
+import { DialogIcon } from "@/components/ui/DialogIcon";
+import { Glass } from "@/components/ui/Glass";
 import { PhotoZoom } from "@/components/PhotoZoom";
 import { PlantPhoto } from "@/components/PlantPhoto";
 import { BackIcon } from "@/components/ui/BackIcon";
@@ -58,7 +63,6 @@ import { previewCareTasks } from "@/utils/carePreview";
 import { CareTiles } from "./components/CareTiles";
 import { HEADER_PHOTO, styles } from "./style";
 import { useResult } from "./useResult";
-import { useResultTour } from "./useResultTour";
 
 const SNAP = DIAGNOSIS_CARD_WIDTH + theme.spacing.s3;
 const BAR_IN = 120;
@@ -101,7 +105,6 @@ export default function ResultScreen() {
   } = useResult();
   const [card, setCard] = useState(1);
 
-  useResultTour(!!result && canSave && !fromHistory && !plantId, goToSection);
   const { shot, share, sharing } = useShareCard();
   const [zoom, setZoom] = useState<{
     mark: SymptomMark | null;
@@ -115,6 +118,7 @@ export default function ResultScreen() {
   const offsets = useRef<Record<string, number>>({});
   const sheetTop = useRef(0);
   const barHeight = useRef(0);
+  const [footerHeight, setFooterHeight] = useState(0);
   const jumping = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useStatusBarStyle(darkBar && !zoom ? "dark" : "light");
@@ -164,12 +168,12 @@ export default function ResultScreen() {
   }
 
   const onScroll = useAnimatedScrollHandler((event) => {
-    scrollY.value = event.contentOffset.y;
+    scrollY.set(event.contentOffset.y);
     runOnJS(syncActive)(event.contentOffset.y);
   });
 
   useAnimatedReaction(
-    () => scrollY.value > (BAR_IN + BAR_OUT) / 2,
+    () => scrollY.get() > (BAR_IN + BAR_OUT) / 2,
     (isDark, previous) => {
       if (isDark !== previous) runOnJS(setDarkBar)(isDark);
     },
@@ -179,7 +183,7 @@ export default function ResultScreen() {
     transform: [
       {
         translateY: interpolate(
-          scrollY.value,
+          scrollY.get(),
           [-HEADER_PHOTO, 0, HEADER_PHOTO],
           [0, 0, -HEADER_PHOTO * 0.4],
           Extrapolation.CLAMP,
@@ -187,7 +191,7 @@ export default function ResultScreen() {
       },
       {
         scale: interpolate(
-          scrollY.value,
+          scrollY.get(),
           [-HEADER_PHOTO, 0],
           [2, 1],
           Extrapolation.CLAMP,
@@ -198,7 +202,7 @@ export default function ResultScreen() {
 
   const barStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
-      scrollY.value,
+      scrollY.get(),
       [BAR_IN, BAR_OUT],
       [0, 1],
       Extrapolation.CLAMP,
@@ -207,7 +211,7 @@ export default function ResultScreen() {
 
   const overPhotoStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
-      scrollY.value,
+      scrollY.get(),
       [BAR_IN, BAR_OUT],
       [1, 0],
       Extrapolation.CLAMP,
@@ -236,8 +240,8 @@ export default function ResultScreen() {
         label: t("diagnosisEyebrow"),
       },
     result.como_confirmar && { id: "confirm", label: t("confirmEyebrow") },
-    { id: "brotinho", label: tChat("suggestionsEyebrow") },
     cuidados && { id: "care", label: t("careTitle") },
+    { id: "brotinho", label: tChat("suggestionsEyebrow") },
     result.cultivo && { id: "grow", label: t("growTitle") },
     result.simbolismo && { id: "lore", label: t("loreTitle") },
   ].filter(Boolean) as Section[];
@@ -254,6 +258,17 @@ export default function ResultScreen() {
         ) : (
           <PlantPhoto path={photoPath} style={styles.heroImage} />
         )}
+        <LinearGradient
+          colors={[
+            theme.functional.black35,
+            "transparent",
+            "transparent",
+            theme.functional.black35,
+          ]}
+          locations={[0, 0.3, 0.65, 1]}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
       </Animated.View>
 
       <Animated.ScrollView
@@ -264,9 +279,12 @@ export default function ResultScreen() {
         onScrollBeginDrag={releaseJump}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: showFooter ? footerHeight : 0,
+        }}
       >
         <Pressable
-          onPress={() => setZoom({ mark: null, index: null })}
+          onPress={withHaptic(() => setZoom({ mark: null, index: null }))}
           style={styles.heroTouch}
           accessibilityRole="imagebutton"
           accessibilityLabel={t("markHint")}
@@ -327,10 +345,6 @@ export default function ResultScreen() {
               </RipplePressable>
             )}
 
-            {canRate && (
-              <ResultFeedback answer={feedback} onAnswer={sendFeedback} />
-            )}
-
             <View
               style={[
                 styles.status,
@@ -356,7 +370,6 @@ export default function ResultScreen() {
               onLayout={(event) => onSectionLayout("diagnosis", event)}
             >
               <View style={styles.padded}>
-                <TourAnchor id="result.causes" />
                 <Text
                   accessibilityRole="header"
                   family="display"
@@ -426,29 +439,19 @@ export default function ResultScreen() {
                   value={result.como_confirmar}
                   style={styles.confirm}
                 />
-                <TourAnchor id="result.confirm" />
               </View>
             </View>
           ) : null}
 
-          <View
-            style={[styles.suggestionsBlock, styles.padded]}
-            onLayout={(event) => onSectionLayout("brotinho", event)}
-          >
-            <ChatSuggestions
-              seed={result.especie?.cientifico ?? "analise"}
-              scopes={["species", "diagnosis", "general"]}
-              speciesName={result.especie?.comum ?? null}
-              met={[
-                ...(result.toxica_para_pets ? (["toxic"] as const) : []),
-                ...(!healthy ? (["hasDiagnosis"] as const) : []),
-              ]}
-            />
-          </View>
-
-          <View style={[styles.quizBlock, styles.padded]}>
-            <QuizCard />
-          </View>
+          {canRate && (
+            <View style={[styles.section, styles.padded]}>
+              <ResultFeedback
+                answer={feedback}
+                onAnswer={sendFeedback}
+                onReport={report}
+              />
+            </View>
+          )}
 
           {cuidados && (
             <View
@@ -482,6 +485,25 @@ export default function ResultScreen() {
             </View>
           )}
 
+          <View
+            style={[styles.suggestionsBlock, styles.padded]}
+            onLayout={(event) => onSectionLayout("brotinho", event)}
+          >
+            <ChatSuggestions
+              seed={result.especie?.cientifico ?? "analise"}
+              scopes={["species", "diagnosis", "general"]}
+              speciesName={result.especie?.comum ?? null}
+              met={[
+                ...(result.toxica_para_pets ? (["toxic"] as const) : []),
+                ...(!healthy ? (["hasDiagnosis"] as const) : []),
+              ]}
+            />
+          </View>
+
+          <View style={[styles.quizBlock, styles.padded]}>
+            <QuizCard />
+          </View>
+
           {result.cultivo ? (
             <View
               style={[styles.section, styles.padded]}
@@ -494,9 +516,7 @@ export default function ResultScreen() {
               >
                 {t("growTitle")}
               </Text>
-              <Card style={styles.infoCard}>
-                <Text style={styles.confirmText}>{result.cultivo}</Text>
-              </Card>
+              <InfoNote icon="shovel" tone="moss" text={result.cultivo} />
             </View>
           ) : null}
 
@@ -512,22 +532,31 @@ export default function ResultScreen() {
               >
                 {t("loreTitle")}
               </Text>
-              <Card style={styles.infoCard}>
-                <Text style={styles.confirmText}>{result.simbolismo}</Text>
-              </Card>
+              <InfoNote
+                icon="star-four-points-outline"
+                tone="ochre"
+                text={result.simbolismo}
+              />
             </View>
           ) : null}
 
           <View style={styles.padded}>
-            <Pressable
+            <RipplePressable
               onPress={report}
-              hitSlop={8}
+              pressScale={0.98}
               style={styles.report}
               accessibilityRole="button"
+              accessibilityLabel={`${t("reportLead")} ${t("reportHint")}`}
             >
-              <Text style={styles.reportLead}>{t("reportLead")}</Text>
+              <View style={styles.reportIcon}>
+                <Feather name="flag" size={17} color={theme.secondary.ochre} />
+              </View>
+              <View style={styles.reportTexts}>
+                <Text style={styles.reportLead}>{t("reportLead")}</Text>
+                <Text style={styles.reportHint}>{t("reportHint")}</Text>
+              </View>
               <Text style={styles.reportAction}>{t("reportAction")}</Text>
-            </Pressable>
+            </RipplePressable>
           </View>
         </View>
       </Animated.ScrollView>
@@ -539,6 +568,7 @@ export default function ResultScreen() {
           barHeight.current = event.nativeEvent.layout.height;
         }}
       >
+        <Glass tone="base" style={StyleSheet.absoluteFill} />
         <View style={styles.barInner} pointerEvents="none">
           <Text style={styles.barTitle} numberOfLines={1}>
             {title}
@@ -567,7 +597,7 @@ export default function ResultScreen() {
         >
           <CircleButton
             onPress={close}
-            style={styles.backOnPhoto}
+            tone="glass"
             accessibilityLabel={tCommon("back")}
           >
             <BackIcon color={theme.text.onDark} />
@@ -591,7 +621,7 @@ export default function ResultScreen() {
         >
           <CircleButton
             onPress={share}
-            style={styles.backOnPhoto}
+            tone="glass"
             accessibilityLabel={t("shareTitle")}
           >
             <Feather
@@ -622,7 +652,9 @@ export default function ResultScreen() {
             styles.footer,
             { paddingBottom: insets.bottom + theme.spacing.s3 },
           ]}
+          onLayout={(event) => setFooterHeight(event.nativeEvent.layout.height)}
         >
+          <Glass tone="base" style={StyleSheet.absoluteFill} />
           {fromHistory ? (
             <Button label={t("save")} onPress={save} loading={saving} />
           ) : plantId ? (
@@ -632,7 +664,6 @@ export default function ResultScreen() {
               {canSave && (
                 <View>
                   <Button label={t("save")} onPress={save} loading={saving} />
-                  <TourAnchor id="result.save" />
                 </View>
               )}
               <Button label={t("discard")} onPress={close} variant="ghost" />
@@ -642,6 +673,7 @@ export default function ResultScreen() {
       )}
 
       <ContainerModalCenter
+        icon={<DialogIcon name="folder-plus" tone="moss" />}
         visible={groupModal}
         onClose={closeGroupModal}
         title={tPlants("saveCareTitle")}

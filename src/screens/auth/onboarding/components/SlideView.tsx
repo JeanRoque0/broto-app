@@ -8,7 +8,6 @@ import Animated, {
   useReducedMotion,
 } from "react-native-reanimated";
 
-import { Floating } from "@/components/ui/Floating";
 import { Text } from "@/components/ui/Text";
 
 import { styles } from "../style";
@@ -19,6 +18,7 @@ type SlideViewProps = {
   description: string;
   index: number;
   width: number;
+  height: number;
   scrollX: SharedValue<number>;
 };
 
@@ -28,18 +28,19 @@ export function SlideView({
   description,
   index,
   width,
+  height,
   scrollX,
 }: SlideViewProps) {
   const reduceMotion = useReducedMotion();
 
   const artStyle = useAnimatedStyle(() => {
     if (reduceMotion || !width) return {};
-    const progress = (scrollX.value - index * width) / width;
+    const progress = (scrollX.get() - index * width) / width;
     return {
       opacity: interpolate(
         Math.abs(progress),
-        [0, 0.8],
-        [1, 0.2],
+        [0, 0.9],
+        [1, 0],
         Extrapolation.CLAMP,
       ),
       transform: [
@@ -58,7 +59,7 @@ export function SlideView({
 
   const textStyle = useAnimatedStyle(() => {
     if (reduceMotion || !width) return {};
-    const progress = (scrollX.value - index * width) / width;
+    const progress = (scrollX.get() - index * width) / width;
     return {
       opacity: interpolate(
         Math.abs(progress),
@@ -71,10 +72,8 @@ export function SlideView({
   });
 
   return (
-    <View style={[styles.slide, { width }]}>
-      <Animated.View style={artStyle}>
-        <Floating>{art}</Floating>
-      </Animated.View>
+    <View style={[styles.slide, { width, height: height || undefined }]}>
+      <Animated.View style={artStyle}>{art}</Animated.View>
       <Animated.View style={[styles.copy, textStyle]}>
         <Text family="display" style={styles.title} accessibilityRole="header">
           {title}

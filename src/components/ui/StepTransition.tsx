@@ -38,7 +38,7 @@ export function StepTransition({
         toValue: 0,
         useNativeDriver: true,
         isInteraction: false,
-        bounciness: 2,
+        bounciness: 0,
         speed: 14,
       }),
     ]).start();

@@ -6,6 +6,7 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
+  StyleSheet,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -20,6 +21,7 @@ import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { PlantListSkeleton } from "@/components/ui/Skeleton";
+import { Glass } from "@/components/ui/Glass";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
 
@@ -49,6 +51,7 @@ export default function PlantsScreen() {
   const { width } = useWindowDimensions();
   const pager = useRef<ScrollView>(null);
   const [swiping, setSwiping] = useState(true);
+  const [headerHeight, setHeaderHeight] = useState(0);
 
   useEffect(() => {
     pager.current?.scrollTo({ x: TABS.indexOf(tab) * width, animated: true });
@@ -181,7 +184,11 @@ export default function PlantsScreen() {
   }
 
   const header = (
-    <>
+    <View
+      style={styles.header}
+      onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}
+    >
+      <Glass tone="base" style={StyleSheet.absoluteFill} />
       <View style={styles.topbar}>
         <View style={styles.titleGroup}>
           <Text
@@ -213,7 +220,7 @@ export default function PlantsScreen() {
         onChange={setTab}
         style={styles.tabs}
       />
-    </>
+    </View>
   );
 
   return (
@@ -225,13 +232,14 @@ export default function PlantsScreen() {
         horizontal
         pagingEnabled
         scrollEnabled={swiping}
-        style={styles.pager}
+        style={[styles.pager, { marginTop: -headerHeight }]}
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={onPageSettle}
         scrollEventThrottle={16}
       >
         <View style={{ width }}>
           <PlantsPanel
+            topSpace={headerHeight}
             bottomSpace={listBottom}
             plants={plants}
             groups={groups}
@@ -242,18 +250,25 @@ export default function PlantsScreen() {
             onOpenGroup={openGroup}
             onAddToGroup={openPick}
             onNewGroup={openGroupSheet}
+            onOpenTasks={() => setTab("tasks")}
           />
         </View>
 
         <View style={{ width }}>
           <TasksPanel
+            active={tab === "tasks"}
+            topSpace={headerHeight}
             bottomSpace={listBottom}
             onSwipeLock={(locked) => setSwiping(!locked)}
           />
         </View>
 
         <View style={{ width }}>
-          <AnalysesPanel bottomSpace={listBottom} />
+          <AnalysesPanel
+            active={tab === "analyses"}
+            topSpace={headerHeight}
+            bottomSpace={listBottom}
+          />
         </View>
       </ScrollView>
 

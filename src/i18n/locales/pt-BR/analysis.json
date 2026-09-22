@@ -75,12 +75,12 @@
   "historyUnknownSpecies": "Espécie não identificada",
   "saveGroupTitle": "Em qual grupo?",
   "saveGroupText": "Dá para mudar depois.",
-  "feedbackQuestion": "O resultado ajudou?",
+  "feedbackQuestion": "Esse resultado ajudou?",
   "feedbackYes": "Ajudou",
   "feedbackNo": "Não ajudou",
-  "feedbackThanks": "Obrigado pelo feedback",
-  "reportLead": "Alguma coisa aqui está errada ou faltando?",
-  "reportAction": "Conte pra gente",
+  "feedbackThanks": "Obrigado pela resposta",
+  "reportLead": "Algo errado ou faltando?",
+  "reportAction": "Avisar",
   "historyExpires": "Sai da lista em {{date}}",
   "savedPlantTitle": "Já está nas suas plantas",
   "savedPlantAction": "Abrir a planta",
@@ -94,5 +94,11 @@
     "Pensando no que pode ser",
     "Escrevendo os cuidados dela",
     "Quase lá"
-  ]
+  ],
+  "historyKeepNote": "Análises que você não salva numa planta ficam aqui por {{count}} dias.",
+  "feedbackHint": "Sua resposta ajuda o Broto a acertar mais nas próximas análises.",
+  "feedbackThanksYes": "Que bom que ajudou. Cuide bem dela!",
+  "feedbackThanksNo": "Vamos usar isso para melhorar. Se quiser, conta pra gente o que errou.",
+  "feedbackReport": "Contar o que errou",
+  "reportHint": "Conta pra gente que a gente corrige a análise."
 }

@@ -41,5 +41,6 @@
   "capTitle": "That is it for this month",
   "capText": "You used the {{cap}} analyses in your plan. Your quota returns on {{date}}, and single ones have no limit.",
   "trialChip": "Free trial until {{date}}",
-  "blockedText": "The 3 days with everything unlocked are over. To keep analysing, subscribe to the complete plan or buy a one-off analysis."
+  "blockedText": "The 3 days with everything unlocked are over. To keep analysing, subscribe to the complete plan or buy a one-off analysis.",
+  "tipsLabel": "Tips"
 }

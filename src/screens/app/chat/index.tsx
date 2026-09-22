@@ -11,6 +11,7 @@ import {
   BrotinhoFace,
 } from "@/components/illustrations/BrotinhoArt";
 import { CHAT_DAILY_CAP, CHAT_MONTH_CAP } from "@/constants";
+import { DialogIcon } from "@/components/ui/DialogIcon";
 import { Appear } from "@/components/ui/Appear";
 import { Button } from "@/components/ui/Button";
 import { CircleButton } from "@/components/ui/CircleButton";
@@ -20,7 +21,6 @@ import { ContainerModal } from "@/components/ui/ContainerModal";
 import { QuotaBar } from "@/components/ui/QuotaBar";
 import { MenuRow } from "@/components/ui/Row";
 import { ContainerModalCenter } from "@/components/ui/ContainerModalCenter";
-import { Floating } from "@/components/ui/Floating";
 import { FlashListContainer } from "@/components/ui/FlashListContainer";
 import { Header } from "@/components/ui/Header";
 import { KeyboardAwareView } from "@/components/ui/KeyboardAwareView";
@@ -29,7 +29,6 @@ import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import type { ChatMessage } from "@/services/supabase/chat";
 import { theme } from "@/style/theme";
-import { haptic } from "@/utils/haptics";
 
 import { RichText } from "./components/RichText";
 import { ThreadsSheet } from "./components/ThreadsSheet";
@@ -125,9 +124,7 @@ export default function ChatScreen() {
 
         <View style={styles.locked}>
           <Appear index={0}>
-            <Floating>
-              <BrotinhoArt />
-            </Floating>
+            <BrotinhoArt />
           </Appear>
 
           <Appear index={1} style={styles.lockedCopy}>
@@ -156,7 +153,19 @@ export default function ChatScreen() {
         onBack={() => {
           if (!goBack()) router.back();
         }}
-        title={t("title")}
+        center={
+          <View
+            style={styles.headerCenter}
+            accessible
+            accessibilityRole="header"
+          >
+            <BrotinhoFace size={30} />
+            <View style={styles.headerTexts}>
+              <Text style={styles.headerTitle}>{t("title")}</Text>
+              <Text style={styles.headerSubtitle}>{t("headerSubtitle")}</Text>
+            </View>
+          </View>
+        }
         rightAction={
           <CircleButton onPress={openMenu} accessibilityLabel={t("menu")}>
             <Feather
@@ -191,7 +200,7 @@ export default function ChatScreen() {
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={
-                <View>
+                <View style={styles.empty}>
                   <Appear index={0} style={[styles.bubbleRow, styles.botRow]}>
                     <BrotinhoFace size={28} />
                     <View style={[styles.bubble, styles.fromBot]}>
@@ -208,7 +217,6 @@ export default function ChatScreen() {
                         <Appear key={suggestion} index={index + 2}>
                           <RipplePressable
                             onPress={() => {
-                              haptic.tap();
                               submit(suggestion);
                             }}
                             pressScale={0.97}
@@ -296,7 +304,6 @@ export default function ChatScreen() {
 
           <RipplePressable
             onPress={() => {
-              haptic.tap();
               submit();
             }}
             pressScale={0.9}
@@ -335,6 +342,7 @@ export default function ChatScreen() {
           <MenuRow
             label={t("menuUsage")}
             icon="bar-chart-2"
+            tone="moss"
             onPress={() => {
               closeMenu();
               openUsage();
@@ -343,6 +351,7 @@ export default function ChatScreen() {
           <MenuRow
             label={t("newThread")}
             icon="plus"
+            tone="clay"
             onPress={() => {
               closeMenu();
               startNew();
@@ -351,6 +360,7 @@ export default function ChatScreen() {
           <MenuRow
             label={t("menuHistory")}
             icon="clock"
+            tone="ochre"
             onPress={() => {
               closeMenu();
               openThreads();
@@ -385,6 +395,7 @@ export default function ChatScreen() {
       </ContainerModal>
 
       <ContainerModalCenter
+        icon={<DialogIcon name="message-circle" tone="ochre" />}
         visible={!!cap}
         onClose={closeCap}
         title={

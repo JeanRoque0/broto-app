@@ -10,8 +10,8 @@
   "renews": "Se renueva el {{date}}.",
   "seePlans": "Ver planes",
   "notifications": "Recordatorios",
-  "notificationsOn": "Activadas",
-  "notificationsOff": "Desactivadas",
+  "notificationsOn": "Activados",
+  "notificationsOff": "Desactivados",
   "restorePurchase": "Restaurar compra",
   "temperatureUnit": "Unidad de temperatura",
   "temperatureUnitTitle": "Cómo mostrar la temperatura",
@@ -90,7 +90,7 @@
   "usageChat": "Brotinho",
   "groupAccount": "Cuenta",
   "groupPreferences": "Preferencias",
-  "groupHelp": "Ayuda y privacidad",
+  "groupHelp": "Ayuda",
   "groupSubscription": "Suscripción",
   "exportData": "Exportar mis datos",
   "exportPreparing": "Preparando…",
@@ -103,5 +103,6 @@
   "freeOnlyWater": "Solo el riego sigue desbloqueado.",
   "replayTours": "Volver a ver los consejos",
   "replayToursDone": "Consejos activados de nuevo",
-  "replayToursHint": "Aparecen la próxima vez que abras cada pantalla."
+  "replayToursHint": "Aparecen la próxima vez que abras cada pantalla.",
+  "groupPrivacy": "Privacidad y datos"
 }

@@ -41,5 +41,6 @@
   "capTitle": "Chega por este mês",
   "capText": "Você fez as {{cap}} análises do seu plano. A cota volta em {{date}}, e a avulsa não tem limite.",
   "trialChip": "Teste grátis até {{date}}",
-  "blockedText": "Os 3 dias com tudo liberado acabaram. Para seguir analisando, assine o completo ou compre uma análise avulsa."
+  "blockedText": "Os 3 dias com tudo liberado acabaram. Para seguir analisando, assine o completo ou compre uma análise avulsa.",
+  "tipsLabel": "Dicas"
 }

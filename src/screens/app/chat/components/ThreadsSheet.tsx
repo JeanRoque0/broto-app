@@ -132,7 +132,7 @@ export function ThreadsSheet({
                     <Feather
                       name="trash-2"
                       size={17}
-                      color={theme.functional.danger}
+                      color={theme.text.tertiary}
                     />
                   </RipplePressable>
                 )}

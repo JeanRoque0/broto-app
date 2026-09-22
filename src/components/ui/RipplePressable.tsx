@@ -12,6 +12,7 @@ import {
 import { useReducedMotion } from "react-native-reanimated";
 
 import { theme } from "@/style/theme";
+import { haptic } from "@/utils/haptics";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -31,6 +32,7 @@ export function RipplePressable({
   children,
   onPressIn,
   onPressOut,
+  onPress,
   onLayout,
   ...props
 }: RipplePressableProps) {
@@ -84,7 +86,7 @@ export function RipplePressable({
       Animated.spring(squeeze, {
         toValue: 1,
         speed: 18,
-        bounciness: 8,
+        bounciness: 0,
         useNativeDriver: true,
       }).start();
     }
@@ -100,11 +102,17 @@ export function RipplePressable({
     onPressOut?.(e);
   }
 
+  function handlePress(e: GestureResponderEvent) {
+    haptic.tap();
+    onPress?.(e);
+  }
+
   const state: PressableStateCallbackType = { pressed, hovered: false };
   const resolved = typeof style === "function" ? style(state) : style;
 
   return (
     <AnimatedPressable
+      onPress={onPress ? handlePress : undefined}
       android_ripple={{
         color: rippleColor,
         borderless,

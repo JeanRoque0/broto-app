@@ -29,5 +29,9 @@
     "Peace lily",
     "ZZ plant",
     "Boston fern"
-  ]
+  ],
+  "identifyTitle": "Don’t know the name?",
+  "identifyText": "Take a photo and Broto finds out which plant it is.",
+  "readMore": "Read more",
+  "readLess": "Read less"
 }

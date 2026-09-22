@@ -28,19 +28,21 @@ export function OfflineNotice() {
   const progress = useSharedValue(0);
 
   useEffect(() => {
-    progress.value = withTiming(online ? 0 : 1, {
-      duration: online ? LEAVE : ENTER,
-      easing: EASE,
-    });
+    progress.set(
+      withTiming(online ? 0 : 1, {
+        duration: online ? LEAVE : ENTER,
+        easing: EASE,
+      }),
+    );
   }, [online, progress]);
 
   const shell = useAnimatedStyle(() => ({
-    height: height * progress.value,
+    height: height * progress.get(),
   }));
 
   const content = useAnimatedStyle(() => ({
-    opacity: progress.value,
-    transform: [{ translateY: (progress.value - 1) * 12 }],
+    opacity: progress.get(),
+    transform: [{ translateY: (progress.get() - 1) * 12 }],
   }));
 
   return (

@@ -1,10 +1,11 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 import { DEFAULT_REMINDER_TIME } from "@/constants";
 import { Button } from "@/components/ui/Button";
+import { Chip } from "@/components/ui/Chip";
 import { Calendar } from "@/components/ui/Calendar";
 import {
   ContainerModal,
@@ -16,9 +17,15 @@ import { WheelBand, WheelPicker } from "@/components/ui/WheelPicker";
 import { theme } from "@/style/theme";
 import { fontSize, type } from "@/style/typography";
 import { PlantTask } from "@/types/plant";
-import { formatLongDate } from "@/utils/format";
-import { TASK_LABELS } from "@/utils/taskLabels";
-import { isTaskKind, parseDay, startOfDay } from "@/utils/tasks";
+import { formatShortDate, formatWeekday } from "@/utils/format";
+import { TASK_ICONS, TASK_LABELS } from "@/utils/taskLabels";
+import {
+  addDays,
+  isSameDay,
+  isTaskKind,
+  parseDay,
+  startOfDay,
+} from "@/utils/tasks";
 
 type Unit = "day" | "week" | "month";
 
@@ -53,6 +60,27 @@ function joinTime(hour: number, minute: number) {
 
 const UNITS: Unit[] = ["day", "week", "month"];
 
+const DATE_PRESETS = [
+  { key: "presetToday", days: 0 },
+  { key: "presetTomorrow", days: 1 },
+  { key: "presetNextWeek", days: 7 },
+] as const;
+
+const EVERY_PRESETS = [
+  { key: "presetDaily", amount: 1, unit: "day" },
+  { key: "presetEvery3", amount: 3, unit: "day" },
+  { key: "presetWeekly", amount: 1, unit: "week" },
+  { key: "presetEvery15", amount: 15, unit: "day" },
+  { key: "presetMonthly", amount: 1, unit: "month" },
+] as const;
+
+const TIME_PRESETS = [
+  { key: "presetMorning", hour: 8 },
+  { key: "presetNoon", hour: 12 },
+  { key: "presetAfternoon", hour: 17 },
+  { key: "presetEvening", hour: 20 },
+] as const;
+
 const UNIT_DAYS: Record<Unit, number> = { day: 1, week: 7, month: 30 };
 
 const UNIT_MAX: Record<Unit, number> = { day: 31, week: 52, month: 24 };
@@ -75,33 +103,45 @@ function splitInterval(days: number): { amount: number; unit: Unit } {
   return { amount: days, unit: "day" };
 }
 
+type FieldTone = "moss" | "ochre" | "clay";
+
+const FIELD_TONES: Record<FieldTone, { bg: string; fg: string }> = {
+  moss: { bg: theme.secondary.mossSoft, fg: theme.secondary.moss },
+  ochre: { bg: theme.secondary.ochreSoft, fg: theme.secondary.ochre },
+  clay: { bg: theme.primary.claySoft, fg: theme.primary.clay },
+};
+
 type FieldRowProps = {
   icon: React.ComponentProps<typeof Feather>["name"];
+  tone: FieldTone;
   label: string;
   value: string;
+  last?: boolean;
   onPress: () => void;
 };
 
-function FieldRow({ icon, label, value, onPress }: FieldRowProps) {
+function FieldRow({ icon, tone, label, value, last, onPress }: FieldRowProps) {
+  const palette = FIELD_TONES[tone];
+
   return (
     <RipplePressable
       onPress={onPress}
-      style={styles.field}
+      style={[styles.field, !last && styles.fieldDivider]}
       accessibilityRole="button"
       accessibilityLabel={`${label}: ${value}`}
     >
-      <View style={styles.fieldIcon}>
-        <Feather name={icon} size={17} color={theme.primary.clay} />
+      <View style={[styles.fieldIcon, { backgroundColor: palette.bg }]}>
+        <Feather name={icon} size={16} color={palette.fg} />
       </View>
 
-      <View style={styles.fieldTexts}>
-        <Text family="mono" style={styles.fieldLabel}>
-          {label}
-        </Text>
-        <Text style={styles.fieldValue}>{value}</Text>
-      </View>
+      <Text style={styles.fieldLabel} numberOfLines={1}>
+        {label}
+      </Text>
+      <Text style={styles.fieldValue} numberOfLines={1}>
+        {value}
+      </Text>
 
-      <Feather name="chevron-right" size={18} color={theme.text.secondary} />
+      <Feather name="chevron-right" size={17} color={theme.text.tertiary} />
     </RipplePressable>
   );
 }
@@ -186,6 +226,12 @@ export function TaskEditSheet({
   const everyLabel = t(EVERY_LABELS[unit], { count: amount });
 
   const remindAt = joinTime(hour, minute);
+  const [today] = useState(() => startOfDay(new Date()));
+  const lateDays = Math.round(
+    (today.getTime() - startOfDay(nextAt).getTime()) / 86400000,
+  );
+  const taskIcon =
+    task && isTaskKind(task.kind) ? TASK_ICONS[task.kind] : "sprout-outline";
 
   const titles: Record<Step, string> = {
     main: taskLabel,
@@ -213,6 +259,32 @@ export function TaskEditSheet({
             </View>
           )}
 
+          {task?.enabled !== false && (
+            <View style={styles.summary}>
+              <View style={styles.summaryIcon}>
+                <MaterialCommunityIcons
+                  name={taskIcon}
+                  size={22}
+                  color={theme.text.onPrimary}
+                />
+              </View>
+              <View style={styles.summaryTexts}>
+                <Text style={styles.summaryLabel}>{t("taskNextReminder")}</Text>
+                <Text style={styles.summaryValue}>
+                  {`${formatWeekday(nextAt)}, ${formatShortDate(nextAt)} · ${remindAt}`}
+                </Text>
+                <Text style={styles.summaryHint}>{everyLabel}</Text>
+                {lateDays > 0 && (
+                  <View style={styles.late}>
+                    <Text style={styles.lateText}>
+                      {t("taskLate", { count: lateDays })}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </View>
+          )}
+
           <View
             style={[
               styles.fields,
@@ -221,23 +293,27 @@ export function TaskEditSheet({
           >
             <FieldRow
               icon="calendar"
+              tone="moss"
               label={t("taskEditFirst")}
-              value={formatLongDate(nextAt)}
+              value={formatShortDate(nextAt)}
               onPress={() => setStep("date")}
             />
 
             <FieldRow
               icon="repeat"
-              label={t("taskEditEvery")}
+              tone="ochre"
+              label={t("taskEditRepeat")}
               value={everyLabel}
               onPress={() => setStep("every")}
             />
 
             <FieldRow
               icon="clock"
+              tone="clay"
               label={t("taskEditTime")}
               value={remindAt}
               onPress={() => setStep("time")}
+              last
             />
           </View>
 
@@ -284,6 +360,14 @@ export function TaskEditSheet({
                 onPress={() => onToggle(false)}
                 variant="ghost"
                 style={styles.toggle}
+                labelStyle={styles.removeLabel}
+                iconLeft={
+                  <Feather
+                    name="trash-2"
+                    size={16}
+                    color={theme.functional.danger}
+                  />
+                }
               />
             </>
           )}
@@ -293,7 +377,24 @@ export function TaskEditSheet({
       {step === "date" && (
         <>
           <ModalScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.picker}>
+            <View style={styles.presets}>
+              {DATE_PRESETS.map((preset) => {
+                const day = addDays(today, preset.days);
+                return (
+                  <Chip
+                    key={preset.key}
+                    size="lg"
+                    label={t(preset.key)}
+                    selected={isSameDay(day, nextAt)}
+                    onPress={() => {
+                      setNextAt(day);
+                      setStep("main");
+                    }}
+                  />
+                );
+              })}
+            </View>
+            <View style={styles.pickerTight}>
               <Calendar
                 value={nextAt}
                 onChange={(day) => {
@@ -315,9 +416,31 @@ export function TaskEditSheet({
 
       {step === "time" && (
         <>
-          <View style={[styles.picker, styles.wheels]}>
+          <Text family="display" style={styles.preview}>
+            {t("taskTimePreview", { time: remindAt })}
+          </Text>
+
+          <View style={styles.presets}>
+            {TIME_PRESETS.map((preset) => (
+              <Chip
+                key={preset.key}
+                size="lg"
+                label={`${t(preset.key)} · ${joinTime(preset.hour, 0)}`}
+                selected={hour === preset.hour && minute === 0}
+                onPress={() => {
+                  setHour(preset.hour);
+                  setMinute(0);
+                }}
+              />
+            ))}
+          </View>
+
+          <View style={[styles.pickerTight, styles.wheels]}>
             <WheelBand />
             <WheelPicker items={HOURS} value={hour} onChange={setHour} />
+            <View style={styles.colon} pointerEvents="none">
+              <Text style={styles.colonText}>:</Text>
+            </View>
             <WheelPicker items={MINUTES} value={minute} onChange={setMinute} />
           </View>
 
@@ -331,7 +454,26 @@ export function TaskEditSheet({
 
       {step === "every" && (
         <>
-          <View style={[styles.picker, styles.wheels]}>
+          <Text family="display" style={styles.preview}>
+            {everyLabel}
+          </Text>
+
+          <View style={styles.presets}>
+            {EVERY_PRESETS.map((preset) => (
+              <Chip
+                key={preset.key}
+                size="lg"
+                label={t(preset.key)}
+                selected={amount === preset.amount && unit === preset.unit}
+                onPress={() => {
+                  setUnit(preset.unit);
+                  setAmount(preset.amount);
+                }}
+              />
+            ))}
+          </View>
+
+          <View style={[styles.pickerTight, styles.wheels]}>
             <WheelBand />
             <WheelPicker items={amounts} value={amount} onChange={setAmount} />
             <WheelPicker items={units} value={unit} onChange={changeUnit} />
@@ -364,9 +506,63 @@ const styles = StyleSheet.create({
     flex: 1,
     color: theme.text.primary,
   },
-  fields: {
+  summary: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: theme.spacing.s3,
     marginTop: theme.spacing.s5,
-    gap: theme.spacing.s2,
+    padding: theme.spacing.s4,
+    borderRadius: theme.radius.lg,
+    backgroundColor: theme.secondary.mossSoft,
+  },
+  summaryIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: theme.secondary.moss,
+  },
+  summaryTexts: {
+    flex: 1,
+    gap: 2,
+  },
+  summaryLabel: {
+    fontSize: fontSize.s3,
+    fontWeight: "700",
+    color: theme.secondary.moss,
+  },
+  summaryValue: {
+    fontSize: fontSize.s9,
+    fontWeight: "700",
+    color: theme.text.primary,
+  },
+  summaryHint: {
+    ...type.bodySm,
+  },
+  late: {
+    alignSelf: "flex-start",
+    marginTop: theme.spacing.s2,
+    paddingVertical: 3,
+    paddingHorizontal: theme.spacing.s2,
+    borderRadius: theme.radius.pill,
+    backgroundColor: theme.primary.claySoft,
+  },
+  lateText: {
+    fontSize: fontSize.s2,
+    fontWeight: "700",
+    color: theme.primary.clay,
+  },
+  fields: {
+    marginTop: theme.spacing.s3,
+    borderRadius: theme.radius.lg,
+    borderWidth: 1,
+    borderColor: theme.functional.line,
+    backgroundColor: theme.surface.card,
+    overflow: "hidden",
+  },
+  removeLabel: {
+    color: theme.functional.danger,
   },
   fieldsTight: {
     marginTop: theme.spacing.s3,
@@ -374,40 +570,58 @@ const styles = StyleSheet.create({
   field: {
     flexDirection: "row",
     alignItems: "center",
-    gap: theme.spacing.s4,
-    paddingVertical: theme.spacing.s3,
+    gap: theme.spacing.s3,
+    minHeight: 56,
     paddingHorizontal: theme.spacing.s4,
-    backgroundColor: theme.surface.card,
-    borderWidth: 1,
-    borderColor: theme.functional.line,
-    borderRadius: theme.radius.md,
+  },
+  fieldDivider: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: theme.functional.line,
   },
   fieldIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 32,
+    height: 32,
+    borderRadius: 9,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: theme.primary.clayTint,
-    borderWidth: 1,
-    borderColor: theme.primary.clayBorder,
-  },
-  fieldTexts: {
-    flex: 1,
-    gap: 2,
   },
   fieldLabel: {
-    fontSize: fontSize.s1,
-    letterSpacing: 1.1,
-    textTransform: "uppercase",
-    color: theme.text.tertiary,
+    flex: 1,
+    fontSize: fontSize.s6,
+    color: theme.text.primary,
   },
   fieldValue: {
-    ...type.sectionTitle,
-    fontSize: fontSize.s7,
+    flexShrink: 1,
+    fontSize: fontSize.s6,
+    fontWeight: "700",
+    color: theme.text.primary,
   },
   picker: {
     marginTop: theme.spacing.s5,
+  },
+  pickerTight: {
+    marginTop: theme.spacing.s4,
+  },
+  presets: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: theme.spacing.s2,
+    marginTop: theme.spacing.s4,
+  },
+  preview: {
+    ...type.displaySm,
+    marginTop: theme.spacing.s4,
+    color: theme.primary.clay,
+  },
+  colon: {
+    width: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  colonText: {
+    fontSize: fontSize.s10,
+    fontWeight: "700",
+    color: theme.text.primary,
   },
   wheels: {
     flexDirection: "row",

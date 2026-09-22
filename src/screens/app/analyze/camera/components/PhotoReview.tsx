@@ -36,46 +36,45 @@ export function PhotoReview({ uri, onRetake, onAnalyze }: PhotoReviewProps) {
 
   const pinch = Gesture.Pinch()
     .onUpdate((event) => {
-      scale.value = Math.min(
-        MAX_SCALE,
-        Math.max(MIN_SCALE, saved.value * event.scale),
+      scale.set(
+        Math.min(MAX_SCALE, Math.max(MIN_SCALE, saved.get() * event.scale)),
       );
     })
     .onEnd(() => {
-      saved.value = scale.value;
+      saved.set(scale.get());
 
-      if (scale.value <= MIN_SCALE) {
-        x.value = withTiming(0);
-        y.value = withTiming(0);
-        savedX.value = 0;
-        savedY.value = 0;
+      if (scale.get() <= MIN_SCALE) {
+        x.set(withTiming(0));
+        y.set(withTiming(0));
+        savedX.set(0);
+        savedY.set(0);
       }
     });
 
   const pan = Gesture.Pan()
     .averageTouches(true)
     .onUpdate((event) => {
-      if (scale.value <= MIN_SCALE) return;
-      x.value = savedX.value + event.translationX;
-      y.value = savedY.value + event.translationY;
+      if (scale.get() <= MIN_SCALE) return;
+      x.set(savedX.get() + event.translationX);
+      y.set(savedY.get() + event.translationY);
     })
     .onEnd(() => {
-      savedX.value = x.value;
-      savedY.value = y.value;
+      savedX.set(x.get());
+      savedY.set(y.get());
     });
 
   const doubleTap = Gesture.Tap()
     .numberOfTaps(2)
     .onEnd(() => {
-      const next = scale.value > MIN_SCALE ? MIN_SCALE : TAP_SCALE;
-      scale.value = withTiming(next);
-      saved.value = next;
+      const next = scale.get() > MIN_SCALE ? MIN_SCALE : TAP_SCALE;
+      scale.set(withTiming(next));
+      saved.set(next);
 
       if (next === MIN_SCALE) {
-        x.value = withTiming(0);
-        y.value = withTiming(0);
-        savedX.value = 0;
-        savedY.value = 0;
+        x.set(withTiming(0));
+        y.set(withTiming(0));
+        savedX.set(0);
+        savedY.set(0);
       }
     });
 
@@ -83,9 +82,9 @@ export function PhotoReview({ uri, onRetake, onAnalyze }: PhotoReviewProps) {
 
   const stageStyle = useAnimatedStyle(() => ({
     transform: [
-      { translateX: x.value },
-      { translateY: y.value },
-      { scale: scale.value },
+      { translateX: x.get() },
+      { translateY: y.get() },
+      { scale: scale.get() },
     ],
   }));
 

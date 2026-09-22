@@ -43,8 +43,8 @@ export function ConfirmCard({ value, style }: ConfirmCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: theme.primary.claySoft,
-    borderColor: theme.primary.clayBorder,
+    backgroundColor: theme.secondary.ochreSoft,
+    borderColor: theme.secondary.ochreSoft,
   },
   spaced: {
     marginTop: theme.spacing.s4,

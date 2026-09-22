@@ -13,7 +13,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { haptic } from "@/utils/haptics";
 import { TourAnchor } from "@/components/tour/TourAnchor";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
@@ -50,15 +49,15 @@ export function SegmentedTabs<T extends string>({
   }, [value, pillX, pillWidth]);
 
   const pillStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: pillX.value }],
-    width: pillWidth.value,
+    transform: [{ translateX: pillX.get() }],
+    width: pillWidth.get(),
   }));
 
   function measure(option: T, event: LayoutChangeEvent) {
     const { x, width } = event.nativeEvent.layout;
     layouts.current[option] = { x, width };
 
-    if (option === value && pillWidth.value === 0) {
+    if (option === value && pillWidth.get() === 0) {
       pillX.set(x);
       pillWidth.set(width);
     }
@@ -76,7 +75,6 @@ export function SegmentedTabs<T extends string>({
           <RipplePressable
             key={option.value}
             onPress={() => {
-              if (option.value !== value) haptic.select();
               onChange(option.value);
             }}
             onLayout={(event) => measure(option.value, event)}

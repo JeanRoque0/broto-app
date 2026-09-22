@@ -5,6 +5,8 @@ import { StyleSheet, View } from "react-native";
 
 import { GroupCard } from "@/components/GroupCard";
 import { PlantCard } from "@/components/PlantCard";
+import { TodaySummary } from "./TodaySummary";
+import { TourAnchor } from "@/components/tour/TourAnchor";
 import { AppRefreshControl } from "@/components/ui/AppRefreshControl";
 import { FlashListContainer } from "@/components/ui/FlashListContainer";
 import { RipplePressable } from "@/components/ui/RipplePressable";
@@ -20,6 +22,7 @@ type Row =
   | { key: string; kind: "plant"; plant: Plant };
 
 type PlantsPanelProps = {
+  topSpace: number;
   bottomSpace: number;
   plants: Plant[];
   groups: PlantGroup[];
@@ -30,9 +33,11 @@ type PlantsPanelProps = {
   onOpenGroup: (groupId: string) => void;
   onAddToGroup: (group: PlantGroup) => void;
   onNewGroup: () => void;
+  onOpenTasks: () => void;
 };
 
 export function PlantsPanel({
+  topSpace,
   bottomSpace,
   plants,
   groups,
@@ -43,6 +48,7 @@ export function PlantsPanel({
   onOpenGroup,
   onAddToGroup,
   onNewGroup,
+  onOpenTasks,
 }: PlantsPanelProps) {
   const { t } = useTranslation("plants");
 
@@ -66,6 +72,8 @@ export function PlantsPanel({
     [groups, plants],
   );
 
+  const firstPlantKey = rows.find((row) => row.kind === "plant")?.key;
+
   return (
     <FlashListContainer
       data={rows}
@@ -73,12 +81,21 @@ export function PlantsPanel({
       keyExtractor={(row) => row.key}
       getItemType={(row) => row.kind}
       contentContainerStyle={{
-        paddingTop: theme.spacing.s3,
+        paddingTop: topSpace + theme.spacing.s3,
         paddingBottom: bottomSpace,
       }}
       showsVerticalScrollIndicator={false}
+      ListHeaderComponent={
+        <View style={[styles.padded, styles.summary]}>
+          <TodaySummary onOpenTasks={onOpenTasks} />
+        </View>
+      }
       refreshControl={
-        <AppRefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <AppRefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          progressViewOffset={topSpace}
+        />
       }
       renderItem={({ item, index }) => {
         const head = [
@@ -103,6 +120,7 @@ export function PlantsPanel({
                 style={styles.newGroup}
                 accessibilityRole="button"
               >
+                <TourAnchor id="plants.group" />
                 <Feather name="plus" size={13} color={theme.primary.clay} />
                 <Text style={styles.newGroupLabel}>{t("newGroup")}</Text>
               </RipplePressable>
@@ -127,6 +145,7 @@ export function PlantsPanel({
                   style={styles.newGroup}
                   accessibilityRole="button"
                 >
+                  <TourAnchor id="plants.group" />
                   <Feather name="plus" size={13} color={theme.primary.clay} />
                   <Text style={styles.newGroupLabel}>{t("newGroup")}</Text>
                 </RipplePressable>
@@ -150,10 +169,13 @@ export function PlantsPanel({
 
         return (
           <View style={styles.padded}>
-            <PlantCard
-              plant={item.plant}
-              onPress={() => onOpenPlant(item.plant.id)}
-            />
+            <View>
+              <PlantCard
+                plant={item.plant}
+                onPress={() => onOpenPlant(item.plant.id)}
+              />
+              {item.key === firstPlantKey && <TourAnchor id="plants.card" />}
+            </View>
           </View>
         );
       }}
@@ -162,6 +184,9 @@ export function PlantsPanel({
 }
 
 const styles = StyleSheet.create({
+  summary: {
+    marginBottom: theme.spacing.s2,
+  },
   padded: {
     paddingHorizontal: theme.screenPadding,
   },

@@ -23,6 +23,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { Glass } from "@/components/ui/Glass";
 import { Text } from "@/components/ui/Text";
 import i18n from "@/i18n";
 import { theme } from "@/style/theme";
@@ -66,7 +67,7 @@ export function ContainerModal({
   children,
   maxHeight = "80%",
   keyboardAware = false,
-  showClose = false,
+  showClose = true,
   onShow,
 }: ContainerModalProps) {
   const insets = useSafeAreaInsets();
@@ -151,7 +152,7 @@ export function ContainerModal({
           toValue: 0,
           useNativeDriver: true,
           isInteraction: false,
-          bounciness: 4,
+          bounciness: 0,
         }).start();
       }
     },
@@ -220,7 +221,10 @@ export function ContainerModal({
         <View style={styles.grab} />
 
         {eyebrow && (
-          <Text family="mono" style={styles.eyebrow}>
+          <Text
+            family="mono"
+            style={[styles.eyebrow, showClose && styles.titleWithClose]}
+          >
             {eyebrow}
           </Text>
         )}
@@ -229,7 +233,7 @@ export function ContainerModal({
           <Text
             accessibilityRole="header"
             family="display"
-            style={styles.title}
+            style={[styles.title, showClose && styles.titleWithClose]}
           >
             {title}
           </Text>
@@ -269,6 +273,7 @@ export function ContainerModal({
         <Animated.View
           style={[styles.backdrop, { paddingBottom: keyboardPadding }]}
         >
+          <Glass tone="dark" intensity={22} style={styles.blur} />
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={onClose}
@@ -279,6 +284,7 @@ export function ContainerModal({
         </Animated.View>
       ) : (
         <View style={styles.backdrop}>
+          <Glass tone="dark" intensity={22} style={styles.blur} />
           <Pressable
             style={StyleSheet.absoluteFill}
             onPress={onClose}
@@ -346,15 +352,22 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     flex: 1,
-    backgroundColor: theme.surface.scrim,
     justifyContent: "flex-end",
+  },
+  blur: {
+    ...StyleSheet.absoluteFill,
   },
   sheet: {
     backgroundColor: theme.surface.base,
     borderTopLeftRadius: theme.radius.sheet,
     borderTopRightRadius: theme.radius.sheet,
     paddingHorizontal: theme.screenPadding,
-    paddingTop: theme.spacing.s5,
+    paddingTop: theme.spacing.s3,
+    shadowColor: theme.functional.shadow,
+    shadowOpacity: 0.12,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: -6 },
+    elevation: 16,
   },
   header: {
     gap: theme.spacing.s2,
@@ -364,25 +377,30 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     alignSelf: "center",
-    marginBottom: theme.spacing.s3,
+    marginBottom: theme.spacing.s4,
     backgroundColor: theme.functional.lineStrong,
   },
   eyebrow: {
     ...type.eyebrow,
   },
   title: {
-    ...type.display,
+    ...type.displaySm,
+    fontSize: 24,
+    lineHeight: 29,
+  },
+  titleWithClose: {
+    paddingRight: 44,
   },
   description: {
     ...type.body,
   },
   closeButton: {
     position: "absolute",
-    top: theme.spacing.s4,
+    top: theme.spacing.s5,
     right: theme.spacing.s4,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: theme.surface.container,

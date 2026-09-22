@@ -8,7 +8,6 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { haptic } from "@/utils/haptics";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { theme } from "@/style/theme";
 
@@ -36,7 +35,7 @@ export function Checkbox({ value, onChange, style }: CheckboxProps) {
             toValue: 1,
             useNativeDriver: true,
             isInteraction: false,
-            bounciness: 10,
+            bounciness: 0,
             speed: 18,
           })
         : Animated.timing(checkScale, {
@@ -62,7 +61,6 @@ export function Checkbox({ value, onChange, style }: CheckboxProps) {
   return (
     <RipplePressable
       onPress={() => {
-        haptic.select();
         onChange(!value);
       }}
       accessibilityRole="checkbox"

@@ -17,18 +17,10 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useReducedMotion,
-  useSharedValue,
-  withSequence,
-  withTiming,
-} from "react-native-reanimated";
 
 import i18n from "@/i18n";
 import { theme } from "@/style/theme";
 import { fontSize, maxScaleFor, resolveFontFamily } from "@/style/typography";
-import { haptic } from "@/utils/haptics";
 
 import { Text } from "./Text";
 
@@ -70,25 +62,10 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   useImperativeHandle(ref, () => inputRef.current!, []);
 
   const hasError = !!error;
-  const reduceMotion = useReducedMotion();
-  const shake = useSharedValue(0);
 
   useEffect(() => {
-    if (!error) return;
-    haptic.warn();
-    AccessibilityInfo.announceForAccessibility(error);
-    if (reduceMotion) return;
-    shake.value = withSequence(
-      withTiming(-6, { duration: 50 }),
-      withTiming(6, { duration: 70 }),
-      withTiming(-4, { duration: 60 }),
-      withTiming(0, { duration: 50 }),
-    );
-  }, [error, reduceMotion, shake]);
-
-  const shakeStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: shake.value }],
-  }));
+    if (error) AccessibilityInfo.announceForAccessibility(error);
+  }, [error]);
 
   const resolvedIconRight = isPassword ? (
     <MaterialIcons
@@ -108,59 +85,57 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
     <View style={[styles.container, containerStyle]}>
       {label && <Text style={styles.label}>{label}</Text>}
 
-      <Animated.View style={shakeStyle}>
-        <Pressable
-          style={[
-            styles.wrapper,
-            focused && styles.wrapperFocused,
-            readOnly && styles.wrapperReadOnly,
-            hasError && styles.wrapperError,
-            inputWrapperStyle,
-          ]}
-          onPress={() => inputRef.current?.focus()}
-          accessible={false}
-        >
-          {iconLeft}
+      <Pressable
+        style={[
+          styles.wrapper,
+          focused && styles.wrapperFocused,
+          readOnly && styles.wrapperReadOnly,
+          hasError && styles.wrapperError,
+          inputWrapperStyle,
+        ]}
+        onPress={() => inputRef.current?.focus()}
+        accessible={false}
+      >
+        {iconLeft}
 
-          <TextInput
-            ref={inputRef}
-            style={[styles.input, readOnly && styles.inputReadOnly, inputStyle]}
-            value={value}
-            editable={!readOnly}
-            maxFontSizeMultiplier={maxScaleFor(fontSize.s6)}
-            accessibilityLabel={label}
-            accessibilityHint={error ?? hint}
-            placeholderTextColor={theme.text.tertiary}
-            {...rest}
-            secureTextEntry={isPassword ? !showPassword : rest.secureTextEntry}
-            onFocus={(e) => {
-              setFocused(true);
-              rest.onFocus?.(e);
-            }}
-            onBlur={(e) => {
-              setFocused(false);
-              rest.onBlur?.(e);
-            }}
-          />
+        <TextInput
+          ref={inputRef}
+          style={[styles.input, readOnly && styles.inputReadOnly, inputStyle]}
+          value={value}
+          editable={!readOnly}
+          maxFontSizeMultiplier={maxScaleFor(fontSize.s6)}
+          accessibilityLabel={label}
+          accessibilityHint={error ?? hint}
+          placeholderTextColor={theme.text.tertiary}
+          {...rest}
+          secureTextEntry={isPassword ? !showPassword : rest.secureTextEntry}
+          onFocus={(e) => {
+            setFocused(true);
+            rest.onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            setFocused(false);
+            rest.onBlur?.(e);
+          }}
+        />
 
-          {resolvedIconRight && (
-            <Pressable
-              onPress={resolvedIconRightPress}
-              disabled={!resolvedIconRightPress}
-              hitSlop={12}
-              accessible={!!resolvedIconRightPress}
-              accessibilityRole="button"
-              accessibilityLabel={
-                isPassword
-                  ? i18n.t(showPassword ? "hidePassword" : "showPassword")
-                  : undefined
-              }
-            >
-              {resolvedIconRight}
-            </Pressable>
-          )}
-        </Pressable>
-      </Animated.View>
+        {resolvedIconRight && (
+          <Pressable
+            onPress={resolvedIconRightPress}
+            disabled={!resolvedIconRightPress}
+            hitSlop={12}
+            accessible={!!resolvedIconRightPress}
+            accessibilityRole="button"
+            accessibilityLabel={
+              isPassword
+                ? i18n.t(showPassword ? "hidePassword" : "showPassword")
+                : undefined
+            }
+          >
+            {resolvedIconRight}
+          </Pressable>
+        )}
+      </Pressable>
 
       {(hint || error) && (
         <Text

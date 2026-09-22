@@ -43,7 +43,7 @@ function WheelItem({
   offset: SharedValue<number>;
 }) {
   const style = useAnimatedStyle(() => {
-    const distance = Math.abs(offset.value / WHEEL_ITEM_HEIGHT - index);
+    const distance = Math.abs(offset.get() / WHEEL_ITEM_HEIGHT - index);
 
     return {
       opacity: interpolate(
@@ -82,6 +82,7 @@ export function WheelPicker<T extends string | number>({
   const scroll = useAnimatedRef<Animated.ScrollView>();
   const offset = useSharedValue(0);
   const dragging = useRef(false);
+  const mounted = useRef(false);
   const { setHasScrollable } = useContainerModalScroll();
 
   useEffect(() => {
@@ -98,12 +99,13 @@ export function WheelPicker<T extends string | number>({
     if (dragging.current) return;
     scroll.current?.scrollTo({
       y: index * WHEEL_ITEM_HEIGHT,
-      animated: false,
+      animated: mounted.current,
     });
+    mounted.current = true;
   }, [index, scroll]);
 
   const onScroll = useAnimatedScrollHandler((event) => {
-    offset.value = event.contentOffset.y;
+    offset.set(event.contentOffset.y);
   });
 
   function settle(event: NativeSyntheticEvent<NativeScrollEvent>) {
@@ -166,7 +168,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   label: {
-    fontSize: fontSize.s8,
+    fontSize: fontSize.s10,
+    fontWeight: "600",
     color: theme.text.primary,
   },
   band: {
@@ -175,7 +178,9 @@ const styles = StyleSheet.create({
     right: 0,
     top: PAD,
     height: WHEEL_ITEM_HEIGHT,
-    borderRadius: theme.radius.field,
-    backgroundColor: theme.surface.container,
+    borderRadius: theme.radius.button,
+    borderWidth: 1,
+    borderColor: theme.primary.clayBorder,
+    backgroundColor: theme.primary.clayTint,
   },
 });

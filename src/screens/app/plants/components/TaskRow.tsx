@@ -2,11 +2,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 
+import { TourAnchor } from "@/components/tour/TourAnchor";
 import { CheckPop } from "@/components/ui/CheckPop";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
-import { fontSize, type } from "@/style/typography";
+import { fontSize } from "@/style/typography";
 import { formatShortDate } from "@/utils/format";
 import { TASK_ICONS, TASK_LABELS } from "@/utils/taskLabels";
 import { Task, parseDay } from "@/utils/tasks";
@@ -16,13 +17,23 @@ type TaskRowProps = {
   loading: boolean;
   onComplete: () => void;
   onEdit: () => void;
+  tourId?: string;
 };
 
-export function TaskRow({ task, loading, onComplete, onEdit }: TaskRowProps) {
+export function TaskRow({
+  task,
+  loading,
+  onComplete,
+  onEdit,
+  tourId,
+}: TaskRowProps) {
   const { t } = useTranslation("plants");
   const label = t(TASK_LABELS[task.kind]);
+  const next = t("taskNextDate", {
+    date: formatShortDate(parseDay(task.task.next_at)),
+  });
   const status = task.done
-    ? t("taskDoneLabel")
+    ? `${t("taskDoneLabel")}. ${next}`
     : task.overdue
       ? t("taskLate", { count: task.lateDays })
       : "";
@@ -45,10 +56,11 @@ export function TaskRow({ task, loading, onComplete, onEdit }: TaskRowProps) {
         if (event.nativeEvent.actionName === "complete") onComplete();
       }}
     >
+      {tourId && <TourAnchor id={tourId} />}
       <View style={[styles.icon, task.done && styles.iconDone]}>
         <MaterialCommunityIcons
           name={TASK_ICONS[task.kind]}
-          size={20}
+          size={18}
           color={task.done ? theme.text.tertiary : theme.primary.clay}
         />
       </View>
@@ -57,32 +69,13 @@ export function TaskRow({ task, loading, onComplete, onEdit }: TaskRowProps) {
         <Text style={[styles.label, task.done && styles.labelDone]}>
           {label}
         </Text>
-        <Text style={styles.plant} numberOfLines={1}>
-          {task.plant.nickname}
-        </Text>
-
-        {task.done ? (
-          <View style={styles.doneBlock}>
-            <Text family="mono" style={styles.doneLabel}>
-              {t("taskDoneLabel")}
-            </Text>
-            <Text family="mono" style={styles.nextLabel}>
-              {t("taskNextDate", {
-                date: formatShortDate(parseDay(task.task.next_at)),
-              })}
-            </Text>
-          </View>
-        ) : (
-          task.overdue && (
-            <Text family="mono" style={styles.late}>
-              {t("taskLate", { count: task.lateDays })}
-            </Text>
-          )
-        )}
+        {task.done && <Text style={styles.next}>{next}</Text>}
       </View>
 
       {loading ? (
-        <ActivityIndicator size="small" color={theme.primary.clay} />
+        <View style={styles.checkHit}>
+          <ActivityIndicator size="small" color={theme.primary.clay} />
+        </View>
       ) : (
         <RipplePressable
           onPress={task.done ? undefined : onComplete}
@@ -106,66 +99,47 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    gap: theme.spacing.s4,
-    padding: theme.spacing.s3,
-    marginBottom: theme.spacing.s2,
-    backgroundColor: theme.surface.card,
-    borderWidth: 1,
-    borderColor: theme.functional.line,
-    borderRadius: theme.radius.md,
+    gap: theme.spacing.s3,
+    minHeight: 56,
+    paddingLeft: theme.spacing.s4,
+    paddingRight: theme.spacing.s3,
+    paddingVertical: theme.spacing.s2,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: theme.functional.line,
   },
   icon: {
-    width: 44,
-    height: 44,
-    borderRadius: theme.radius.field,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: theme.primary.clayTint,
-    borderWidth: 1,
-    borderColor: theme.primary.clayBorder,
+    backgroundColor: theme.primary.claySoft,
   },
   iconDone: {
     backgroundColor: theme.surface.container,
-    borderColor: theme.functional.line,
   },
   texts: {
     flex: 1,
     gap: 1,
   },
   label: {
-    fontSize: fontSize.s6,
-    fontWeight: "700",
+    fontSize: fontSize.s7,
+    fontWeight: "500",
     color: theme.text.primary,
   },
   labelDone: {
-    fontWeight: "400",
     color: theme.text.tertiary,
     textDecorationLine: "line-through",
   },
-  plant: {
-    ...type.bodySm,
-  },
-  late: {
-    fontSize: fontSize.s2,
-    color: theme.primary.clay,
-  },
-  doneBlock: {
-    gap: 1,
-    marginTop: 1,
-  },
-  doneLabel: {
-    fontSize: fontSize.s2,
-    color: theme.secondary.moss,
-  },
-  nextLabel: {
-    fontSize: fontSize.s2,
+  next: {
+    fontSize: fontSize.s4,
     color: theme.text.tertiary,
   },
   checkHit: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 20,
+    borderRadius: 22,
   },
 });

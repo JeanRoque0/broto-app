@@ -1,9 +1,12 @@
 import { Feather } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { ScrollView, View } from "react-native";
+import { useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Appear } from "@/components/ui/Appear";
 import { CHAT_MONTH_CAP, MONTH_CAP } from "@/constants";
+import { Glass } from "@/components/ui/Glass";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -11,7 +14,7 @@ import { Header } from "@/components/ui/Header";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { Text } from "@/components/ui/Text";
 import { theme } from "@/style/theme";
-import { formatShortDate } from "@/utils/format";
+import { formatOrdinalDate } from "@/utils/format";
 import { openLegal } from "@/utils/legal";
 
 import { styles } from "./style";
@@ -58,6 +61,8 @@ function Meter({ label, used, cap }: MeterProps) {
 
 export default function PaywallScreen() {
   const { t } = useTranslation("paywall");
+  const insets = useSafeAreaInsets();
+  const [footerHeight, setFooterHeight] = useState(0);
   const {
     products,
     selected,
@@ -80,7 +85,10 @@ export default function PaywallScreen() {
       <Header showBack />
 
       <ScrollView
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: footerHeight + theme.spacing.s5 },
+        ]}
         showsVerticalScrollIndicator={false}
       >
         <Text accessibilityRole="header" family="display" style={styles.title}>
@@ -123,8 +131,8 @@ export default function PaywallScreen() {
 
             <Text family="mono" style={styles.renews}>
               {inTrial && trialEndsAt
-                ? t("usageTrialEnds", { date: formatShortDate(trialEndsAt) })
-                : t("usageRenews", { date: formatShortDate(usage.renewsAt) })}
+                ? t("usageTrialEnds", { date: formatOrdinalDate(trialEndsAt) })
+                : t("usageRenews", { date: formatOrdinalDate(usage.renewsAt) })}
             </Text>
           </View>
         </Appear>
@@ -223,14 +231,6 @@ export default function PaywallScreen() {
         </Appear>
 
         <Button
-          label={isPro ? t("current") : t("subscribe")}
-          onPress={buy}
-          loading={busy}
-          disabled={isPro}
-          style={styles.action}
-        />
-
-        <Button
           label={t("restore")}
           onPress={restore}
           variant="ghost"
@@ -248,6 +248,22 @@ export default function PaywallScreen() {
           </Text>
         </View>
       </ScrollView>
+
+      <View
+        style={[
+          styles.footer,
+          { paddingBottom: insets.bottom + theme.spacing.s3 },
+        ]}
+        onLayout={(event) => setFooterHeight(event.nativeEvent.layout.height)}
+      >
+        <Glass style={StyleSheet.absoluteFill} />
+        <Button
+          label={isPro ? t("current") : t("subscribe")}
+          onPress={buy}
+          loading={busy}
+          disabled={isPro}
+        />
+      </View>
     </Container>
   );
 }

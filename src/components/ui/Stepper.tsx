@@ -6,7 +6,6 @@ import { RipplePressable } from "@/components/ui/RipplePressable";
 import i18n from "@/i18n";
 import { theme } from "@/style/theme";
 import { fontSize } from "@/style/typography";
-import { haptic } from "@/utils/haptics";
 
 import { Text } from "./Text";
 
@@ -37,7 +36,6 @@ export function Stepper({
   function shift(delta: number) {
     const next = value + delta;
     if (next < min || next > max) return;
-    haptic.select();
     onChange(next);
   }
 

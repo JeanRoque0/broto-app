@@ -29,5 +29,9 @@
     "Espatifilo",
     "Zamioculca",
     "Helecho"
-  ]
+  ],
+  "identifyTitle": "¿No sabes el nombre?",
+  "identifyText": "Toma una foto y Broto descubre qué planta es.",
+  "readMore": "Leer más",
+  "readLess": "Leer menos"
 }

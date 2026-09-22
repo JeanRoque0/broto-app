@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { theme } from "@/style/theme";
 import { fontSize } from "@/style/typography";
 
+import { Glass } from "./Glass";
 import { Text } from "./Text";
 
 const ENTER_OFFSET = -24;
@@ -48,7 +49,7 @@ export function ToastContainer() {
         toValue: 1,
         useNativeDriver: true,
         isInteraction: false,
-        bounciness: 4,
+        bounciness: 0,
         speed: 16,
       }).start(({ finished }) => {
         if (!finished) return;
@@ -98,6 +99,7 @@ export function ToastContainer() {
           },
         ]}
       >
+        <Glass tone="dark" intensity={40} style={styles.glass} />
         <Text style={[styles.text, params?.textStyle]}>{params?.text}</Text>
         {params?.subtitle ? (
           <Text style={[styles.subtitle, params.subtitleStyle]}>
@@ -122,8 +124,12 @@ const styles = StyleSheet.create({
     zIndex: 9999,
     elevation: 9999,
   },
+  glass: {
+    ...StyleSheet.absoluteFill,
+    borderRadius: theme.radius.field,
+  },
   card: {
-    backgroundColor: theme.text.primary,
+    backgroundColor: theme.surface.toast,
     paddingVertical: theme.spacing.s3,
     paddingHorizontal: 20,
     borderRadius: theme.radius.field,

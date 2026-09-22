@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { DimensionValue, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import {
+  DimensionValue,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 import Animated, {
   cancelAnimation,
   Easing,
@@ -32,21 +38,23 @@ export function Skeleton({
   useEffect(() => {
     if (reduceMotion) {
       cancelAnimation(glow);
-      glow.value = 0.5;
+      glow.set(0.5);
       return;
     }
 
-    glow.value = withRepeat(
-      withTiming(1, { duration: 900, easing: Easing.inOut(Easing.quad) }),
-      -1,
-      true,
+    glow.set(
+      withRepeat(
+        withTiming(1, { duration: 900, easing: Easing.inOut(Easing.quad) }),
+        -1,
+        true,
+      ),
     );
 
     return () => cancelAnimation(glow);
   }, [reduceMotion, glow]);
 
   const pulse = useAnimatedStyle(() => ({
-    opacity: 0.45 + glow.value * 0.45,
+    opacity: 0.45 + glow.get() * 0.45,
   }));
 
   return (

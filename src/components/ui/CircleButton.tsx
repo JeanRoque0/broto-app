@@ -7,13 +7,14 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { Glass } from "@/components/ui/Glass";
 import { RipplePressable } from "@/components/ui/RipplePressable";
 import { theme } from "@/style/theme";
 
 type CircleButtonProps = {
   children: React.ReactNode;
   onPress: () => void;
-  tone?: "surface" | "light";
+  tone?: "surface" | "light" | "glass";
   size?: number;
   accessibilityLabel?: string;
   accessibilityRole?: AccessibilityRole;
@@ -44,10 +45,19 @@ export function CircleButton({
       style={[
         styles.base,
         { width: size, height: size, borderRadius: size / 2 },
-        tone === "surface" ? styles.surface : styles.light,
+        tone === "surface" && styles.surface,
+        tone === "light" && styles.light,
+        tone === "glass" && styles.glass,
         style,
       ]}
     >
+      {tone === "glass" && (
+        <Glass
+          tone="dark"
+          intensity={30}
+          style={[StyleSheet.absoluteFill, { borderRadius: size / 2 }]}
+        />
+      )}
       {children}
     </RipplePressable>
   );
@@ -65,5 +75,8 @@ const styles = StyleSheet.create({
   },
   light: {
     backgroundColor: theme.functional.white20,
+  },
+  glass: {
+    overflow: "hidden",
   },
 });

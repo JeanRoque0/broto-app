@@ -29,5 +29,9 @@
     "Lírio-da-paz",
     "Zamioculca",
     "Samambaia"
-  ]
+  ],
+  "identifyTitle": "Não sabe o nome?",
+  "identifyText": "Tire uma foto e o Broto descobre qual é a planta.",
+  "readMore": "Ler mais",
+  "readLess": "Ler menos"
 }

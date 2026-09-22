@@ -17,6 +17,7 @@ export function Text({
   const resolvedStyle: TextStyle = {
     ...flat,
     fontFamily: resolveFontFamily(family, fontWeight),
+    ...(family === "mono" && { fontVariant: ["tabular-nums"] }),
   };
 
   return (

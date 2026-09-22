@@ -75,12 +75,12 @@
   "historyUnknownSpecies": "Species not identified",
   "saveGroupTitle": "In which group?",
   "saveGroupText": "You can change this later.",
-  "feedbackQuestion": "Did this help?",
+  "feedbackQuestion": "Did this result help?",
   "feedbackYes": "It helped",
   "feedbackNo": "It did not help",
-  "feedbackThanks": "Thanks for the feedback",
-  "reportLead": "Is anything here wrong or missing?",
-  "reportAction": "Tell us",
+  "feedbackThanks": "Thanks for answering",
+  "reportLead": "Something wrong or missing?",
+  "reportAction": "Report",
   "historyExpires": "Leaves the list on {{date}}",
   "savedPlantTitle": "Already in your plants",
   "savedPlantAction": "Open the plant",
@@ -94,5 +94,11 @@
     "Working out what it might be",
     "Writing its care",
     "Almost there"
-  ]
+  ],
+  "historyKeepNote": "Analyses you don't save to a plant stay here for {{count}} days.",
+  "feedbackHint": "Your answer helps Broto get the next analyses right.",
+  "feedbackThanksYes": "Glad it helped. Take good care of it!",
+  "feedbackThanksNo": "We'll use this to improve. If you like, tell us what was wrong.",
+  "feedbackReport": "Tell us what was wrong",
+  "reportHint": "Tell us and we will fix the analysis."
 }

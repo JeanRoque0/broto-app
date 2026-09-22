@@ -36,7 +36,7 @@ export function useOnboarding() {
 
   const handleScroll = useAnimatedScrollHandler(
     (event) => {
-      scrollX.value = event.contentOffset.x;
+      scrollX.set(event.contentOffset.x);
       if (!width) return;
       const next = Math.round(event.contentOffset.x / width);
       if (next !== index) runOnJS(setIndex)(next);

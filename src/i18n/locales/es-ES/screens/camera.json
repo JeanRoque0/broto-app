@@ -41,5 +41,6 @@
   "capTitle": "Hasta aquí este mes",
   "capText": "Usaste los {{cap}} análisis de tu plan. La cuota vuelve el {{date}}, y los sueltos no tienen límite.",
   "trialChip": "Prueba gratis hasta {{date}}",
-  "blockedText": "Los 3 días con todo desbloqueado terminaron. Para seguir analizando, suscríbete al plan completo o compra un análisis suelto."
+  "blockedText": "Los 3 días con todo desbloqueado terminaron. Para seguir analizando, suscríbete al plan completo o compra un análisis suelto.",
+  "tipsLabel": "Consejos"
 }
