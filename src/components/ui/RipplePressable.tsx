@@ -107,7 +107,7 @@ export function RipplePressable({
     onPress?.(e);
   }
 
-  const state: PressableStateCallbackType = { pressed, hovered: false };
+  const state: PressableStateCallbackType = { pressed };
   const resolved = typeof style === "function" ? style(state) : style;
 
   return (
